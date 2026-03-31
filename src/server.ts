@@ -2,8 +2,12 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import crypto from "crypto";
 
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
+const path = require("path");
+
 const app = express();
-const PORT =  Number(process.env.PORT) || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 const BASE_URL = process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`;
 
 app.use(cors());
@@ -83,6 +87,14 @@ type SubmitBody = {
   items?: Array<{ productId: string; quantity: number }>;
   raw?: Record<string, unknown>;
 };
+
+const GENERATED_PDFS_DIR = path.join(__dirname, "generated-pdfs");
+
+if (!fs.existsSync(GENERATED_PDFS_DIR)) {
+  fs.mkdirSync(GENERATED_PDFS_DIR, { recursive: true });
+}
+
+app.use("/generated-pdfs", express.static(GENERATED_PDFS_DIR));
 
 const runtimeLinks = new Map<string, RuntimeLinkRecord>();
 
@@ -179,6 +191,188 @@ function getRecordOrNull(token: string): RuntimeLinkRecord | null {
   }
 
   return record;
+}
+
+function formatCurrencyCLP(value: number): string {
+  return new Intl.NumberFormat("es-CL", {
+    style: "currency",
+    currency: "CLP",
+    maximumFractionDigits: 0,
+  }).format(Number(value || 0));
+}
+
+function getProductsFromConfig(config: ViewConfig): ProductItem[] {
+  const productsComponent = config.components.find(
+    (component): component is ProductsComponent => component.type === "products"
+  );
+
+  return productsComponent?.items || [];
+}
+
+function sanitizeFileName(value: string): string {
+  return String(value || "")
+    .replace(/[^\w\-]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 60);
+}
+
+function buildQuoteDetail(record: RuntimeLinkRecord, submitBody: SubmitBody) {
+  const catalog = getProductsFromConfig(record.config);
+  const selectedItems = Array.isArray(submitBody?.items) ? submitBody.items : [];
+  const customer = submitBody?.customer || {};
+
+  const lines = selectedItems
+    .map((selected) => {
+      const product = catalog.find((item) => item.id === selected.productId);
+      if (!product) return null;
+
+      const quantity = Number(selected.quantity || 0);
+      const unitPrice = Number(product.price || 0);
+      const subtotal = quantity * unitPrice;
+
+      return {
+        productId: product.id,
+        name: product.name,
+        quantity,
+        unitPrice,
+        subtotal,
+        description: product.description || "",
+      };
+    })
+    .filter(Boolean) as Array<{
+      productId: string;
+      name: string;
+      quantity: number;
+      unitPrice: number;
+      subtotal: number;
+      description: string;
+    }>;
+
+  const total = lines.reduce((acc, line) => acc + line.subtotal, 0);
+
+  return {
+    customer,
+    lines,
+    total,
+  };
+}
+
+function generateQuotePdf(record: RuntimeLinkRecord, submitBody: SubmitBody) {
+  return new Promise<{ fileName: string; filePath: string }>((resolve, reject) => {
+    try {
+      const quote = buildQuoteDetail(record, submitBody);
+      const timestamp = Date.now();
+      const safeToken = sanitizeFileName(record.token);
+      const fileName = `cotizacion_${safeToken}_${timestamp}.pdf`;
+      const filePath = path.join(GENERATED_PDFS_DIR, fileName);
+
+      const doc = new PDFDocument({
+        margin: 50,
+        size: "A4",
+      });
+
+      const stream = fs.createWriteStream(filePath);
+      doc.pipe(stream);
+
+      doc
+        .fontSize(22)
+        .font("Helvetica-Bold")
+        .text(record.config.brand || "Automatiza Fácil", { align: "left" });
+
+      doc
+        .moveDown(0.3)
+        .fontSize(18)
+        .font("Helvetica-Bold")
+        .text(record.config.title || "Cotización");
+
+      doc
+        .moveDown(0.2)
+        .fontSize(10)
+        .font("Helvetica")
+        .fillColor("#666666")
+        .text(`Fecha: ${new Date().toLocaleString("es-CL")}`)
+        .text(`Token: ${record.token}`);
+
+      doc.fillColor("#000000");
+      doc.moveDown();
+
+      doc.fontSize(14).font("Helvetica-Bold").text("Datos del cliente");
+      doc.moveDown(0.4);
+      doc.fontSize(11).font("Helvetica");
+
+      const customerName =
+        typeof quote.customer.name === "string" ? quote.customer.name : "-";
+      const customerEmail =
+        typeof quote.customer.email === "string" ? quote.customer.email : "-";
+      const customerPhone =
+        typeof quote.customer.phone === "string" ? quote.customer.phone : "-";
+      const customerNotes =
+        typeof quote.customer.notes === "string" ? quote.customer.notes : "-";
+
+      doc.text(`Nombre: ${customerName}`);
+      doc.text(`Correo: ${customerEmail}`);
+      doc.text(`Teléfono: ${customerPhone}`);
+      doc.text(`Mensaje: ${customerNotes}`);
+
+      doc.moveDown();
+      doc.fontSize(14).font("Helvetica-Bold").text("Detalle de cotización");
+      doc.moveDown(0.5);
+
+      if (quote.lines.length === 0) {
+        doc.fontSize(11).font("Helvetica").text("No se seleccionaron productos.");
+      } else {
+        quote.lines.forEach((line, index) => {
+          doc
+            .fontSize(12)
+            .font("Helvetica-Bold")
+            .text(`${index + 1}. ${line.name}`);
+
+          doc
+            .fontSize(11)
+            .font("Helvetica")
+            .text(`Cantidad: ${line.quantity}`)
+            .text(`Precio unitario: ${formatCurrencyCLP(line.unitPrice)}`)
+            .text(`Subtotal: ${formatCurrencyCLP(line.subtotal)}`);
+
+          if (line.description) {
+            doc.text(`Descripción: ${line.description}`);
+          }
+
+          doc.moveDown(0.7);
+        });
+      }
+
+      doc.moveDown(0.5);
+      doc
+        .fontSize(15)
+        .font("Helvetica-Bold")
+        .text(`Total: ${formatCurrencyCLP(quote.total)}`, {
+          align: "right",
+        });
+
+      doc.moveDown(1.5);
+      doc
+        .fontSize(10)
+        .font("Helvetica")
+        .fillColor("#666666")
+        .text("Documento generado automáticamente por Automatiza Fácil.", {
+          align: "center",
+        });
+
+      doc.end();
+
+      stream.on("finish", () => {
+        resolve({
+          fileName,
+          filePath,
+        });
+      });
+
+      stream.on("error", reject);
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
 function renderViewHtml(record: RuntimeLinkRecord): string {
@@ -1104,6 +1298,10 @@ function renderViewHtml(record: RuntimeLinkRecord): string {
         }
 
         showMessage("success", data.message || successMessage);
+
+        if (data.pdfUrl) {
+          window.open(data.pdfUrl, "_blank");
+        }
       } catch (_error) {
         showMessage("error", "Ocurrió un error al enviar.");
       }
@@ -1207,38 +1405,52 @@ app.get(
 
 app.post(
   "/api/runtime-links/:token/submit",
-  (req: Request<{ token: string }, {}, SubmitBody>, res: Response) => {
-    const { token } = req.params;
-    const record = getRecordOrNull(token);
+  async (req: Request<{ token: string }, {}, SubmitBody>, res: Response) => {
+    try {
+      const { token } = req.params;
+      const record = getRecordOrNull(token);
 
-    if (!record) {
-      return res.status(404).json({
+      if (!record) {
+        return res.status(404).json({
+          ok: false,
+          message: "Link no encontrado.",
+        });
+      }
+
+      if (record.status === "expired") {
+        return res.status(410).json({
+          ok: false,
+          message: "Este enlace expiró.",
+        });
+      }
+
+      const body = req.body || {};
+      const pdfResult = await generateQuotePdf(record, body);
+      const pdfUrl = `${BASE_URL}/generated-pdfs/${pdfResult.fileName}`;
+
+      record.submissions.push({
+        ...body,
+        submittedAt: new Date().toISOString(),
+        pdfUrl,
+      });
+
+      record.submittedAt = Date.now();
+      record.status = "used";
+
+      return res.json({
+        ok: true,
+        message:
+          record.config.successMessage ?? "Solicitud enviada correctamente.",
+        pdfUrl,
+      });
+    } catch (error) {
+      console.error("Error al generar PDF:", error);
+
+      return res.status(500).json({
         ok: false,
-        message: "Link no encontrado.",
+        message: "No se pudo generar el PDF.",
       });
     }
-
-    if (record.status === "expired") {
-      return res.status(410).json({
-        ok: false,
-        message: "Este enlace expiró.",
-      });
-    }
-
-    const body = req.body;
-
-    record.submissions.push({
-      ...body,
-      submittedAt: new Date().toISOString(),
-    });
-
-    record.submittedAt = Date.now();
-    record.status = "used";
-
-    return res.json({
-      ok: true,
-      message: record.config.successMessage ?? "Solicitud enviada correctamente.",
-    });
   }
 );
 
