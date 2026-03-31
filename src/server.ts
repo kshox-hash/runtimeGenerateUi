@@ -549,6 +549,8 @@ function renderViewHtml(record: RuntimeLinkRecord): string {
       padding: 14px 16px;
       border-radius: 14px;
       font-size: 14px;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
 
     .message.success {
@@ -1363,6 +1365,11 @@ function renderViewHtml(record: RuntimeLinkRecord): string {
           return;
         }
 
+        if (data.pdfUrl) {
+          showMessage("success", \`📄 Tu cotización está lista:\\n👉 \${data.pdfUrl}\`);
+          return;
+        }
+
         showMessage("success", data.message || successMessage);
       } catch (_error) {
         showMessage("error", "Ocurrió un error al enviar.");
@@ -1506,26 +1513,18 @@ app.post(
 
       if (recipientPhone) {
         try {
-          await sendWhatsAppDocumentMessage(
-            recipientPhone,
-            pdfUrl,
-            pdfResult.fileName,
-            "Aquí tienes tu cotización en PDF."
-          );
-
           await sendWhatsAppTextMessage(
             recipientPhone,
-            `Tu cotización también está disponible aquí: ${pdfUrl}`
+            `📄 Tu cotización está lista:\n👉 ${pdfUrl}`
           );
         } catch (whatsAppError) {
-          console.error("Error enviando PDF o link a WhatsApp:", whatsAppError);
+          console.error("Error enviando link a WhatsApp:", whatsAppError);
         }
       }
 
       return res.json({
         ok: true,
-        message:
-          record.config.successMessage ?? "Solicitud enviada correctamente.",
+        message: "📄 Tu cotización está lista:",
         pdfUrl,
       });
     } catch (error) {
