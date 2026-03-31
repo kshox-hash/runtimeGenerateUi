@@ -5,10 +5,14 @@ import crypto from "crypto";
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const path = require("path");
+const axios = require("axios");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 const BASE_URL = process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`;
+
+const WHATSAPP_ACCESS_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN || "";
+const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID || "";
 
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
@@ -63,6 +67,7 @@ type ViewConfig = {
   subtitle?: string;
   brand?: string;
   successMessage?: string;
+  recipientPhone?: string;
   components: UIComponent[];
 };
 
@@ -373,6 +378,67 @@ function generateQuotePdf(record: RuntimeLinkRecord, submitBody: SubmitBody) {
       reject(error);
     }
   });
+}
+
+async function sendWhatsAppTextMessage(
+  recipientPhone: string,
+  messageText: string
+) {
+  if (!WHATSAPP_ACCESS_TOKEN || !WHATSAPP_PHONE_NUMBER_ID) {
+    console.warn("Faltan variables de WhatsApp para enviar mensaje.");
+    return;
+  }
+
+  await axios.post(
+    `https://graph.facebook.com/v23.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: recipientPhone,
+      type: "text",
+      text: {
+        preview_url: true,
+        body: messageText,
+      },
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+}
+
+async function sendWhatsAppDocumentMessage(
+  recipientPhone: string,
+  documentUrl: string,
+  filename: string,
+  caption?: string
+) {
+  if (!WHATSAPP_ACCESS_TOKEN || !WHATSAPP_PHONE_NUMBER_ID) {
+    console.warn("Faltan variables de WhatsApp para enviar documento.");
+    return;
+  }
+
+  await axios.post(
+    `https://graph.facebook.com/v23.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: recipientPhone,
+      type: "document",
+      document: {
+        link: documentUrl,
+        filename,
+        caption: caption || "Aquí tienes tu cotización en PDF.",
+      },
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
 }
 
 function renderViewHtml(record: RuntimeLinkRecord): string {
@@ -1298,10 +1364,6 @@ function renderViewHtml(record: RuntimeLinkRecord): string {
         }
 
         showMessage("success", data.message || successMessage);
-
-        if (data.pdfUrl) {
-          window.open(data.pdfUrl, "_blank");
-        }
       } catch (_error) {
         showMessage("error", "Ocurrió un error al enviar.");
       }
@@ -1437,6 +1499,29 @@ app.post(
       record.submittedAt = Date.now();
       record.status = "used";
 
+      const recipientPhone =
+        typeof record.config.recipientPhone === "string"
+          ? record.config.recipientPhone
+          : "";
+
+      if (recipientPhone) {
+        try {
+          await sendWhatsAppDocumentMessage(
+            recipientPhone,
+            pdfUrl,
+            pdfResult.fileName,
+            "Aquí tienes tu cotización en PDF."
+          );
+
+          await sendWhatsAppTextMessage(
+            recipientPhone,
+            `Tu cotización también está disponible aquí: ${pdfUrl}`
+          );
+        } catch (whatsAppError) {
+          console.error("Error enviando PDF o link a WhatsApp:", whatsAppError);
+        }
+      }
+
       return res.json({
         ok: true,
         message:
@@ -1507,6 +1592,7 @@ app.get("/demo/create", (_req: Request, res: Response) => {
     title: "Cotización Inteligente",
     subtitle: "Selecciona productos y envía tu solicitud.",
     successMessage: "Solicitud enviada correctamente.",
+    recipientPhone: "56900000000",
     components: [
       {
         type: "products",
@@ -1608,6 +1694,7 @@ function buildCotizadorConfig(leadId: string): ViewConfig {
     title: "Cotización Inteligente",
     subtitle: "Selecciona productos y envía tu solicitud.",
     successMessage: "Solicitud enviada correctamente.",
+    recipientPhone: leadId,
     components: [
       {
         type: "products",
@@ -1680,6 +1767,7 @@ function buildReservasConfig(leadId: string): ViewConfig {
     title: "Toma de Horas",
     subtitle: "Prueba una experiencia de reservas por WhatsApp.",
     successMessage: "Solicitud enviada correctamente.",
+    recipientPhone: leadId,
     components: [
       {
         type: "products",
@@ -1745,6 +1833,7 @@ function buildChatbotConfig(leadId: string): ViewConfig {
     title: "Chatbot Inteligente",
     subtitle: "Descubre cómo automatizar respuestas y atención.",
     successMessage: "Solicitud enviada correctamente.",
+    recipientPhone: leadId,
     components: [
       {
         type: "products",
