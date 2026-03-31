@@ -3,8 +3,8 @@ import cors from "cors";
 import crypto from "crypto";
 
 const app = express();
-const PORT = 3000;
-const BASE_URL = `http://localhost:${PORT}`;
+const PORT =  Number(process.env.PORT) || 3000;
+const BASE_URL = process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`;
 
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
