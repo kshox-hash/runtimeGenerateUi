@@ -49,21 +49,53 @@ export function generateQuotePdf(
 
       const logoPath = path.join(__dirname, "..", "assets", "logo.png");
 
-      const customerName = quote.customer.name || "-";
-      const customerEmail = quote.customer.email || "-";
-      const customerPhone = quote.customer.phone || "-";
-      const customerNotes = quote.customer.notes || "-";
+      const customerName =
+        typeof quote.customer.name === "string" && quote.customer.name.trim()
+          ? quote.customer.name
+          : "-";
+
+      const customerEmail =
+        typeof quote.customer.email === "string" && quote.customer.email.trim()
+          ? quote.customer.email
+          : "-";
+
+      const customerPhone =
+        typeof quote.customer.phone === "string" && quote.customer.phone.trim()
+          ? quote.customer.phone
+          : "-";
+
+      const customerNotes =
+        typeof quote.customer.notes === "string" && quote.customer.notes.trim()
+          ? quote.customer.notes
+          : "-";
 
       const quoteNumber = `AF-${String(timestamp).slice(-6)}`;
       const issueDate = new Date().toLocaleDateString("es-CL");
 
       function drawHeader() {
+        doc.save();
         doc.rect(0, 0, pageWidth, 92).fill(colors.primary);
 
-        if (fs.existsSync(logoPath)) {
-          doc.image(logoPath, margin, 18, { fit: [84, 48] });
-        } else {
-          doc.fillColor(colors.white).fontSize(24).text("AF", margin, 28);
+        try {
+          if (fs.existsSync(logoPath)) {
+            doc.image(logoPath, margin, 18, {
+              fit: [84, 48],
+              align: "left",
+              valign: "center",
+            });
+          } else {
+            doc
+              .fillColor(colors.white)
+              .font("Helvetica-Bold")
+              .fontSize(24)
+              .text("AF", margin, 28);
+          }
+        } catch {
+          doc
+            .fillColor(colors.white)
+            .font("Helvetica-Bold")
+            .fontSize(24)
+            .text("AF", margin, 28);
         }
 
         doc
@@ -78,10 +110,100 @@ export function generateQuotePdf(
         doc
           .font("Helvetica")
           .fontSize(10)
+          .fillColor(colors.white)
           .text("Automatiza Fácil", pageWidth - 160, 54, {
             width: 138,
             align: "right",
           });
+
+        doc.restore();
+      }
+
+      function drawIssuerAndDetail(startY: number) {
+        doc
+          .roundedRect(margin, startY, contentWidth, 104, 12)
+          .fillAndStroke(colors.white, colors.border);
+
+        doc
+          .fillColor(colors.text)
+          .font("Helvetica-Bold")
+          .fontSize(12)
+          .text("De", margin + 16, startY + 16);
+
+        doc
+          .font("Helvetica-Bold")
+          .fontSize(16)
+          .text("Automatiza Fácil", margin + 16, startY + 36);
+
+        doc
+          .fillColor(colors.muted)
+          .font("Helvetica")
+          .fontSize(10)
+          .text(
+            "Automatización de procesos y soluciones digitales",
+            margin + 16,
+            startY + 58,
+            { width: 190 }
+          )
+          .text("Santiago, Chile", margin + 16, startY + 82);
+
+        const rightX = margin + contentWidth - 150;
+
+        doc
+          .fillColor(colors.text)
+          .font("Helvetica-Bold")
+          .fontSize(12)
+          .text("Detalle", rightX, startY + 16, {
+            width: 134,
+            align: "right",
+          });
+
+        doc
+          .fillColor(colors.muted)
+          .font("Helvetica")
+          .fontSize(9.5)
+          .text(`N° cotización: ${quoteNumber}`, rightX, startY + 42, {
+            width: 134,
+            align: "right",
+          })
+          .text(`Fecha: ${issueDate}`, rightX, startY + 60, {
+            width: 134,
+            align: "right",
+          })
+          .text(`Referencia: ${record.token}`, rightX, startY + 78, {
+            width: 134,
+            align: "right",
+          });
+
+        return startY + 122;
+      }
+
+      function drawCustomerBox(startY: number) {
+        doc
+          .roundedRect(margin, startY, contentWidth, 108, 12)
+          .fillAndStroke(colors.lighter, colors.border);
+
+        doc
+          .fillColor(colors.text)
+          .font("Helvetica-Bold")
+          .fontSize(12)
+          .text("Cliente", margin + 16, startY + 16);
+
+        doc
+          .font("Helvetica")
+          .fontSize(10.5)
+          .fillColor(colors.text)
+          .text(`Nombre: ${customerName}`, margin + 16, startY + 42, {
+            width: contentWidth - 32,
+          })
+          .text(`Correo: ${customerEmail}`, margin + 16, startY + 62, {
+            width: contentWidth - 32,
+          })
+          .text(`Teléfono: ${customerPhone}`, margin + 16, startY + 82, {
+            width: contentWidth - 32,
+          });
+
+        return startY + 124;
       }
 
       function drawTableHeader(startY: number) {
@@ -110,7 +232,10 @@ export function generateQuotePdf(
           .text("Descripción", col1, startY + 9, { width: descWidth - 6 })
           .text("Cant.", col2, startY + 9, { width: qtyWidth, align: "center" })
           .text("Precio", col3, startY + 9, { width: priceWidth - 6, align: "right" })
-          .text("Subtotal", col4, startY + 9, { width: subtotalWidth - 6, align: "right" });
+          .text("Subtotal", col4, startY + 9, {
+            width: subtotalWidth - 6,
+            align: "right",
+          });
 
         return {
           nextY: startY + 28,
@@ -125,78 +250,202 @@ export function generateQuotePdf(
         };
       }
 
+      function ensureSpace(currentY: number, neededHeight: number, drawTableOnNewPage = false) {
+        if (currentY + neededHeight <= pageHeight - 30) {
+          return { y: currentY, newPage: false };
+        }
+
+        doc.addPage();
+        drawHeader();
+
+        let newY = 34;
+
+        if (drawTableOnNewPage) {
+          const table = drawTableHeader(newY);
+          return { y: table.nextY, newPage: true, table };
+        }
+
+        return { y: newY, newPage: true };
+      }
+
       drawHeader();
 
       let y = 110;
 
-      // Cliente
-      doc.roundedRect(margin, y, contentWidth, 100, 12).fillAndStroke(colors.white, colors.border);
+      y = drawIssuerAndDetail(y);
+      y = drawCustomerBox(y);
 
-      doc.font("Helvetica-Bold").fontSize(12).fillColor(colors.text).text("Cliente", margin + 16, y + 16);
-
-      doc.font("Helvetica").fontSize(10)
-        .text(`Nombre: ${customerName}`, margin + 16, y + 40)
-        .text(`Correo: ${customerEmail}`, margin + 16, y + 58)
-        .text(`Teléfono: ${customerPhone}`, margin + 16, y + 76);
-
-      y += 120;
-
-      // Tabla
       let table = drawTableHeader(y);
       y = table.nextY;
 
-      quote.lines.forEach((line, i) => {
-        const rowHeight = 50;
-        const bg = i % 2 === 0 ? colors.white : colors.lighter;
+      if (quote.lines.length === 0) {
+        doc.rect(margin, y, contentWidth, 42).fill(colors.white);
+        doc
+          .fillColor(colors.muted)
+          .font("Helvetica")
+          .fontSize(10)
+          .text("No se seleccionaron productos.", margin + 12, y + 14);
+        y += 42;
+      } else {
+        quote.lines.forEach((line, index) => {
+          const rowHeight = line.description ? 62 : 40;
+          const fillColor = index % 2 === 0 ? colors.white : colors.lighter;
 
-        doc.rect(margin, y, contentWidth, rowHeight).fill(bg);
+          const space = ensureSpace(y, rowHeight + 140, true);
+          if (space.newPage && space.table) {
+            y = space.y;
+            table = space.table;
+          }
 
-        doc.font("Helvetica-Bold").fontSize(10)
-          .fillColor(colors.text)
-          .text(line.name, table.col1, y + 10, { width: table.descWidth });
+          doc.rect(margin, y, contentWidth, rowHeight).fill(fillColor);
 
-        doc.font("Helvetica").fontSize(9)
-          .text(line.description || "", table.col1, y + 26, { width: table.descWidth });
+          doc
+            .strokeColor(colors.border)
+            .lineWidth(0.6)
+            .moveTo(margin, y + rowHeight)
+            .lineTo(margin + contentWidth, y + rowHeight)
+            .stroke();
 
-        doc.font("Helvetica").fontSize(9)
-          .text(line.quantity, table.col2, y + 18, { width: table.qtyWidth, align: "center" })
-          .text(formatCurrencyCLP(line.unitPrice), table.col3, y + 18, { width: table.priceWidth, align: "right" })
-          .text(formatCurrencyCLP(line.subtotal), table.col4, y + 18, {
-            width: table.subtotalWidth,
-            align: "right",
-          });
+          doc
+            .fillColor(colors.text)
+            .font("Helvetica-Bold")
+            .fontSize(10)
+            .text(line.name, table.col1, y + 10, {
+              width: table.descWidth - 10,
+            });
 
-        y += rowHeight;
-      });
+          if (line.description) {
+            doc
+              .fillColor(colors.muted)
+              .font("Helvetica")
+              .fontSize(8.5)
+              .text(line.description, table.col1, y + 28, {
+                width: table.descWidth - 10,
+              });
+          }
 
-      y += 20;
+          doc
+            .fillColor(colors.text)
+            .font("Helvetica")
+            .fontSize(9.5)
+            .text(String(line.quantity), table.col2, y + 18, {
+              width: table.qtyWidth,
+              align: "center",
+            })
+            .text(formatCurrencyCLP(line.unitPrice), table.col3, y + 18, {
+              width: table.priceWidth - 4,
+              align: "right",
+            })
+            .text(formatCurrencyCLP(line.subtotal), table.col4, y + 18, {
+              width: table.subtotalWidth - 6,
+              align: "right",
+            });
 
-      // Totales
-      doc.roundedRect(margin, y, contentWidth, 110, 12).fill(colors.lighter);
+          y += rowHeight;
+        });
+      }
+
+      y += 18;
+
+      const notesHeight = 120;
+      const totalsHeight = 120;
+      const footerHeight = 34;
+
+      const blockSpace = ensureSpace(y, notesHeight + totalsHeight + footerHeight + 30);
+      y = blockSpace.y;
+
+      doc
+        .roundedRect(margin, y, contentWidth, notesHeight, 12)
+        .fillAndStroke(colors.white, colors.border);
+
+      doc
+        .fillColor(colors.text)
+        .font("Helvetica-Bold")
+        .fontSize(11)
+        .text("Notas", margin + 16, y + 14);
+
+      doc
+        .fillColor(colors.muted)
+        .font("Helvetica")
+        .fontSize(9.5)
+        .text(
+          customerNotes !== "-"
+            ? customerNotes
+            : "Gracias por cotizar con Automatiza Fácil. Esta propuesta puede ajustarse según tus necesidades.",
+          margin + 16,
+          y + 38,
+          {
+            width: contentWidth - 32,
+            height: notesHeight - 48,
+          }
+        );
+
+      y += notesHeight + 16;
+
+      doc
+        .roundedRect(margin, y, contentWidth, totalsHeight, 12)
+        .fillAndStroke(colors.lighter, colors.border);
 
       const labelX = margin + 16;
       const valueWidth = 100;
       const valueX = margin + contentWidth - valueWidth - 16;
 
-      doc.fontSize(10).fillColor(colors.text)
+      doc
+        .fillColor(colors.text)
+        .font("Helvetica")
+        .fontSize(10)
         .text("Subtotal", labelX, y + 18)
-        .text(formatCurrencyCLP(quote.total), valueX, y + 18, { width: valueWidth, align: "right" });
+        .text(formatCurrencyCLP(quote.total), valueX, y + 18, {
+          width: valueWidth,
+          align: "right",
+        });
 
-      doc.text("Descuento", labelX, y + 40)
-        .text("$0", valueX, y + 40, { width: valueWidth, align: "right" });
+      doc
+        .text("Descuento", labelX, y + 40)
+        .text("$0", valueX, y + 40, {
+          width: valueWidth,
+          align: "right",
+        });
 
-      doc.font("Helvetica-Bold").fontSize(12)
-        .text("Total", labelX, y + 70)
+      doc
+        .font("Helvetica-Bold")
+        .fontSize(12)
+        .text("Total", labelX, y + 72)
         .fontSize(13)
-        .text(formatCurrencyCLP(quote.total), valueX, y + 68, { width: valueWidth, align: "right" });
+        .text(formatCurrencyCLP(quote.total), valueX, y + 70, {
+          width: valueWidth,
+          align: "right",
+        });
+
+      y += totalsHeight + 24;
+
+      doc
+        .strokeColor(colors.border)
+        .lineWidth(1)
+        .moveTo(margin, y)
+        .lineTo(margin + contentWidth, y)
+        .stroke();
+
+      doc
+        .fillColor(colors.muted)
+        .font("Helvetica")
+        .fontSize(8.5)
+        .text(
+          "Automatiza Fácil · Santiago, Chile · Documento generado automáticamente",
+          margin,
+          y + 10,
+          {
+            width: contentWidth,
+            align: "center",
+          }
+        );
 
       doc.end();
 
       stream.on("finish", () => resolve({ fileName, filePath }));
       stream.on("error", reject);
-
-    } catch (err) {
-      reject(err);
+    } catch (error) {
+      reject(error);
     }
   });
 }
