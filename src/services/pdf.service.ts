@@ -38,7 +38,7 @@ export function generateQuotePdf(
       const contentWidth = pageWidth - margin * 2;
 
       const colors = {
-        primary: "#d1d1d1",
+        primary: "#EEF4FF",
         primaryDark: "#366AFF",
         text: "#111827",
         muted: "#6B7280",
@@ -76,30 +76,56 @@ export function generateQuotePdf(
         doc.save();
         doc.rect(0, 0, pageWidth, 92).fill(colors.primary);
 
+        const avatarSize = 48;
+        const avatarX = margin;
+        const avatarY = 22;
+        const avatarCenterX = avatarX + avatarSize / 2;
+        const avatarCenterY = avatarY + avatarSize / 2;
+        const avatarRadius = avatarSize / 2;
+
         try {
           if (fs.existsSync(logoPath)) {
-            doc.image(logoPath, margin, 18, {
-              fit: [84, 48],
-              align: "left",
+            doc.save();
+            doc.circle(avatarCenterX, avatarCenterY, avatarRadius).clip();
+            doc.image(logoPath, avatarX, avatarY, {
+              fit: [avatarSize, avatarSize],
+              align: "center",
               valign: "center",
             });
+            doc.restore();
           } else {
             doc
               .fillColor(colors.white)
+              .circle(avatarCenterX, avatarCenterY, avatarRadius)
+              .fill();
+
+            doc
+              .fillColor(colors.primaryDark)
               .font("Helvetica-Bold")
-              .fontSize(24)
-              .text("AF", margin, 28);
+              .fontSize(18)
+              .text("AF", avatarX, avatarY + 14, {
+                width: avatarSize,
+                align: "center",
+              });
           }
         } catch {
           doc
             .fillColor(colors.white)
+            .circle(avatarCenterX, avatarCenterY, avatarRadius)
+            .fill();
+
+          doc
+            .fillColor(colors.primaryDark)
             .font("Helvetica-Bold")
-            .fontSize(24)
-            .text("AF", margin, 28);
+            .fontSize(18)
+            .text("AF", avatarX, avatarY + 14, {
+              width: avatarSize,
+              align: "center",
+            });
         }
 
         doc
-          .fillColor(colors.white)
+          .fillColor(colors.text)
           .font("Helvetica-Bold")
           .fontSize(22)
           .text("Cotización", pageWidth - 160, 24, {
@@ -110,7 +136,7 @@ export function generateQuotePdf(
         doc
           .font("Helvetica")
           .fontSize(10)
-          .fillColor(colors.white)
+          .fillColor(colors.text)
           .text("Automatiza Fácil", pageWidth - 160, 54, {
             width: 138,
             align: "right",
