@@ -35,8 +35,8 @@ export function generateQuotePdf(record: RuntimeLinkRecord, submitBody: SubmitBo
       const contentWidth = pageWidth - margin * 2;
 
       const colors = {
-        primary: "#2563EB",
-        primaryDark: "#1D4ED8",
+        primary: "#cccccc",
+        primaryDark: "#366AFF",
         text: "#111827",
         muted: "#6B7280",
         border: "#D1D5DB",
