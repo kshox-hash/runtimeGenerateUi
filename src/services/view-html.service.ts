@@ -23,13 +23,13 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     :root {
       --bg: #f3f4f6;
       --panel: #ffffff;
-      --panel-soft: #fafafa;
+      --panel-soft: #fcfcfd;
       --text: #0f172a;
       --muted: #667085;
-      --border: #dfe3ea;
+      --border: #dde3ea;
       --primary: #0f172a;
       --primary-strong: #020617;
-      --shadow: 0 14px 40px rgba(15, 23, 42, 0.10);
+      --shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
       --radius-xl: 24px;
       --radius-lg: 18px;
       --radius-md: 14px;
@@ -39,8 +39,12 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       box-sizing: border-box;
     }
 
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+    }
+
+    body {
       font-family: Inter, Arial, Helvetica, sans-serif;
       background: var(--bg);
       color: var(--text);
@@ -50,23 +54,23 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
     .page {
       min-height: 100vh;
-      padding: 40px 20px 56px;
+      padding: 34px 18px 48px;
     }
 
     .shell {
-      max-width: 1000px;
+      max-width: 980px;
       margin: 0 auto;
     }
 
     .hero {
       text-align: center;
-      margin-bottom: 26px;
+      margin-bottom: 22px;
     }
 
     .brand-row {
       display: inline-flex;
       align-items: center;
-      gap: 18px;
+      gap: 16px;
       color: #6b7280;
       font-size: 16px;
       font-weight: 600;
@@ -74,23 +78,23 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .brand-line {
-      width: 68px;
+      width: 64px;
       height: 1px;
       background: #b8c0cc;
     }
 
     h1 {
       margin: 0;
-      font-size: 56px;
-      line-height: 1.05;
+      font-size: 50px;
+      line-height: 1.04;
       letter-spacing: -0.03em;
       color: var(--primary);
     }
 
     .hero-subtitle {
-      margin: 14px auto 0;
+      margin: 12px auto 0;
       max-width: 760px;
-      font-size: 17px;
+      font-size: 18px;
       line-height: 1.5;
       color: var(--muted);
     }
@@ -100,7 +104,11 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       border: 1px solid rgba(15, 23, 42, 0.05);
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow);
-      padding: 28px;
+      padding: 26px;
+    }
+
+    .content-flow > * + * {
+      margin-top: 20px;
     }
 
     .message {
@@ -108,7 +116,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       margin-top: 18px;
       padding: 14px 16px;
       border-radius: 14px;
-      font-size: 14px;
+      font-size: 15px;
       white-space: pre-wrap;
       word-break: break-word;
     }
@@ -127,20 +135,16 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       border: 1px solid #fecaca;
     }
 
-    .content-flow > * + * {
-      margin-top: 22px;
-    }
-
     .text-block {
-      font-size: 16px;
-      line-height: 1.6;
+      font-size: 17px;
+      line-height: 1.65;
       color: #334155;
     }
 
     .section {
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 20px;
+      border-radius: 20px;
+      padding: 18px;
       background: #fff;
     }
 
@@ -148,13 +152,13 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .section-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
       background: #f3f4f6;
       display: inline-flex;
       align-items: center;
@@ -164,39 +168,40 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .section-title {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 800;
       color: var(--primary);
+      line-height: 1.1;
     }
 
     .section-subtitle {
-      margin: 6px 0 0 48px;
+      margin: 6px 0 0 50px;
       color: var(--muted);
-      font-size: 14px;
+      font-size: 15px;
       line-height: 1.5;
     }
 
     .products-list {
       margin-top: 18px;
       display: grid;
-      gap: 14px;
+      gap: 12px;
     }
 
     .product-row {
       display: grid;
-      grid-template-columns: 120px minmax(0, 1fr) 184px;
-      gap: 18px;
+      grid-template-columns: 74px minmax(0, 1fr) 154px;
+      gap: 14px;
       align-items: center;
       border: 1px solid var(--border);
       border-radius: 18px;
-      padding: 18px;
+      padding: 14px;
       background: var(--panel-soft);
     }
 
     .product-media {
-      width: 120px;
-      height: 120px;
-      border-radius: 16px;
+      width: 74px;
+      height: 74px;
+      border-radius: 14px;
       border: 1px solid var(--border);
       background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
       display: flex;
@@ -213,46 +218,57 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .product-placeholder {
-      font-size: 42px;
+      font-size: 24px;
       color: #94a3b8;
     }
 
     .product-info {
       min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .product-name {
-      margin: 0 0 8px;
-      font-size: 20px;
+      margin: 0;
+      font-size: 18px;
       font-weight: 800;
       color: var(--primary);
+      line-height: 1.2;
       word-break: break-word;
     }
 
     .product-price {
-      font-size: 18px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 800;
       color: #111827;
-      margin-bottom: 8px;
+      line-height: 1.1;
     }
 
     .product-description {
       margin: 0;
-      font-size: 14px;
+      font-size: 15px;
       line-height: 1.5;
       color: var(--muted);
       word-break: break-word;
     }
 
-    .qty-box {
+    .qty-col {
       justify-self: end;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      width: 100%;
+    }
+
+    .qty-box {
       display: inline-grid;
-      grid-template-columns: 54px 68px 54px;
+      grid-template-columns: 44px 58px 44px;
       border: 1px solid #cfd6df;
       border-radius: 14px;
       overflow: hidden;
       background: #fff;
-      align-self: center;
+      min-width: 146px;
     }
 
     .qty-btn {
@@ -260,9 +276,9 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       border: none;
       background: #fff;
       color: var(--primary);
-      font-size: 28px;
+      font-size: 24px;
       line-height: 1;
-      height: 56px;
+      height: 44px;
       cursor: pointer;
     }
 
@@ -276,8 +292,8 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
-      font-weight: 700;
+      font-size: 21px;
+      font-weight: 800;
       color: var(--primary);
       background: #fff;
     }
@@ -287,10 +303,10 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .total-card {
-      margin-top: 12px;
+      margin-top: 14px;
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px 20px;
+      border-radius: 18px;
+      padding: 16px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -317,38 +333,41 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       flex-shrink: 0;
     }
 
+    .total-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 3px;
+      line-height: 1.1;
+    }
+
     .total-label {
       font-size: 15px;
       color: var(--muted);
-    }
-
-    .total-title {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--primary);
-      margin-bottom: 4px;
+      line-height: 1.45;
     }
 
     .total-value {
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 900;
       color: var(--primary);
       letter-spacing: -0.02em;
       text-align: right;
       white-space: nowrap;
+      line-height: 1;
     }
 
     .form-grid {
       margin-top: 18px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 18px;
+      gap: 16px;
     }
 
     .field {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 9px;
       min-width: 0;
     }
 
@@ -357,9 +376,10 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .label {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--primary);
+      line-height: 1.2;
     }
 
     .input-wrap {
@@ -372,7 +392,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       width: 100%;
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 16px 16px;
+      padding: 15px 15px;
       font-size: 15px;
       color: var(--text);
       background: #fff;
@@ -391,7 +411,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     textarea {
-      min-height: 120px;
+      min-height: 118px;
       resize: vertical;
     }
 
@@ -401,7 +421,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       border-radius: 18px;
       background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
       color: #fff;
-      padding: 18px 22px;
+      padding: 17px 22px;
       font-size: 18px;
       font-weight: 800;
       cursor: pointer;
@@ -428,58 +448,72 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
         font-size: 42px;
       }
 
-      .product-row {
-        grid-template-columns: 100px minmax(0, 1fr);
-        align-items: start;
+      .hero-subtitle {
+        font-size: 17px;
       }
 
-      .qty-box {
-        justify-self: start;
-        grid-column: 2;
-        grid-row: 2;
-        margin-top: 8px;
+      .product-row {
+        grid-template-columns: 68px minmax(0, 1fr) 146px;
+        gap: 12px;
       }
 
       .product-media {
-        width: 100px;
-        height: 100px;
+        width: 68px;
+        height: 68px;
+      }
+
+      .product-name {
+        font-size: 17px;
+      }
+
+      .product-price {
+        font-size: 15px;
+      }
+
+      .product-description {
+        font-size: 14px;
       }
     }
 
     @media (max-width: 640px) {
       .page {
-        padding: 24px 14px 40px;
+        padding: 22px 12px 36px;
       }
 
       .card {
-        padding: 18px;
+        padding: 16px;
         border-radius: 20px;
       }
 
       h1 {
-        font-size: 34px;
+        font-size: 32px;
       }
 
       .hero-subtitle {
-        font-size: 15px;
+        font-size: 16px;
       }
 
       .brand-row {
-        gap: 12px;
+        gap: 10px;
         font-size: 14px;
       }
 
       .brand-line {
-        width: 42px;
+        width: 36px;
       }
 
       .section {
-        padding: 16px;
+        padding: 15px;
+      }
+
+      .section-title {
+        font-size: 18px;
       }
 
       .section-subtitle {
         margin-left: 0;
         margin-top: 10px;
+        font-size: 14px;
       }
 
       .form-grid {
@@ -487,73 +521,73 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       }
 
       .product-row {
-        grid-template-columns: 72px minmax(0, 1fr);
+        grid-template-columns: 60px minmax(0, 1fr);
         gap: 12px;
+        padding: 13px;
         align-items: start;
-        padding: 14px;
       }
 
       .product-media {
-        width: 72px;
-        height: 72px;
+        width: 60px;
+        height: 60px;
         border-radius: 12px;
       }
 
       .product-placeholder {
-        font-size: 26px;
+        font-size: 20px;
       }
 
       .product-name {
         font-size: 17px;
-        margin-bottom: 6px;
       }
 
       .product-price {
         font-size: 15px;
-        margin-bottom: 6px;
       }
 
       .product-description {
-        font-size: 13px;
+        font-size: 14px;
+      }
+
+      .qty-col {
+        grid-column: 2;
+        justify-self: start;
+        margin-top: 2px;
       }
 
       .qty-box {
-        justify-self: start;
-        grid-column: 2;
-        grid-row: 2;
-        margin-top: 10px;
-        width: 150px;
-        grid-template-columns: 44px 62px 44px;
+        grid-template-columns: 42px 56px 42px;
+        min-width: 140px;
       }
 
       .qty-btn {
-        height: 44px;
+        height: 42px;
         font-size: 22px;
       }
 
       .qty-value {
-        font-size: 18px;
+        font-size: 19px;
       }
 
       .total-card {
-        align-items: flex-start;
         flex-direction: column;
+        align-items: flex-start;
       }
 
       .total-value {
-        font-size: 22px;
+        font-size: 24px;
         text-align: left;
       }
 
       input,
       textarea {
         padding: 14px 14px;
-        font-size: 14px;
+        font-size: 15px;
       }
 
       .submit-btn {
         padding: 16px 18px;
-        font-size: 16px;
+        font-size: 17px;
       }
     }
   </style>
@@ -688,11 +722,15 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
         const description = document.createElement("p");
         description.className = "product-description";
-        description.textContent = item.description || "Descripción opcional del producto.";
+        description.textContent =
+          item.description || "Descripción opcional del producto.";
 
         info.appendChild(name);
         info.appendChild(price);
         info.appendChild(description);
+
+        const qtyCol = document.createElement("div");
+        qtyCol.className = "qty-col";
 
         const qtyBox = document.createElement("div");
         qtyBox.className = "qty-box";
@@ -739,10 +777,11 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
         qtyBox.appendChild(valueEl);
         qtyBox.appendChild(plusBtn);
         qtyBox.appendChild(hiddenInput);
+        qtyCol.appendChild(qtyBox);
 
         row.appendChild(media);
         row.appendChild(info);
-        row.appendChild(qtyBox);
+        row.appendChild(qtyCol);
 
         list.appendChild(row);
       });
@@ -801,6 +840,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       component.fields.forEach((field) => {
         const fieldWrap = document.createElement("div");
         fieldWrap.className = "field";
+
         if (field.inputType === "textarea") {
           fieldWrap.classList.add("full");
         }
@@ -824,6 +864,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
         input.name = field.name;
         input.dataset.kind = "form-field";
         input.placeholder = field.placeholder || "";
+
         if (field.required) {
           input.required = true;
         }
