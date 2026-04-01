@@ -73,50 +73,102 @@ export function generateQuotePdf(
       const issueDate = new Date().toLocaleDateString("es-CL");
 
       function drawHeader() {
+        const headerHeight = 108;
+        const avatarSize = 54;
+        const avatarX = margin;
+        const avatarY = 24;
+        const circleX = avatarX + avatarSize / 2;
+        const circleY = avatarY + avatarSize / 2;
+        const radius = avatarSize / 2;
+
+        // Fondo blanco
+        doc.rect(0, 0, pageWidth, headerHeight).fill(colors.white);
+
+        // Línea inferior
+        doc
+          .strokeColor(colors.border)
+          .lineWidth(1)
+          .moveTo(0, headerHeight)
+          .lineTo(pageWidth, headerHeight)
+          .stroke();
+
+        // Fondo del avatar
+        doc
+          .fillColor("#F3F4F6")
+          .circle(circleX, circleY, radius)
+          .fill();
+
+        // Imagen circular
         doc.save();
-        doc.rect(0, 0, pageWidth, 92).fill(colors.primary);
+        doc.circle(circleX, circleY, radius).clip();
 
         try {
           if (fs.existsSync(logoPath)) {
-            doc.image(logoPath, margin, 18, {
-              fit: [84, 48],
-              align: "left",
+            doc.image(logoPath, avatarX, avatarY, {
+              fit: [avatarSize, avatarSize],
+              align: "center",
               valign: "center",
             });
           } else {
             doc
-              .fillColor(colors.white)
+              .fillColor("#E5E7EB")
+              .rect(avatarX, avatarY, avatarSize, avatarSize)
+              .fill();
+
+            doc
+              .fillColor(colors.primaryDark)
               .font("Helvetica-Bold")
-              .fontSize(24)
-              .text("AF", margin, 28);
+              .fontSize(22)
+              .text("AF", avatarX, avatarY + 14, {
+                width: avatarSize,
+                align: "center",
+              });
           }
         } catch {
           doc
-            .fillColor(colors.white)
+            .fillColor("#E5E7EB")
+            .rect(avatarX, avatarY, avatarSize, avatarSize)
+            .fill();
+
+          doc
+            .fillColor(colors.primaryDark)
             .font("Helvetica-Bold")
-            .fontSize(24)
-            .text("AF", margin, 28);
+            .fontSize(22)
+            .text("AF", avatarX, avatarY + 14, {
+              width: avatarSize,
+              align: "center",
+            });
         }
 
+        doc.restore();
+
+        // Borde del avatar
         doc
-          .fillColor(colors.white)
+          .lineWidth(1)
+          .strokeColor(colors.border)
+          .circle(circleX, circleY, radius)
+          .stroke();
+
+        // Título a la derecha
+        const titleX = pageWidth - 200;
+
+        doc
+          .fillColor(colors.text)
           .font("Helvetica-Bold")
-          .fontSize(22)
-          .text("Cotización", pageWidth - 160, 24, {
-            width: 138,
+          .fontSize(24)
+          .text("Cotización", titleX, 30, {
+            width: 170,
             align: "right",
           });
 
         doc
+          .fillColor(colors.muted)
           .font("Helvetica")
           .fontSize(10)
-          .fillColor(colors.white)
-          .text("Automatiza Fácil", pageWidth - 160, 54, {
-            width: 138,
+          .text("Automatiza Fácil", titleX, 60, {
+            width: 170,
             align: "right",
           });
-
-        doc.restore();
       }
 
       function drawIssuerAndDetail(startY: number) {
@@ -258,7 +310,7 @@ export function generateQuotePdf(
         doc.addPage();
         drawHeader();
 
-        let newY = 34;
+        let newY = 126;
 
         if (drawTableOnNewPage) {
           const table = drawTableHeader(newY);
@@ -270,7 +322,7 @@ export function generateQuotePdf(
 
       drawHeader();
 
-      let y = 110;
+      let y = 126;
 
       y = drawIssuerAndDetail(y);
       y = drawCustomerBox(y);
