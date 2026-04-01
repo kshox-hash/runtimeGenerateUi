@@ -23,12 +23,11 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     :root {
       --bg: #f3f4f6;
       --panel: #ffffff;
-      --panel-soft: #fcfcfd;
+      --panel-soft: #fbfbfc;
       --text: #0f172a;
       --muted: #667085;
       --border: #dde3ea;
       --primary: #0f172a;
-      --primary-strong: #020617;
       --shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
       --radius-xl: 24px;
       --radius-lg: 18px;
@@ -39,7 +38,8 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       box-sizing: border-box;
     }
 
-    html, body {
+    html,
+    body {
       margin: 0;
       padding: 0;
     }
@@ -54,48 +54,48 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
     .page {
       min-height: 100vh;
-      padding: 34px 18px 48px;
+      padding: 28px 14px 40px;
     }
 
     .shell {
-      max-width: 980px;
+      max-width: 940px;
       margin: 0 auto;
     }
 
     .hero {
       text-align: center;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
     }
 
     .brand-row {
       display: inline-flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       color: #6b7280;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       margin-bottom: 10px;
     }
 
     .brand-line {
-      width: 64px;
+      width: 52px;
       height: 1px;
       background: #b8c0cc;
     }
 
     h1 {
       margin: 0;
-      font-size: 50px;
+      font-size: 44px;
       line-height: 1.04;
       letter-spacing: -0.03em;
       color: var(--primary);
     }
 
     .hero-subtitle {
-      margin: 12px auto 0;
-      max-width: 760px;
-      font-size: 18px;
-      line-height: 1.5;
+      margin: 10px auto 0;
+      max-width: 720px;
+      font-size: 17px;
+      line-height: 1.45;
       color: var(--muted);
     }
 
@@ -104,11 +104,11 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       border: 1px solid rgba(15, 23, 42, 0.05);
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow);
-      padding: 26px;
+      padding: 22px;
     }
 
     .content-flow > * + * {
-      margin-top: 20px;
+      margin-top: 18px;
     }
 
     .message {
@@ -136,34 +136,34 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .text-block {
-      font-size: 17px;
-      line-height: 1.65;
+      font-size: 16px;
+      line-height: 1.6;
       color: #334155;
     }
 
     .section {
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 18px;
+      border-radius: 18px;
+      padding: 16px;
       background: #fff;
     }
 
     .section-header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 6px;
+      gap: 10px;
+      margin-bottom: 4px;
     }
 
     .section-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
       background: #f3f4f6;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 16px;
       flex-shrink: 0;
     }
 
@@ -175,58 +175,41 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .section-subtitle {
-      margin: 6px 0 0 50px;
+      margin: 6px 0 0 44px;
       color: var(--muted);
       font-size: 15px;
-      line-height: 1.5;
+      line-height: 1.45;
     }
 
     .products-list {
-      margin-top: 18px;
+      margin-top: 16px;
       display: grid;
-      gap: 12px;
+      gap: 10px;
     }
 
     .product-row {
       display: grid;
-      grid-template-columns: 74px minmax(0, 1fr) 154px;
+      grid-template-columns: minmax(0, 1fr) 140px;
       gap: 14px;
       align-items: center;
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 14px;
+      border-radius: 16px;
+      padding: 12px 14px;
       background: var(--panel-soft);
-    }
-
-    .product-media {
-      width: 74px;
-      height: 74px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .product-media img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .product-placeholder {
-      font-size: 24px;
-      color: #94a3b8;
     }
 
     .product-info {
       min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
+    }
+
+    .product-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
     }
 
     .product-name {
@@ -243,12 +226,14 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       font-weight: 800;
       color: #111827;
       line-height: 1.1;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .product-description {
       margin: 0;
-      font-size: 15px;
-      line-height: 1.5;
+      font-size: 14px;
+      line-height: 1.45;
       color: var(--muted);
       word-break: break-word;
     }
@@ -263,12 +248,12 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
     .qty-box {
       display: inline-grid;
-      grid-template-columns: 44px 58px 44px;
+      grid-template-columns: 40px 52px 40px;
       border: 1px solid #cfd6df;
-      border-radius: 14px;
+      border-radius: 12px;
       overflow: hidden;
       background: #fff;
-      min-width: 146px;
+      min-width: 132px;
     }
 
     .qty-btn {
@@ -276,9 +261,9 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       border: none;
       background: #fff;
       color: var(--primary);
-      font-size: 24px;
+      font-size: 22px;
       line-height: 1;
-      height: 44px;
+      height: 40px;
       cursor: pointer;
     }
 
@@ -292,7 +277,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 21px;
+      font-size: 18px;
       font-weight: 800;
       color: var(--primary);
       background: #fff;
@@ -303,52 +288,52 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .total-card {
-      margin-top: 14px;
+      margin-top: 12px;
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px 18px;
+      border-radius: 16px;
+      padding: 14px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       background: #fff;
-      gap: 16px;
+      gap: 14px;
     }
 
     .total-label-wrap {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       min-width: 0;
     }
 
     .total-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
       background: #f3f4f6;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 16px;
       flex-shrink: 0;
     }
 
     .total-title {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 800;
       color: var(--primary);
-      margin-bottom: 3px;
+      margin-bottom: 2px;
       line-height: 1.1;
     }
 
     .total-label {
-      font-size: 15px;
+      font-size: 14px;
       color: var(--muted);
-      line-height: 1.45;
+      line-height: 1.4;
     }
 
     .total-value {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 900;
       color: var(--primary);
       letter-spacing: -0.02em;
@@ -358,16 +343,16 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .form-grid {
-      margin-top: 18px;
+      margin-top: 16px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 14px;
     }
 
     .field {
       display: flex;
       flex-direction: column;
-      gap: 9px;
+      gap: 8px;
       min-width: 0;
     }
 
@@ -392,7 +377,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       width: 100%;
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 15px 15px;
+      padding: 14px 14px;
       font-size: 15px;
       color: var(--text);
       background: #fff;
@@ -411,18 +396,18 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     textarea {
-      min-height: 118px;
+      min-height: 112px;
       resize: vertical;
     }
 
     .submit-btn {
       width: 100%;
       border: none;
-      border-radius: 18px;
+      border-radius: 16px;
       background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
       color: #fff;
-      padding: 17px 22px;
-      font-size: 18px;
+      padding: 16px 20px;
+      font-size: 17px;
       font-weight: 800;
       cursor: pointer;
       box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16);
@@ -445,21 +430,15 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
     @media (max-width: 860px) {
       h1 {
-        font-size: 42px;
+        font-size: 38px;
       }
 
       .hero-subtitle {
-        font-size: 17px;
+        font-size: 16px;
       }
 
       .product-row {
-        grid-template-columns: 68px minmax(0, 1fr) 146px;
-        gap: 12px;
-      }
-
-      .product-media {
-        width: 68px;
-        height: 68px;
+        grid-template-columns: minmax(0, 1fr) 132px;
       }
 
       .product-name {
@@ -469,41 +448,37 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       .product-price {
         font-size: 15px;
       }
-
-      .product-description {
-        font-size: 14px;
-      }
     }
 
     @media (max-width: 640px) {
       .page {
-        padding: 22px 12px 36px;
+        padding: 20px 10px 34px;
       }
 
       .card {
-        padding: 16px;
-        border-radius: 20px;
+        padding: 14px;
+        border-radius: 18px;
       }
 
       h1 {
-        font-size: 32px;
+        font-size: 31px;
       }
 
       .hero-subtitle {
-        font-size: 16px;
+        font-size: 15px;
       }
 
       .brand-row {
-        gap: 10px;
-        font-size: 14px;
+        gap: 8px;
+        font-size: 13px;
       }
 
       .brand-line {
-        width: 36px;
+        width: 28px;
       }
 
       .section {
-        padding: 15px;
+        padding: 14px;
       }
 
       .section-title {
@@ -512,7 +487,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
       .section-subtitle {
         margin-left: 0;
-        margin-top: 10px;
+        margin-top: 8px;
         font-size: 14px;
       }
 
@@ -521,20 +496,15 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       }
 
       .product-row {
-        grid-template-columns: 60px minmax(0, 1fr);
-        gap: 12px;
-        padding: 13px;
-        align-items: start;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 12px;
       }
 
-      .product-media {
-        width: 60px;
-        height: 60px;
-        border-radius: 12px;
-      }
-
-      .product-placeholder {
-        font-size: 20px;
+      .product-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
       }
 
       .product-name {
@@ -550,23 +520,21 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       }
 
       .qty-col {
-        grid-column: 2;
         justify-self: start;
-        margin-top: 2px;
       }
 
       .qty-box {
-        grid-template-columns: 42px 56px 42px;
-        min-width: 140px;
+        grid-template-columns: 40px 52px 40px;
+        min-width: 132px;
       }
 
       .qty-btn {
-        height: 42px;
-        font-size: 22px;
+        height: 40px;
+        font-size: 21px;
       }
 
       .qty-value {
-        font-size: 19px;
+        font-size: 18px;
       }
 
       .total-card {
@@ -581,13 +549,11 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
       input,
       textarea {
-        padding: 14px 14px;
         font-size: 15px;
       }
 
       .submit-btn {
-        padding: 16px 18px;
-        font-size: 17px;
+        font-size: 16px;
       }
     }
   </style>
@@ -694,23 +660,11 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
         const row = document.createElement("div");
         row.className = "product-row";
 
-        const media = document.createElement("div");
-        media.className = "product-media";
-
-        if (item.imageUrl) {
-          const img = document.createElement("img");
-          img.src = item.imageUrl;
-          img.alt = item.name;
-          media.appendChild(img);
-        } else {
-          const placeholder = document.createElement("div");
-          placeholder.className = "product-placeholder";
-          placeholder.textContent = "⬛";
-          media.appendChild(placeholder);
-        }
-
         const info = document.createElement("div");
         info.className = "product-info";
+
+        const top = document.createElement("div");
+        top.className = "product-top";
 
         const name = document.createElement("h3");
         name.className = "product-name";
@@ -720,13 +674,15 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
         price.className = "product-price";
         price.textContent = formatCurrency(Number(item.price));
 
+        top.appendChild(name);
+        top.appendChild(price);
+
         const description = document.createElement("p");
         description.className = "product-description";
         description.textContent =
           item.description || "Descripción opcional del producto.";
 
-        info.appendChild(name);
-        info.appendChild(price);
+        info.appendChild(top);
         info.appendChild(description);
 
         const qtyCol = document.createElement("div");
@@ -779,7 +735,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
         qtyBox.appendChild(hiddenInput);
         qtyCol.appendChild(qtyBox);
 
-        row.appendChild(media);
         row.appendChild(info);
         row.appendChild(qtyCol);
 
