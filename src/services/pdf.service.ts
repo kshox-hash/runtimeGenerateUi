@@ -47,7 +47,7 @@ export function generateQuotePdf(
         white: "#FFFFFF",
       };
 
-      const logoPath = path.join(__dirname, "..", "assets", "logo.png");
+      const logoPath = path.join(process.cwd(), "assets", "logo.png");
 
       const customerName =
         typeof quote.customer.name === "string" && quote.customer.name.trim()
