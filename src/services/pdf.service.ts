@@ -12,7 +12,10 @@ if (!fs.existsSync(GENERATED_PDFS_DIR)) {
   fs.mkdirSync(GENERATED_PDFS_DIR, { recursive: true });
 }
 
-export function generateQuotePdf(record: RuntimeLinkRecord, submitBody: SubmitBody) {
+export function generateQuotePdf(
+  record: RuntimeLinkRecord,
+  submitBody: SubmitBody
+) {
   return new Promise<{ fileName: string; filePath: string }>((resolve, reject) => {
     try {
       const quote = buildQuoteDetail(record, submitBody);
@@ -21,10 +24,9 @@ export function generateQuotePdf(record: RuntimeLinkRecord, submitBody: SubmitBo
       const fileName = `cotizacion_${safeToken}_${timestamp}.pdf`;
       const filePath = path.join(GENERATED_PDFS_DIR, fileName);
 
-      // PDF más angosto para que se vea mejor en celular
       const doc = new PDFDocument({
-        margin: 20,
-        size: [420, 900],
+        margin: 22,
+        size: [430, 950],
       });
 
       const stream = fs.createWriteStream(filePath);
@@ -32,11 +34,11 @@ export function generateQuotePdf(record: RuntimeLinkRecord, submitBody: SubmitBo
 
       const pageWidth = doc.page.width;
       const pageHeight = doc.page.height;
-      const margin = 20;
+      const margin = 22;
       const contentWidth = pageWidth - margin * 2;
 
       const colors = {
-        primary: "#cccccc",
+        primary: "#d1d1d1",
         primaryDark: "#366AFF",
         text: "#111827",
         muted: "#6B7280",
@@ -70,14 +72,14 @@ export function generateQuotePdf(record: RuntimeLinkRecord, submitBody: SubmitBo
       const quoteNumber = `AF-${String(timestamp).slice(-6)}`;
       const issueDate = new Date().toLocaleDateString("es-CL");
 
-      const drawHeader = () => {
+      function drawHeader() {
         doc.save();
-        doc.rect(0, 0, pageWidth, 88).fill(colors.primary);
+        doc.rect(0, 0, pageWidth, 92).fill(colors.primary);
 
         try {
           if (fs.existsSync(logoPath)) {
             doc.image(logoPath, margin, 18, {
-              fit: [80, 44],
+              fit: [84, 48],
               align: "left",
               valign: "center",
             });
@@ -85,44 +87,48 @@ export function generateQuotePdf(record: RuntimeLinkRecord, submitBody: SubmitBo
             doc
               .fillColor(colors.white)
               .font("Helvetica-Bold")
-              .fontSize(22)
+              .fontSize(24)
               .text("AF", margin, 28);
           }
         } catch {
           doc
             .fillColor(colors.white)
             .font("Helvetica-Bold")
-            .fontSize(22)
+            .fontSize(24)
             .text("AF", margin, 28);
         }
 
         doc
           .fillColor(colors.white)
           .font("Helvetica-Bold")
-          .fontSize(20)
-          .text("Cotización", pageWidth - 150, 24, {
-            width: 130,
+          .fontSize(22)
+          .text("Cotización", pageWidth - 160, 24, {
+            width: 138,
             align: "right",
           });
 
         doc
+          .fillColor(colors.white)
           .font("Helvetica")
-          .fontSize(9)
-          .text("Automatiza Fácil", pageWidth - 150, 50, {
-            width: 130,
+          .fontSize(10)
+          .text("Automatiza Fácil", pageWidth - 160, 54, {
+            width: 138,
             align: "right",
           });
 
         doc.restore();
-      };
+      }
 
-      const drawTableHeader = (startY: number) => {
-        doc.fillColor(colors.primaryDark).roundedRect(margin, startY, contentWidth, 26, 6).fill();
+      function drawTableHeader(startY: number) {
+        doc
+          .fillColor(colors.primaryDark)
+          .roundedRect(margin, startY, contentWidth, 28, 6)
+          .fill();
 
-        const descWidth = contentWidth * 0.48;
-        const qtyWidth = contentWidth * 0.14;
+        const descWidth = contentWidth * 0.5;
+        const qtyWidth = contentWidth * 0.12;
         const priceWidth = contentWidth * 0.18;
-        const subtotalWidth = contentWidth * 0.20;
+        const subtotalWidth = contentWidth * 0.2;
 
         const col1 = margin + 10;
         const col2 = col1 + descWidth;
@@ -132,14 +138,25 @@ export function generateQuotePdf(record: RuntimeLinkRecord, submitBody: SubmitBo
         doc
           .fillColor(colors.white)
           .font("Helvetica-Bold")
-          .fontSize(8.5)
-          .text("Descripción", col1, startY + 8, { width: descWidth - 8 })
-          .text("Cant.", col2, startY + 8, { width: qtyWidth, align: "center" })
-          .text("Precio", col3, startY + 8, { width: priceWidth - 4, align: "right" })
-          .text("Subtotal", col4, startY + 8, { width: subtotalWidth - 10, align: "right" });
+          .fontSize(9)
+          .text("Descripción", col1, startY + 9, {
+            width: descWidth - 8,
+          })
+          .text("Cant.", col2, startY + 9, {
+            width: qtyWidth,
+            align: "center",
+          })
+          .text("Precio", col3, startY + 9, {
+            width: priceWidth - 4,
+            align: "right",
+          })
+          .text("Subtotal", col4, startY + 9, {
+            width: subtotalWidth - 8,
+            align: "right",
+          });
 
         return {
-          nextY: startY + 26,
+          nextY: startY + 28,
           col1,
           col2,
           col3,
@@ -149,107 +166,119 @@ export function generateQuotePdf(record: RuntimeLinkRecord, submitBody: SubmitBo
           priceWidth,
           subtotalWidth,
         };
-      };
+      }
 
       drawHeader();
 
-      let y = 104;
+      let y = 110;
 
-      // Caja emisor / detalle
-      doc.roundedRect(margin, y, contentWidth, 92, 10).fillAndStroke(colors.white, colors.border);
+      // Caja De / Detalle
+      doc
+        .roundedRect(margin, y, contentWidth, 104, 12)
+        .fillAndStroke(colors.white, colors.border);
 
       doc
         .fillColor(colors.text)
         .font("Helvetica-Bold")
-        .fontSize(11)
-        .text("De", margin + 14, y + 14);
+        .fontSize(12)
+        .text("De", margin + 16, y + 16);
 
       doc
         .font("Helvetica-Bold")
-        .fontSize(14)
-        .text("Automatiza Fácil", margin + 14, y + 30);
+        .fontSize(16)
+        .text("Automatiza Fácil", margin + 16, y + 36);
 
       doc
-        .font("Helvetica")
-        .fontSize(9)
         .fillColor(colors.muted)
-        .text("Automatización de procesos y soluciones digitales", margin + 14, y + 48, {
-          width: 180,
-        })
-        .text("Santiago, Chile", margin + 14, y + 68);
+        .font("Helvetica")
+        .fontSize(10)
+        .text(
+          "Automatización de procesos y soluciones digitales",
+          margin + 16,
+          y + 58,
+          { width: 190 }
+        )
+        .text("Santiago, Chile", margin + 16, y + 82);
 
       const rightX = margin + contentWidth - 150;
 
       doc
         .fillColor(colors.text)
         .font("Helvetica-Bold")
-        .fontSize(11)
-        .text("Detalle", rightX, y + 14, {
-          width: 136,
+        .fontSize(12)
+        .text("Detalle", rightX, y + 16, {
+          width: 134,
           align: "right",
         });
 
       doc
-        .font("Helvetica")
-        .fontSize(8.5)
         .fillColor(colors.muted)
-        .text(`N° cotización: ${quoteNumber}`, rightX, y + 34, {
-          width: 136,
+        .font("Helvetica")
+        .fontSize(9.5)
+        .text(`N° cotización: ${quoteNumber}`, rightX, y + 42, {
+          width: 134,
           align: "right",
         })
-        .text(`Fecha: ${issueDate}`, rightX, y + 48, {
-          width: 136,
+        .text(`Fecha: ${issueDate}`, rightX, y + 60, {
+          width: 134,
           align: "right",
         })
-        .text(`Referencia: ${record.token}`, rightX, y + 62, {
-          width: 136,
+        .text(`Referencia: ${record.token}`, rightX, y + 78, {
+          width: 134,
           align: "right",
         });
 
-      y += 108;
+      y += 122;
 
       // Caja cliente
-      doc.roundedRect(margin, y, contentWidth, 92, 10).fillAndStroke(colors.lighter, colors.border);
+      doc
+        .roundedRect(margin, y, contentWidth, 108, 12)
+        .fillAndStroke(colors.lighter, colors.border);
 
       doc
         .fillColor(colors.text)
         .font("Helvetica-Bold")
-        .fontSize(11)
-        .text("Cliente", margin + 14, y + 14);
+        .fontSize(12)
+        .text("Cliente", margin + 16, y + 16);
 
       doc
         .font("Helvetica")
-        .fontSize(9)
+        .fontSize(10.5)
         .fillColor(colors.text)
-        .text(`Nombre: ${customerName}`, margin + 14, y + 34, { width: contentWidth - 28 })
-        .text(`Correo: ${customerEmail}`, margin + 14, y + 50, { width: contentWidth - 28 })
-        .text(`Teléfono: ${customerPhone}`, margin + 14, y + 66, { width: contentWidth - 28 });
+        .text(`Nombre: ${customerName}`, margin + 16, y + 42, {
+          width: contentWidth - 32,
+        })
+        .text(`Correo: ${customerEmail}`, margin + 16, y + 62, {
+          width: contentWidth - 32,
+        })
+        .text(`Teléfono: ${customerPhone}`, margin + 16, y + 82, {
+          width: contentWidth - 32,
+        });
 
-      y += 108;
+      y += 124;
 
       // Tabla
       let table = drawTableHeader(y);
       y = table.nextY;
 
       if (quote.lines.length === 0) {
-        doc.rect(margin, y, contentWidth, 38).fill(colors.white);
+        doc.rect(margin, y, contentWidth, 42).fill(colors.white);
         doc
           .fillColor(colors.muted)
           .font("Helvetica")
-          .fontSize(9)
-          .text("No se seleccionaron productos.", margin + 12, y + 12);
+          .fontSize(10)
+          .text("No se seleccionaron productos.", margin + 12, y + 14);
 
-        y += 38;
+        y += 42;
       } else {
         quote.lines.forEach((line, index) => {
-          const rowHeight = line.description ? 54 : 34;
+          const rowHeight = line.description ? 62 : 40;
           const fillColor = index % 2 === 0 ? colors.white : colors.lighter;
 
-          if (y + rowHeight > pageHeight - 170) {
+          if (y + rowHeight > pageHeight - 210) {
             doc.addPage();
             drawHeader();
-            y = 40;
-
+            y = 34;
             table = drawTableHeader(y);
             y = table.nextY;
           }
@@ -266,35 +295,35 @@ export function generateQuotePdf(record: RuntimeLinkRecord, submitBody: SubmitBo
           doc
             .fillColor(colors.text)
             .font("Helvetica-Bold")
-            .fontSize(9)
-            .text(line.name, table.col1, y + 8, {
-              width: table.descWidth - 8,
+            .fontSize(10)
+            .text(line.name, table.col1, y + 10, {
+              width: table.descWidth - 10,
             });
 
           if (line.description) {
             doc
               .fillColor(colors.muted)
               .font("Helvetica")
-              .fontSize(7.5)
-              .text(line.description, table.col1, y + 22, {
-                width: table.descWidth - 8,
+              .fontSize(8.5)
+              .text(line.description, table.col1, y + 28, {
+                width: table.descWidth - 10,
               });
           }
 
           doc
             .fillColor(colors.text)
             .font("Helvetica")
-            .fontSize(8.5)
-            .text(String(line.quantity), table.col2, y + 14, {
+            .fontSize(9.5)
+            .text(String(line.quantity), table.col2, y + 18, {
               width: table.qtyWidth,
               align: "center",
             })
-            .text(formatCurrencyCLP(line.unitPrice), table.col3, y + 14, {
+            .text(formatCurrencyCLP(line.unitPrice), table.col3, y + 18, {
               width: table.priceWidth - 4,
               align: "right",
             })
-            .text(formatCurrencyCLP(line.subtotal), table.col4, y + 14, {
-              width: table.subtotalWidth - 10,
+            .text(formatCurrencyCLP(line.subtotal), table.col4, y + 18, {
+              width: table.subtotalWidth - 8,
               align: "right",
             });
 
@@ -302,55 +331,59 @@ export function generateQuotePdf(record: RuntimeLinkRecord, submitBody: SubmitBo
         });
       }
 
-      y += 16;
+      y += 18;
 
-      const notesBoxHeight = 110;
-      const totalsBoxHeight = 110;
+      const notesHeight = 120;
+      const totalsHeight = 120;
 
-      if (y + notesBoxHeight + totalsBoxHeight + 40 > pageHeight - 20) {
+      if (y + notesHeight + totalsHeight + 40 > pageHeight - 20) {
         doc.addPage();
         drawHeader();
-        y = 40;
+        y = 34;
       }
 
       // Notas
-      doc.roundedRect(margin, y, contentWidth, notesBoxHeight, 10).fillAndStroke(colors.white, colors.border);
+      doc
+        .roundedRect(margin, y, contentWidth, notesHeight, 12)
+        .fillAndStroke(colors.white, colors.border);
 
       doc
         .fillColor(colors.text)
         .font("Helvetica-Bold")
-        .fontSize(10)
-        .text("Notas", margin + 14, y + 12);
+        .fontSize(11)
+        .text("Notas", margin + 16, y + 14);
 
       doc
         .fillColor(colors.muted)
         .font("Helvetica")
-        .fontSize(8.5)
+        .fontSize(9.5)
         .text(
           customerNotes !== "-"
             ? customerNotes
             : "Gracias por cotizar con Automatiza Fácil. Esta propuesta puede ajustarse según tus necesidades.",
-          margin + 14,
-          y + 30,
+          margin + 16,
+          y + 38,
           {
-            width: contentWidth - 28,
-            height: 68,
+            width: contentWidth - 32,
+            height: notesHeight - 48,
           }
         );
 
-      y += notesBoxHeight + 14;
+      y += notesHeight + 16;
 
       // Totales
-      doc.roundedRect(margin, y, contentWidth, totalsBoxHeight, 10).fillAndStroke(colors.lighter, colors.border);
+      doc
+        .roundedRect(margin, y, contentWidth, totalsHeight, 12)
+        .fillAndStroke(colors.lighter, colors.border);
 
       const labelX = margin + 14;
-      const valueWidth = 120;
+      const valueWidth = 100;
       const valueX = margin + contentWidth - valueWidth - 14;
 
       doc
         .fillColor(colors.text)
         .font("Helvetica")
-        .fontSize(9.5)
+        .fontSize(10)
         .text("Subtotal", labelX, y + 18)
         .text(formatCurrencyCLP(quote.total), valueX, y + 18, {
           width: valueWidth,
@@ -358,6 +391,8 @@ export function generateQuotePdf(record: RuntimeLinkRecord, submitBody: SubmitBo
         });
 
       doc
+        .font("Helvetica")
+        .fontSize(10)
         .text("Descuento", labelX, y + 40)
         .text(formatCurrencyCLP(0), valueX, y + 40, {
           width: valueWidth,
@@ -366,16 +401,16 @@ export function generateQuotePdf(record: RuntimeLinkRecord, submitBody: SubmitBo
 
       doc
         .font("Helvetica-Bold")
-        .fontSize(10.5)
-        .text("Total", labelX, y + 70)
+        .fontSize(11)
+        .text("Total", labelX, y + 72)
         .font("Helvetica-Bold")
-        .fontSize(16)
-        .text(formatCurrencyCLP(quote.total), valueX - 4, y + 64, {
-          width: valueWidth + 4,
+        .fontSize(13)
+        .text(formatCurrencyCLP(quote.total), valueX, y + 70, {
+          width: valueWidth,
           align: "right",
         });
 
-      y += totalsBoxHeight + 22;
+      y += totalsHeight + 24;
 
       // Footer
       doc
@@ -388,7 +423,7 @@ export function generateQuotePdf(record: RuntimeLinkRecord, submitBody: SubmitBo
       doc
         .fillColor(colors.muted)
         .font("Helvetica")
-        .fontSize(8)
+        .fontSize(8.5)
         .text(
           "Automatiza Fácil · Santiago, Chile · Documento generado automáticamente",
           margin,
