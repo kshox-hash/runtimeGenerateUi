@@ -922,7 +922,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
         }
 
         if (data.pdfUrl) {
-          showMessage("success", \`📄 Tu cotización está lista:\\n👉 \${data.pdfUrl}\`);
+          showMessage("success", \`Tu cotización fue enviada al chat:\\n \${data.pdfUrl}\`);
           return;
         }
 

@@ -135,7 +135,7 @@ router.post(
 
       return res.json({
         ok: true,
-        message: "cotizacion enviada al chat:",
+        message: "Tu cotización está lista",
         pdfUrl,
       });
     } catch (error) {
