@@ -126,7 +126,7 @@ router.post(
         try {
           await sendWhatsAppTextMessage(
             recipientPhone,
-            `📄 Tu cotización está lista:\n👉 ${pdfUrl}`
+            `Tu cotización está lista:\n ${pdfUrl}`
           );
         } catch (whatsAppError) {
           console.error("Error enviando link a WhatsApp:", whatsAppError);
@@ -135,7 +135,7 @@ router.post(
 
       return res.json({
         ok: true,
-        message: "📄 Tu cotización está lista:",
+        message: "cotizacion enviada al chat:",
         pdfUrl,
       });
     } catch (error) {
