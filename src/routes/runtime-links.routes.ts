@@ -1,11 +1,26 @@
 import express, { Request, Response } from "express";
 import { BASE_URL } from "../config/env";
-import { buildChatbotConfig, buildCotizadorConfig, buildReservasConfig } from "../builders/view-config.builder";
+import {
+  buildChatbotConfig,
+  buildCotizadorConfig,
+  buildReservasConfig,
+} from "../builders/view-config.builder";
+import { buildRuntimeConfigFromSavedPdf } from "../builders/runtime-config-from-pdf.builder";
 import { generateQuotePdf } from "../services/pdf.service";
-import { cleanupRuntimeLinks, createRuntimeRecord, getRecordOrNull, runtimeLinks } from "../services/runtime-links.service";
+import {
+  cleanupRuntimeLinks,
+  createRuntimeRecord,
+  getRecordOrNull,
+  runtimeLinks,
+} from "../services/runtime-links.service";
 import { renderViewHtml } from "../services/view-html.service";
 import { sendWhatsAppTextMessage } from "../services/whatsapp.service";
-import { CreateRuntimeLinkBody, RuntimeLinkRecord, SubmitBody, ViewConfig } from "../types/runtime";
+import {
+  CreateRuntimeLinkBody,
+  RuntimeLinkRecord,
+  SubmitBody,
+  ViewConfig,
+} from "../types/runtime";
 import { generateToken } from "../utils/token";
 
 const router = express.Router();
@@ -64,30 +79,33 @@ router.post(
   }
 );
 
-router.get("/api/runtime-links/:token", (req: Request<{ token: string }>, res: Response) => {
-  const { token } = req.params;
-  const record = getRecordOrNull(token);
+router.get(
+  "/api/runtime-links/:token",
+  (req: Request<{ token: string }>, res: Response) => {
+    const { token } = req.params;
+    const record = getRecordOrNull(token);
 
-  if (!record) {
-    return res.status(404).json({ ok: false, message: "Link no encontrado." });
-  }
+    if (!record) {
+      return res.status(404).json({ ok: false, message: "Link no encontrado." });
+    }
 
-  if (record.status === "expired") {
-    return res.status(410).json({
-      ok: false,
-      status: "expired",
-      message: "Este enlace expiró.",
+    if (record.status === "expired") {
+      return res.status(410).json({
+        ok: false,
+        status: "expired",
+        message: "Este enlace expiró.",
+      });
+    }
+
+    return res.json({
+      ok: true,
+      token: record.token,
+      status: record.status,
+      expiresAt: new Date(record.expiresAt).toISOString(),
+      config: record.config,
     });
   }
-
-  return res.json({
-    ok: true,
-    token: record.token,
-    status: record.status,
-    expiresAt: new Date(record.expiresAt).toISOString(),
-    config: record.config,
-  });
-});
+);
 
 router.post(
   "/api/runtime-links/:token/submit",
@@ -148,21 +166,24 @@ router.post(
   }
 );
 
-router.get("/api/runtime-links/:token/submissions", (req: Request<{ token: string }>, res: Response) => {
-  const { token } = req.params;
-  const record = runtimeLinks.get(token);
+router.get(
+  "/api/runtime-links/:token/submissions",
+  (req: Request<{ token: string }>, res: Response) => {
+    const { token } = req.params;
+    const record = runtimeLinks.get(token);
 
-  if (!record) {
-    return res.status(404).json({ ok: false, message: "Link no encontrado." });
+    if (!record) {
+      return res.status(404).json({ ok: false, message: "Link no encontrado." });
+    }
+
+    return res.json({
+      ok: true,
+      token,
+      status: record.status,
+      submissions: record.submissions,
+    });
   }
-
-  return res.json({
-    ok: true,
-    token,
-    status: record.status,
-    submissions: record.submissions,
-  });
-});
+);
 
 router.get("/debug/tokens", (_req: Request, res: Response) => {
   return res.json({
@@ -180,7 +201,9 @@ router.get("/v/:token", (req: Request<{ token: string }>, res: Response) => {
   }
 
   if (record.status === "expired") {
-    return res.status(410).send("<h1>Link expirado</h1><p>Este enlace ya no está disponible.</p>");
+    return res
+      .status(410)
+      .send("<h1>Link expirado</h1><p>Este enlace ya no está disponible.</p>");
   }
 
   record.openedAt = Date.now();
@@ -198,9 +221,24 @@ router.get("/demo/create", (_req: Request, res: Response) => {
       {
         type: "products",
         items: [
-          { id: "p1", name: "Producto A", price: 50000, description: "Descripción opcional del producto." },
-          { id: "p2", name: "Producto B", price: 50000, description: "Descripción opcional del producto." },
-          { id: "p3", name: "Producto C", price: 50000, description: "Descripción opcional del producto." },
+          {
+            id: "p1",
+            name: "Producto A",
+            price: 50000,
+            description: "Descripción opcional del producto.",
+          },
+          {
+            id: "p2",
+            name: "Producto B",
+            price: 50000,
+            description: "Descripción opcional del producto.",
+          },
+          {
+            id: "p3",
+            name: "Producto C",
+            price: 50000,
+            description: "Descripción opcional del producto.",
+          },
         ],
       },
       {
@@ -247,19 +285,48 @@ router.get("/demo/create", (_req: Request, res: Response) => {
   });
 });
 
-router.get("/open/cotizador/:leadId", (req: Request<{ leadId: string }>, res: Response) => {
-  const record = createRuntimeRecord(buildCotizadorConfig(req.params.leadId), 15);
-  return res.redirect(`/v/${record.token}`);
-});
+router.get(
+  "/open/cotizador/:leadId",
+  (req: Request<{ leadId: string }>, res: Response) => {
+    const record = createRuntimeRecord(buildCotizadorConfig(req.params.leadId), 15);
+    return res.redirect(`/v/${record.token}`);
+  }
+);
 
-router.get("/open/reservas/:leadId", (req: Request<{ leadId: string }>, res: Response) => {
-  const record = createRuntimeRecord(buildReservasConfig(req.params.leadId), 15);
-  return res.redirect(`/v/${record.token}`);
-});
+router.get(
+  "/open/reservas/:leadId",
+  (req: Request<{ leadId: string }>, res: Response) => {
+    const record = createRuntimeRecord(buildReservasConfig(req.params.leadId), 15);
+    return res.redirect(`/v/${record.token}`);
+  }
+);
 
-router.get("/open/chatbot/:leadId", (req: Request<{ leadId: string }>, res: Response) => {
-  const record = createRuntimeRecord(buildChatbotConfig(req.params.leadId), 15);
-  return res.redirect(`/v/${record.token}`);
-});
+router.get(
+  "/open/chatbot/:leadId",
+  (req: Request<{ leadId: string }>, res: Response) => {
+    const record = createRuntimeRecord(buildChatbotConfig(req.params.leadId), 15);
+    return res.redirect(`/v/${record.token}`);
+  }
+);
+
+router.get(
+  "/open/cotizador-dinamico/:userId/:leadId",
+  async (req: Request<{ userId: string; leadId: string }>, res: Response) => {
+    try {
+      const { userId, leadId } = req.params;
+
+      const config = await buildRuntimeConfigFromSavedPdf(userId, leadId);
+      const record = createRuntimeRecord(config, 15);
+
+      return res.redirect(`/v/${record.token}`);
+    } catch (error) {
+      console.error("Error creando cotizador dinámico:", error);
+      return res.status(500).json({
+        ok: false,
+        message: "No se pudo crear el cotizador dinámico.",
+      });
+    }
+  }
+);
 
 export default router;
