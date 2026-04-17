@@ -287,9 +287,33 @@ router.get("/demo/create", (_req: Request, res: Response) => {
 
 router.get(
   "/open/cotizador/:leadId",
-  (req: Request<{ leadId: string }>, res: Response) => {
-    const record = createRuntimeRecord(buildCotizadorConfig(req.params.leadId), 15);
-    return res.redirect(`/v/${record.token}`);
+  async (req: Request<{ leadId: string }>, res: Response) => {
+    try {
+      const rawLeadId = req.params.leadId;
+
+      if (rawLeadId.includes("__")) {
+        const [userId, leadId] = rawLeadId.split("__");
+
+        if (!userId || !leadId) {
+          return res.status(400).send("Parámetros inválidos.");
+        }
+
+        const config = await buildRuntimeConfigFromSavedPdf(userId, leadId);
+        const record = createRuntimeRecord(config, 15);
+
+        return res.redirect(`/v/${record.token}`);
+      }
+
+      const record = createRuntimeRecord(
+        buildCotizadorConfig(rawLeadId),
+        15
+      );
+
+      return res.redirect(`/v/${record.token}`);
+    } catch (error) {
+      console.error("Error abriendo cotizador:", error);
+      return res.status(500).send("No se pudo abrir el cotizador.");
+    }
   }
 );
 
