@@ -13,16 +13,27 @@ export default class DB {
         port: Number(process.env.PGPORT ?? 5432),
         user: process.env.PGUSER ?? "postgres",
         password: process.env.PGPASSWORD ?? "123",
-        database: process.env.PGDATABASE ?? "automatizaFacilDB",
+        database: process.env.PGDATABASE ?? "automatizafacildb",
         max: 10,
         idleTimeoutMillis: 30_000,
         connectionTimeoutMillis: 5_000,
       });
+
+      DB.pool.on("error", (err) => {
+        console.error("PostgreSQL pool error:", err);
+      });
     }
+
     return DB.pool;
   }
 
-  // ✅ helper transaccional
+  static async testConnection(): Promise<void> {
+    const pool = DB.getPool();
+    const result = await pool.query("SELECT NOW() AS now");
+    console.log("PostgreSQL conectado:", result.rows[0]);
+  }
+
+  // helper transaccional
   static async withTransaction<T>(fn: TxFn<T>): Promise<T> {
     const pool = DB.getPool();
     const client = await pool.connect();
