@@ -291,18 +291,32 @@ router.get(
     try {
       const rawLeadId = req.params.leadId;
 
+      console.log("🔵 rawLeadId:", rawLeadId);
+
       if (rawLeadId.includes("__")) {
         const [userId, leadId] = rawLeadId.split("__");
 
+        console.log("🟢 userId:", userId);
+        console.log("🟢 leadId:", leadId);
+
         if (!userId || !leadId) {
+          console.log("🔴 payload inválido");
           return res.status(400).send("Parámetros inválidos.");
         }
 
         const config = await buildRuntimeConfigFromSavedPdf(userId, leadId);
+
+        console.log("🟡 config desde DB:");
+        console.log(JSON.stringify(config, null, 2));
+
         const record = createRuntimeRecord(config, 15);
+
+        console.log("🟣 token generado:", record.token);
 
         return res.redirect(`/v/${record.token}`);
       }
+
+      console.log("⚠️ usando builder viejo (NO DB)");
 
       const record = createRuntimeRecord(
         buildCotizadorConfig(rawLeadId),
@@ -311,12 +325,15 @@ router.get(
 
       return res.redirect(`/v/${record.token}`);
     } catch (error) {
-      console.error("Error abriendo cotizador:", error);
-      return res.status(500).send("No se pudo abrir el cotizador.");
+      console.error("🔥 Error abriendo cotizador:", error);
+      return res.status(500).send(
+        `No se pudo abrir el cotizador: ${
+          error instanceof Error ? error.message : "error desconocido"
+        }`
+      );
     }
   }
 );
-
 router.get(
   "/open/reservas/:leadId",
   (req: Request<{ leadId: string }>, res: Response) => {

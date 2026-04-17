@@ -5,10 +5,21 @@ export async function buildRuntimeConfigFromSavedPdf(
   userId: string,
   leadId: string
 ): Promise<ViewConfig> {
+  console.log("🔵 buildRuntimeConfigFromSavedPdf()");
+  console.log("userId:", userId);
+  console.log("leadId:", leadId);
+
   const saved = await getPdfConfig(userId);
 
+  console.log("🟡 resultado getPdfConfig:", JSON.stringify(saved, null, 2));
+
   if (!saved) {
+    console.log("🔴 NO existe config en DB para este userId");
     throw new Error("No existe configuración PDF para este usuario.");
+  }
+
+  if (!saved.products || saved.products.length === 0) {
+    console.log("⚠️ config existe pero SIN productos");
   }
 
   return {
@@ -54,7 +65,7 @@ export async function buildRuntimeConfigFromSavedPdf(
           },
           {
             name: "notes",
-            label: "Mensaje (opcional)",
+            label: "Mensaje",
             inputType: "textarea",
             required: false,
             placeholder: `Lead: ${leadId}`,
