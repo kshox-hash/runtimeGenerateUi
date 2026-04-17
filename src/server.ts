@@ -1,9 +1,12 @@
 import express from "express";
 import cors from "cors";
-import path from "path";
+
 import runtimeLinksRouter from "./routes/runtime-links.routes";
 import { PORT, BASE_URL } from "./config/env";
 import { GENERATED_PDFS_DIR } from "./services/pdf.service";
+
+//routes 
+import generatePdfRouter from "./routes/pdf-config.routes";
 
 const app = express();
 
@@ -12,6 +15,7 @@ app.use(express.json({ limit: "1mb" }));
 
 app.use("/generated-pdfs", express.static(GENERATED_PDFS_DIR));
 app.use(runtimeLinksRouter);
+app.use(generatePdfRouter);
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en ${BASE_URL}`);

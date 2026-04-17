@@ -47,6 +47,23 @@ export function generateQuotePdf(
         white: "#FFFFFF",
       };
 
+      const brandName =
+        typeof record.config.brand === "string" && record.config.brand.trim()
+          ? record.config.brand
+          : "Automatiza Fácil";
+
+      const docTitle =
+        typeof record.config.title === "string" && record.config.title.trim()
+          ? record.config.title
+          : "Cotización";
+
+      const brandSubtitle =
+        typeof record.config.subtitle === "string" && record.config.subtitle.trim()
+          ? record.config.subtitle
+          : "Automatización de procesos y soluciones digitales";
+
+      const footerLine = `${brandName} · Documento generado automáticamente`;
+
       const logoPath = path.join(process.cwd(), "assets", "logo.png");
 
       const customerName =
@@ -128,7 +145,7 @@ export function generateQuotePdf(
           .fillColor(colors.text)
           .font("Helvetica-Bold")
           .fontSize(22)
-          .text("Cotización", pageWidth - 160, 24, {
+          .text(docTitle, pageWidth - 160, 24, {
             width: 138,
             align: "right",
           });
@@ -137,7 +154,7 @@ export function generateQuotePdf(
           .font("Helvetica")
           .fontSize(10)
           .fillColor(colors.text)
-          .text("Automatiza Fácil", pageWidth - 160, 54, {
+          .text(brandName, pageWidth - 160, 54, {
             width: 138,
             align: "right",
           });
@@ -159,18 +176,15 @@ export function generateQuotePdf(
         doc
           .font("Helvetica-Bold")
           .fontSize(16)
-          .text("Automatiza Fácil", margin + 16, startY + 36);
+          .text(brandName, margin + 16, startY + 36);
 
         doc
           .fillColor(colors.muted)
           .font("Helvetica")
           .fontSize(10)
-          .text(
-            "Automatización de procesos y soluciones digitales",
-            margin + 16,
-            startY + 58,
-            { width: 190 }
-          )
+          .text(brandSubtitle, margin + 16, startY + 58, {
+            width: 190,
+          })
           .text("Santiago, Chile", margin + 16, startY + 82);
 
         const rightX = margin + contentWidth - 150;
@@ -257,7 +271,10 @@ export function generateQuotePdf(
           .fontSize(9)
           .text("Descripción", col1, startY + 9, { width: descWidth - 6 })
           .text("Cant.", col2, startY + 9, { width: qtyWidth, align: "center" })
-          .text("Precio", col3, startY + 9, { width: priceWidth - 6, align: "right" })
+          .text("Precio", col3, startY + 9, {
+            width: priceWidth - 6,
+            align: "right",
+          })
           .text("Subtotal", col4, startY + 9, {
             width: subtotalWidth - 6,
             align: "right",
@@ -276,7 +293,11 @@ export function generateQuotePdf(
         };
       }
 
-      function ensureSpace(currentY: number, neededHeight: number, drawTableOnNewPage = false) {
+      function ensureSpace(
+        currentY: number,
+        neededHeight: number,
+        drawTableOnNewPage = false
+      ) {
         if (currentY + neededHeight <= pageHeight - 30) {
           return { y: currentY, newPage: false };
         }
@@ -377,7 +398,10 @@ export function generateQuotePdf(
       const totalsHeight = 120;
       const footerHeight = 34;
 
-      const blockSpace = ensureSpace(y, notesHeight + totalsHeight + footerHeight + 30);
+      const blockSpace = ensureSpace(
+        y,
+        notesHeight + totalsHeight + footerHeight + 30
+      );
       y = blockSpace.y;
 
       doc
@@ -397,7 +421,7 @@ export function generateQuotePdf(
         .text(
           customerNotes !== "-"
             ? customerNotes
-            : "Gracias por cotizar con Automatiza Fácil. Esta propuesta puede ajustarse según tus necesidades.",
+            : "Gracias por cotizar con nosotros. Esta propuesta puede ajustarse según tus necesidades.",
           margin + 16,
           y + 38,
           {
@@ -426,12 +450,10 @@ export function generateQuotePdf(
           align: "right",
         });
 
-      doc
-        .text("Descuento", labelX, y + 40)
-        .text("$0", valueX, y + 40, {
-          width: valueWidth,
-          align: "right",
-        });
+      doc.text("Descuento", labelX, y + 40).text("$0", valueX, y + 40, {
+        width: valueWidth,
+        align: "right",
+      });
 
       doc
         .font("Helvetica-Bold")
@@ -456,15 +478,10 @@ export function generateQuotePdf(
         .fillColor(colors.muted)
         .font("Helvetica")
         .fontSize(8.5)
-        .text(
-          "Automatiza Fácil · Santiago, Chile · Documento generado automáticamente",
-          margin,
-          y + 10,
-          {
-            width: contentWidth,
-            align: "center",
-          }
-        );
+        .text(footerLine, margin, y + 10, {
+          width: contentWidth,
+          align: "center",
+        });
 
       doc.end();
 
