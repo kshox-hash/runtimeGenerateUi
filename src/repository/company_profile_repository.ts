@@ -3,6 +3,7 @@ import {
   CompanyProfile,
   CompanyProfileInput,
 } from "../types/company-profile.type";
+
 const getByUserId = async (userId: string): Promise<CompanyProfile | null> => {
   const pool = DB.getPool();
 
@@ -17,7 +18,7 @@ const getByUserId = async (userId: string): Promise<CompanyProfile | null> => {
       phone,
       created_at,
       updated_at
-    FROM company_profiles
+    FROM business_profiles
     WHERE user_id = $1
     LIMIT 1
   `;
@@ -32,15 +33,17 @@ const upsert = async (
   const pool = DB.getPool();
 
   const query = `
-    INSERT INTO company_profiles (
+    INSERT INTO business_profiles (
       user_id,
       business_name,
       rut,
       city,
       address,
-      phone
+      phone,
+      created_at,
+      updated_at
     )
-    VALUES ($1, $2, $3, $4, $5, $6)
+    VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
     ON CONFLICT (user_id)
     DO UPDATE SET
       business_name = EXCLUDED.business_name,
