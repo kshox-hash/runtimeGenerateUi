@@ -1,15 +1,15 @@
 import DB from "../db/db_configuration";
 
-export async function findTemplateByCode(code: string) {
+export async function findTemplateByName(name: string) {
   const res = await DB.getPool().query(
     `
     select id, code, name
     from system_templates
-    where code = $1
+    where name = $1
       and is_active = true
     limit 1
     `,
-    [code]
+    [name]
   );
 
   return res.rowCount ? res.rows[0] : null;
@@ -20,7 +20,7 @@ export async function findPdfConfigByUserId(userId: string) {
     `
     select
       pms.selected_template_id,
-      st.code as template_code
+      st.name as template_name
     from pdf_module_settings pms
     inner join system_templates st
       on st.id = pms.selected_template_id
@@ -33,20 +33,6 @@ export async function findPdfConfigByUserId(userId: string) {
   if (!settingsRes.rowCount) {
     return null;
   }
-
-  const businessRes = await DB.getPool().query(
-    `
-    select
-      business_name,
-      business_subtitle,
-      city,
-      footer_text
-    from business_profiles
-    where user_id = $1
-    limit 1
-    `,
-    [userId]
-  );
 
   const productsRes = await DB.getPool().query(
     `
@@ -66,45 +52,8 @@ export async function findPdfConfigByUserId(userId: string) {
 
   return {
     settings: settingsRes.rows[0],
-    business: businessRes.rows[0] || null,
     products: productsRes.rows,
   };
-}
-
-export async function upsertBusinessProfile(params: {
-  userId: string;
-  businessName: string;
-  businessSubtitle?: string;
-  city?: string;
-  footerText?: string;
-}) {
-  await DB.getPool().query(
-    `
-    insert into business_profiles (
-      user_id,
-      business_name,
-      business_subtitle,
-      city,
-      footer_text,
-      updated_at
-    )
-    values ($1, $2, $3, $4, $5, now())
-    on conflict (user_id)
-    do update set
-      business_name = excluded.business_name,
-      business_subtitle = excluded.business_subtitle,
-      city = excluded.city,
-      footer_text = excluded.footer_text,
-      updated_at = now()
-    `,
-    [
-      params.userId,
-      params.businessName,
-      params.businessSubtitle || null,
-      params.city || null,
-      params.footerText || null,
-    ]
-  );
 }
 
 export async function upsertPdfModuleSettings(params: {

@@ -1,9 +1,8 @@
 import {
   deletePdfProductsByUserId,
   findPdfConfigByUserId,
-  findTemplateByCode,
+  findTemplateByName,
   insertPdfProduct,
-  upsertBusinessProfile,
   upsertPdfModuleSettings,
 } from "../repository/pdf-config.repository";
 import { PdfConfigOutput, SavePdfConfigInput } from "../types/pdf-config";
@@ -18,11 +17,7 @@ export async function getPdfConfig(
   }
 
   return {
-    templateCode: data.settings.template_code,
-    businessName: data.business?.business_name || "",
-    businessSubtitle: data.business?.business_subtitle || null,
-    city: data.business?.city || null,
-    footerText: data.business?.footer_text || null,
+    templateCode: data.settings.template_name,
     products: data.products.map((row: any) => ({
       id: String(row.id),
       code: row.code,
@@ -34,19 +29,11 @@ export async function getPdfConfig(
 }
 
 export async function savePdfConfig(input: SavePdfConfigInput) {
-  const template = await findTemplateByCode(input.templateCode);
+  const template = await findTemplateByName(input.templateCode);
 
   if (!template) {
     throw new Error("Plantilla no encontrada");
   }
-
-  await upsertBusinessProfile({
-    userId: input.userId,
-    businessName: input.businessName,
-    businessSubtitle: input.businessSubtitle,
-    city: input.city,
-    footerText: input.footerText,
-  });
 
   await upsertPdfModuleSettings({
     userId: input.userId,

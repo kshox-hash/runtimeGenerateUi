@@ -59,13 +59,6 @@ export const savePdfConfigController = async (
       });
     }
 
-    if (!body?.businessName?.trim()) {
-      return res.status(400).json({
-        ok: false,
-        message: "businessName es obligatorio.",
-      });
-    }
-
     if (!Array.isArray(body.products)) {
       return res.status(400).json({
         ok: false,
