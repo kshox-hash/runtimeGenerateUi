@@ -6,7 +6,7 @@ import {
 
 const router = express.Router();
 
-router.get("/api/pdf-config/:userId", getPdfConfigController);
-router.post("/api/pdf-config", savePdfConfigController);
+router.get("/pdf-config/:userId", getPdfConfigController);
+router.post("/pdf-config", savePdfConfigController);
 
 export default router;
