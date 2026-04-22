@@ -34,6 +34,20 @@ export async function findPdfConfigByUserId(userId: string) {
     return null;
   }
 
+  const businessRes = await DB.getPool().query(
+    `
+    select
+      business_name,
+      business_subtitle,
+      city,
+      footer_text
+    from business_profiles
+    where user_id = $1
+    limit 1
+    `,
+    [userId]
+  );
+
   const productsRes = await DB.getPool().query(
     `
     select
@@ -52,6 +66,7 @@ export async function findPdfConfigByUserId(userId: string) {
 
   return {
     settings: settingsRes.rows[0],
+    business: businessRes.rows[0] || null,
     products: productsRes.rows,
   };
 }

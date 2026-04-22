@@ -7,12 +7,16 @@ export type PdfConfigProductInput = {
 
 export type SavePdfConfigInput = {
   userId: string;
-  templateCode: string; // aquí vendrá el NOMBRE visible
+  templateCode: string;
   products: PdfConfigProductInput[];
 };
 
 export type PdfConfigOutput = {
-  templateCode: string; // devolveremos también el nombre visible
+  templateCode: string;
+  businessName: string;
+  businessSubtitle?: string | null;
+  city?: string | null;
+  footerText?: string | null;
   products: Array<{
     id: string;
     code?: string | null;

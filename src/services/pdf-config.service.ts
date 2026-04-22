@@ -18,6 +18,10 @@ export async function getPdfConfig(
 
   return {
     templateCode: data.settings.template_name,
+    businessName: data.business?.business_name || "",
+    businessSubtitle: data.business?.business_subtitle || null,
+    city: data.business?.city || null,
+    footerText: data.business?.footer_text || null,
     products: data.products.map((row: any) => ({
       id: String(row.id),
       code: row.code,
