@@ -37,10 +37,7 @@ export async function findPdfConfigByUserId(userId: string) {
   const businessRes = await DB.getPool().query(
     `
     select
-      business_name,
-      business_subtitle,
-      city,
-      footer_text
+      business_name
     from business_profiles
     where user_id = $1
     limit 1
