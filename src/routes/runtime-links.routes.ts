@@ -15,6 +15,7 @@ import {
 } from "../services/runtime-links.service";
 import { renderViewHtml } from "../services/view-html.service";
 import { sendWhatsAppTextMessage } from "../services/whatsapp.service";
+import { findWhatsAppConfigByUserId } from "../repository/whatsapp_configuration_repository";
 import {
   CreateRuntimeLinkBody,
   RuntimeLinkRecord,
@@ -140,12 +141,30 @@ router.post(
           ? record.config.recipientPhone
           : "";
 
-      if (recipientPhone) {
+      const userId =
+        typeof record.config.userId === "string"
+          ? record.config.userId
+          : "";
+
+      if (recipientPhone && userId) {
         try {
-          await sendWhatsAppTextMessage(
-            recipientPhone,
-            `Tu cotización está lista:\n ${pdfUrl}`
-          );
+          const whatsappConfig = await findWhatsAppConfigByUserId(userId);
+
+          if (!whatsappConfig) {
+            console.warn("Usuario sin configuración WhatsApp:", userId);
+          } else if (
+            !whatsappConfig.phone_number_id ||
+            !whatsappConfig.whatsapp_access_token
+          ) {
+            console.warn("Configuración WhatsApp incompleta:", userId);
+          } else {
+            await sendWhatsAppTextMessage(
+              recipientPhone,
+              `Tu cotización está lista:\n ${pdfUrl}`,
+              whatsappConfig.phone_number_id,
+              whatsappConfig.whatsapp_access_token
+            );
+          }
         } catch (whatsAppError) {
           console.error("Error enviando link a WhatsApp:", whatsAppError);
         }
@@ -318,10 +337,7 @@ router.get(
 
       console.log("⚠️ usando builder viejo (NO DB)");
 
-      const record = createRuntimeRecord(
-        buildCotizadorConfig(rawLeadId),
-        15
-      );
+      const record = createRuntimeRecord(buildCotizadorConfig(rawLeadId), 15);
 
       return res.redirect(`/v/${record.token}`);
     } catch (error) {
@@ -334,6 +350,7 @@ router.get(
     }
   }
 );
+
 router.get(
   "/open/reservas/:leadId",
   (req: Request<{ leadId: string }>, res: Response) => {

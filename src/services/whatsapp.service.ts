@@ -1,36 +1,44 @@
 const axios = require("axios");
-import { WHATSAPP_ACCESS_TOKEN, WHATSAPP_PHONE_NUMBER_ID } from "../config/env";
 
 export async function sendWhatsAppTextMessage(
   recipientPhone: string,
-  messageText: string
+  messageText: string,
+  phoneNumberId: string,
+  accessToken: string
 ) {
-  if (!WHATSAPP_ACCESS_TOKEN || !WHATSAPP_PHONE_NUMBER_ID) {
-    console.warn("Faltan variables de WhatsApp para enviar mensaje.");
+  if (!accessToken || !phoneNumberId) {
+    console.warn("Faltan credenciales de WhatsApp.");
     return;
   }
 
-  if (WHATSAPP_PHONE_NUMBER_ID === "WHATSAPP_PHONE_NUMBER_ID") {
-    console.warn("WHATSAPP_PHONE_NUMBER_ID inválido.");
+  if (phoneNumberId === "WHATSAPP_PHONE_NUMBER_ID") {
+    console.warn("phoneNumberId inválido.");
     return;
   }
 
-  await axios.post(
-    `https://graph.facebook.com/v23.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`,
-    {
-      messaging_product: "whatsapp",
-      to: recipientPhone,
-      type: "text",
-      text: {
-        preview_url: true,
-        body: messageText,
+  try {
+    await axios.post(
+      `https://graph.facebook.com/v23.0/${phoneNumberId}/messages`,
+      {
+        messaging_product: "whatsapp",
+        to: recipientPhone,
+        type: "text",
+        text: {
+          preview_url: true,
+          body: messageText,
+        },
       },
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  } catch (error: any) {
+    console.error("❌ Error enviando WhatsApp:", {
+      status: error?.response?.status,
+      data: error?.response?.data,
+    });
+  }
 }

@@ -49,6 +49,7 @@ export type ViewConfig = {
   brand?: string;
   successMessage?: string;
   recipientPhone?: string;
+  userId?: string; // 👈 ESTE ES EL CAMBIO
   components: UIComponent[];
 };
 
