@@ -23,6 +23,7 @@ export async function buildRuntimeConfigFromSavedPdf(
   }
 
   return {
+    userId,
     brand: saved.businessName || "Automatiza Fácil",
     title: "Cotización Inteligente",
     subtitle:
