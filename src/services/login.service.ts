@@ -16,13 +16,17 @@ export async function loginUser(email: string, password: string) {
   );
 
   if (result.rowCount === 0) {
-    throw new Error("Credenciales inválidas");
+    throw new Error("Usuario no existe");
   }
 
   const user = result.rows[0];
 
-  // 🔐 comparar hash
+  console.log("PASSWORD DB:", user.password);
+  console.log("PASSWORD INPUT:", password);
+
   const isValid = await bcrypt.compare(password, user.password);
+
+  console.log("MATCH:", isValid);
 
   if (!isValid) {
     throw new Error("Credenciales inválidas");
