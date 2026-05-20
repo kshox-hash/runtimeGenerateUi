@@ -3,10 +3,10 @@ import { generateToken, isExpired } from "../utils/token";
 
 export const runtimeLinks = new Map<string, RuntimeLinkRecord>();
 
-export function createRuntimeRecord(
-  config: ViewConfig,
-  expiresInMinutes = 15
-): RuntimeLinkRecord {
+export function createRuntimeRecord( 
+  config: ViewConfig, 
+  expiresInMinutes = 15 ): RuntimeLinkRecord {
+
   const token = generateToken();
   const now = Date.now();
 
@@ -23,17 +23,19 @@ export function createRuntimeRecord(
   return record;
 }
 
+
 export function getRecordOrNull(token: string): RuntimeLinkRecord | null {
   const record = runtimeLinks.get(token);
   if (!record) return null;
 
   if (isExpired(record)) {
-    record.status = "expired";
+    record.status = "expired"; 
     return record;
   }
 
   return record;
 }
+
 
 export function cleanupRuntimeLinks() {
   for (const [token, record] of runtimeLinks.entries()) {

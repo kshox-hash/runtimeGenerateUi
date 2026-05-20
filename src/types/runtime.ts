@@ -1,3 +1,19 @@
+export type RuntimeViewType =
+  | "menu"
+  | "quote"
+  | "appointments"
+  | "generic";
+
+export type MenuModuleItem = {
+  code: string;
+  title: string;
+  description: string;
+  icon: string;
+  enabled: boolean;
+  sortOrder: number;
+  url?: string;
+};
+
 export type TextComponent = {
   type: "text";
   value: string;
@@ -44,12 +60,15 @@ export type UIComponent =
   | ButtonComponent;
 
 export type ViewConfig = {
+  viewType?: RuntimeViewType;
   title: string;
   subtitle?: string;
   brand?: string;
   successMessage?: string;
   recipientPhone?: string;
-  userId?: string; // 👈 ESTE ES EL CAMBIO
+  userId?: string;
+  leadId?: string;
+  modules?: MenuModuleItem[];
   components: UIComponent[];
 };
 
@@ -72,5 +91,6 @@ export type CreateRuntimeLinkBody = {
 export type SubmitBody = {
   customer?: Record<string, unknown>;
   items?: Array<{ productId: string; quantity: number }>;
+  appointment?: Record<string, unknown>;
   raw?: Record<string, unknown>;
 };

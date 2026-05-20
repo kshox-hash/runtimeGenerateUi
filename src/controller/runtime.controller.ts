@@ -23,6 +23,9 @@ import {
 } from "../types/runtime";
 import { generateToken } from "../utils/token";
 
+import { buildMenuConfig } from "../modules/menu/menu.builder";
+import { renderMenuHtml } from "../modules/menu/menu-html.service";
+
 function validateConfig(config: unknown): config is ViewConfig {
   if (!config || typeof config !== "object") return false;
 
@@ -36,6 +39,55 @@ function validateConfig(config: unknown): config is ViewConfig {
 }
 
 export const runtimeController = {
+
+  async openMenu(
+  req: Request<{ userId: string; leadId: string }>,
+  res: Response
+) {
+  try {
+    const { userId, leadId } = req.params;
+
+    if (!userId || !leadId) {
+      return res.status(400).send("Parámetros inválidos.");
+    }
+
+    const config = await buildMenuConfig(userId, leadId);
+    const record = createRuntimeRecord(config, 30);
+
+    return res.redirect(`/menu/${record.token}`);
+  } catch (error) {
+    console.error("Error abriendo menú:", error);
+
+    return res.status(500).send(
+      `No se pudo abrir el menú: ${
+        error instanceof Error ? error.message : "error desconocido"
+      }`
+    );
+  }
+},
+
+renderMenuView(
+  req: Request<{ token: string }>,
+  res: Response
+) {
+  const { token } = req.params;
+  const record = getRecordOrNull(token);
+
+  if (!record) {
+    return res.status(404).send("<h1>404</h1><p>Menú no encontrado.</p>");
+  }
+
+  if (record.status === "expired") {
+    return res
+      .status(410)
+      .send("<h1>Menú expirado</h1><p>Este enlace ya no está disponible.</p>");
+  }
+
+  record.openedAt = Date.now();
+
+  return res.send(renderMenuHtml(record));
+},
+  
   createRuntimeLink(
     req: Request<{}, {}, CreateRuntimeLinkBody>,
     res: Response
