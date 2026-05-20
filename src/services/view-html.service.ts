@@ -24,7 +24,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     :root {
       --bg: #eef2f7;
       --panel: rgba(255, 255, 255, 0.84);
-      --panel-solid: #ffffff;
       --text: #0f172a;
       --muted: #64748b;
       --muted-soft: #94a3b8;
@@ -32,13 +31,10 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       --accent: #2563eb;
       --accent-dark: #1e40af;
       --accent-soft: #dbeafe;
-      --success: #16a34a;
-      --danger: #dc2626;
       --shadow: 0 24px 70px rgba(15, 23, 42, 0.14);
       --shadow-card: 0 16px 34px rgba(15, 23, 42, 0.08);
       --radius-xl: 28px;
       --radius-lg: 22px;
-      --radius-md: 16px;
     }
 
     * {
@@ -46,8 +42,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       -webkit-tap-highlight-color: transparent;
     }
 
-    html,
-    body {
+    html, body {
       margin: 0;
       padding: 0;
     }
@@ -74,6 +69,60 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
         linear-gradient(90deg, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
       background-size: 34px 34px;
       mask-image: linear-gradient(to bottom, black, transparent 78%);
+    }
+
+    .page-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent 34%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+      transition: opacity 220ms ease, visibility 220ms ease;
+    }
+
+    .page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-card {
+      width: min(280px, calc(100vw - 48px));
+      padding: 22px 20px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      text-align: center;
+      animation: loaderIn 360ms ease both;
+    }
+
+    .spinner {
+      width: 34px;
+      height: 34px;
+      margin: 0 auto 14px;
+      border-radius: 50%;
+      border: 3px solid rgba(37, 99, 235, 0.14);
+      border-top-color: #2563eb;
+      animation: spin 800ms linear infinite;
+    }
+
+    .loader-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .loader-text {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
     }
 
     .page {
@@ -226,7 +275,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .product-card {
-      position: relative;
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 12px;
@@ -235,12 +283,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       border: 1px solid rgba(148, 163, 184, 0.28);
       border-radius: 18px;
       background: rgba(255,255,255,0.86);
-      overflow: hidden;
-      transition:
-        transform 180ms ease,
-        box-shadow 180ms ease,
-        border-color 180ms ease,
-        background 180ms ease;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
     }
 
     .product-card:hover {
@@ -301,10 +344,8 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       background: #fff;
       color: var(--text);
       font-size: 19px;
-      line-height: 1;
       height: 36px;
       cursor: pointer;
-      transition: background 130ms ease, color 130ms ease;
     }
 
     .qty-btn:hover {
@@ -403,7 +444,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       font-size: 13px;
       font-weight: 850;
       color: var(--text);
-      line-height: 1.2;
     }
 
     input,
@@ -417,15 +457,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       background: rgba(255,255,255,0.92);
       outline: none;
       font-family: inherit;
-      transition:
-        border-color 140ms ease,
-        box-shadow 140ms ease,
-        background 140ms ease;
-    }
-
-    input::placeholder,
-    textarea::placeholder {
-      color: #98a2b3;
     }
 
     input:focus,
@@ -446,7 +477,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .submit-btn {
-      position: relative;
       width: 100%;
       border: none;
       border-radius: 18px;
@@ -463,30 +493,11 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       align-items: center;
       justify-content: center;
       gap: 9px;
-      overflow: hidden;
-      transition:
-        transform 170ms ease,
-        box-shadow 170ms ease,
-        filter 170ms ease;
-    }
-
-    .submit-btn::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
-      transform: translateX(-120%);
-      transition: transform 520ms ease;
     }
 
     .submit-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 22px 42px rgba(37, 99, 235, 0.34);
-      filter: saturate(1.05);
-    }
-
-    .submit-btn:hover::after {
-      transform: translateX(120%);
     }
 
     .submit-btn:disabled {
@@ -533,8 +544,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       font-size: 12px;
       line-height: 1.45;
       color: var(--muted);
-      animation: fadeUp 700ms ease both;
-      animation-delay: 260ms;
     }
 
     .secure-row {
@@ -562,7 +571,21 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       text-align: center;
       color: var(--muted);
       font-size: 14px;
-      line-height: 1.45;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes loaderIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     @keyframes pageIn {
@@ -597,16 +620,8 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
         padding: 22px 8px 30px;
       }
 
-      .shell {
-        max-width: 100%;
-      }
-
       h1 {
         font-size: 32px;
-      }
-
-      .subtitle {
-        font-size: 14px;
       }
 
       .panel {
@@ -620,7 +635,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
       .product-card {
         grid-template-columns: 1fr;
-        gap: 12px;
       }
 
       .product-top {
@@ -641,15 +655,19 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
         flex-direction: column;
         align-items: flex-start;
       }
-
-      .total-value {
-        font-size: 23px;
-      }
     }
   </style>
 </head>
 
 <body>
+  <div id="pageLoader" class="page-loader">
+    <div class="loader-card">
+      <div class="spinner"></div>
+      <div class="loader-title">Preparando tu experiencia</div>
+      <div class="loader-text">Estamos cargando la información...</div>
+    </div>
+  </div>
+
   <main class="page">
     <div class="shell">
       <section class="hero">
@@ -692,6 +710,16 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     const expiresAtEl = document.getElementById("expiresAt");
 
     expiresAtEl.textContent = expiresAt;
+
+    function hideLoader() {
+      const loader = document.getElementById("pageLoader");
+      window.setTimeout(() => {
+        if (loader) loader.classList.add("hidden");
+      }, 350);
+    }
+
+    window.addEventListener("load", hideLoader);
+    window.setTimeout(hideLoader, 1200);
 
     function formatCurrency(value) {
       return new Intl.NumberFormat("es-CL", {
@@ -755,19 +783,15 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       });
 
       const totalValue = document.getElementById("totalValue");
-      if (totalValue) {
-        totalValue.textContent = formatCurrency(total);
-      }
+      if (totalValue) totalValue.textContent = formatCurrency(total);
     }
 
     function renderText(component) {
       const box = document.createElement("section");
       box.className = "section";
-
       const inner = document.createElement("div");
       inner.className = "section-inner";
       inner.textContent = component.value || "";
-
       box.appendChild(inner);
       return box;
     }
@@ -852,13 +876,8 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
           updateTotal();
         }
 
-        minusBtn.addEventListener("click", () => {
-          syncQty(Number(hiddenInput.value) - 1);
-        });
-
-        plusBtn.addEventListener("click", () => {
-          syncQty(Number(hiddenInput.value) + 1);
-        });
+        minusBtn.addEventListener("click", () => syncQty(Number(hiddenInput.value) - 1));
+        plusBtn.addEventListener("click", () => syncQty(Number(hiddenInput.value) + 1));
 
         qtyBox.appendChild(minusBtn);
         qtyBox.appendChild(valueEl);
@@ -867,7 +886,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
         card.appendChild(main);
         card.appendChild(qtyBox);
-
         list.appendChild(card);
       });
 
@@ -906,7 +924,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
       totalCard.appendChild(totalLeft);
       totalCard.appendChild(totalValue);
-
       inner.appendChild(totalCard);
 
       return section;
@@ -965,7 +982,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       btn.type = "button";
       btn.className = "submit-btn";
       btn.innerHTML = "<span>" + (component.label || "Enviar solicitud") + "</span><span>→</span>";
-
       btn.addEventListener("click", () => onSubmit(btn));
 
       const hint = document.createElement("div");
@@ -980,16 +996,11 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
     function renderComponent(component) {
       switch (component.type) {
-        case "text":
-          return renderText(component);
-        case "products":
-          return renderProducts(component);
-        case "form":
-          return renderForm(component);
-        case "button":
-          return renderButton(component);
-        default:
-          return document.createElement("div");
+        case "text": return renderText(component);
+        case "products": return renderProducts(component);
+        case "form": return renderForm(component);
+        case "button": return renderButton(component);
+        default: return document.createElement("div");
       }
     }
 
@@ -1002,10 +1013,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
         const productId = input.dataset.productId;
 
         if (quantity > 0 && productId) {
-          selectedItems.push({
-            productId,
-            quantity
-          });
+          selectedItems.push({ productId, quantity });
         }
       });
 
