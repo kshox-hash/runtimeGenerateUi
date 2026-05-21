@@ -91,7 +91,7 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
       color: var(--text);
       background:
         radial-gradient(circle at 50% 0%, rgb(0, 0, 0), transparent 34%),
-        linear-gradient(180deg, #050505 0%, #050505 48%, #050505 100%);
+        linear-gradient(180deg, #0c0c0c 0%, #0c0c0c 48%, #0c0c0c 100%);
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
