@@ -31,21 +31,15 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       --accent: #2563eb;
       --accent-dark: #1e40af;
       --accent-soft: #dbeafe;
+      --green: #22c55e;
       --shadow: 0 24px 70px rgba(15, 23, 42, 0.14);
-      --shadow-card: 0 16px 34px rgba(15, 23, 42, 0.08);
+      --shadow-card: 0 6px 18px rgba(15, 23, 42, 0.07);
       --radius-xl: 28px;
-      --radius-lg: 22px;
+      --radius-lg: 18px;
     }
 
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; padding: 0; }
 
     body {
       min-height: 100vh;
@@ -71,6 +65,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       mask-image: linear-gradient(to bottom, black, transparent 78%);
     }
 
+    /* ── Loader ── */
     .page-loader {
       position: fixed;
       inset: 0;
@@ -91,9 +86,9 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .loader-card {
-      width: min(280px, calc(100vw - 48px));
-      padding: 22px 20px;
-      border-radius: 24px;
+      width: min(260px, calc(100vw - 48px));
+      padding: 20px 18px;
+      border-radius: 22px;
       background: rgba(255, 255, 255, 0.78);
       border: 1px solid rgba(148, 163, 184, 0.28);
       box-shadow: var(--shadow);
@@ -103,9 +98,9 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .spinner {
-      width: 34px;
-      height: 34px;
-      margin: 0 auto 14px;
+      width: 30px;
+      height: 30px;
+      margin: 0 auto 12px;
       border-radius: 50%;
       border: 3px solid rgba(37, 99, 235, 0.14);
       border-top-color: #2563eb;
@@ -113,84 +108,87 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .loader-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 900;
       color: var(--text);
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .loader-text {
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--muted);
       line-height: 1.4;
     }
 
+    /* ── Layout ── */
     .page {
       position: relative;
       min-height: 100vh;
-      padding: 30px 14px 42px;
+      padding: 26px 14px 38px;
     }
 
     .shell {
-      max-width: 720px;
+      max-width: 680px;
       margin: 0 auto;
       animation: pageIn 520ms ease both;
     }
 
+    /* ── Hero ── */
     .hero {
       text-align: center;
-      margin-bottom: 20px;
-      padding-top: 6px;
+      margin-bottom: 16px;
+      padding-top: 4px;
     }
 
     .brand-pill {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 13px;
+      gap: 7px;
+      padding: 6px 12px;
       border: 1px solid rgba(148, 163, 184, 0.28);
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.66);
       backdrop-filter: blur(14px);
       color: #475569;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
-      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
       animation: fadeUp 520ms ease both;
     }
 
     .brand-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 99px;
       background: var(--accent);
-      box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.12);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
     }
 
     h1 {
-      margin: 16px 0 0;
-      font-size: 42px;
+      margin: 12px 0 0;
+      font-size: 36px;
       line-height: 1;
       letter-spacing: -0.055em;
       color: var(--text);
       animation: fadeUp 580ms ease both;
-      animation-delay: 60ms;
+      animation-delay: 50ms;
     }
 
     .subtitle {
-      margin: 12px auto 0;
-      max-width: 520px;
+      margin: 9px auto 0;
+      max-width: 480px;
       color: var(--muted);
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1.52;
       animation: fadeUp 620ms ease both;
-      animation-delay: 120ms;
+      animation-delay: 100ms;
     }
 
+    /* ── Panel ── */
     .panel {
       position: relative;
-      margin-top: 20px;
-      padding: 14px;
+      margin-top: 16px;
+      padding: 12px;
       border: 1px solid rgba(255, 255, 255, 0.72);
       border-radius: var(--radius-xl);
       background: var(--panel);
@@ -198,7 +196,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       box-shadow: var(--shadow);
       overflow: hidden;
       animation: fadeUp 660ms ease both;
-      animation-delay: 170ms;
+      animation-delay: 150ms;
     }
 
     .panel::before {
@@ -216,126 +214,178 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       position: relative;
       z-index: 1;
       display: grid;
-      gap: 13px;
+      gap: 11px;
     }
 
+    /* ── Section container ── */
     .section {
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,250,252,0.90));
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,250,252,0.90));
       box-shadow: var(--shadow-card);
       overflow: hidden;
-      animation: cardIn 520ms cubic-bezier(.2,.8,.2,1) both;
+      animation: cardIn 500ms cubic-bezier(.2,.8,.2,1) both;
     }
 
     .section-inner {
-      padding: 16px;
+      padding: 13px;
     }
 
     .section-head {
       display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 14px;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 11px;
     }
 
     .section-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
       background: linear-gradient(145deg, #eaf1ff, #ffffff);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 21px;
+      font-size: 18px;
       flex-shrink: 0;
       box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.9),
-        0 10px 22px rgba(37, 99, 235, 0.13);
+        0 6px 16px rgba(37, 99, 235, 0.10);
     }
 
     .section-title {
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 900;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.025em;
       color: var(--text);
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .section-subtitle {
-      font-size: 13px;
-      line-height: 1.42;
+      font-size: 11.5px;
+      line-height: 1.4;
       color: var(--muted);
     }
 
+    /* ── Products list — scrollable when many ── */
     .products-list {
       display: grid;
-      gap: 10px;
+      gap: 8px;
+      /* Show ~4 cards then scroll; each card ~68px + 8px gap */
+      max-height: calc(4 * 68px + 3 * 8px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding-right: 3px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148,163,184,0.4) transparent;
     }
 
+    .products-list::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .products-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .products-list::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.38);
+      border-radius: 4px;
+    }
+
+    /* Fade hint at bottom when scrollable */
+    .products-scroll-wrap {
+      position: relative;
+    }
+
+    .products-scroll-wrap::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.85));
+      pointer-events: none;
+      border-radius: 0 0 12px 12px;
+      transition: opacity 200ms;
+    }
+
+    .products-scroll-wrap.at-bottom::after {
+      opacity: 0;
+    }
+
+    /* ── Product card ── */
     .product-card {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
-      padding: 14px;
+      padding: 10px 11px;
       border: 1px solid rgba(148, 163, 184, 0.28);
-      border-radius: 18px;
+      border-radius: 14px;
       background: rgba(255,255,255,0.86);
-      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
     }
 
     .product-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(37, 99, 235, 0.34);
-      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.10);
+      transform: translateY(-1px);
+      border-color: rgba(37, 99, 235, 0.30);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.09);
       background: #ffffff;
     }
 
-    .product-main {
-      min-width: 0;
-    }
+    .product-main { min-width: 0; }
 
     .product-top {
       display: flex;
-      align-items: flex-start;
+      align-items: baseline;
       justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 5px;
+      gap: 8px;
+      margin-bottom: 3px;
     }
 
     .product-name {
       margin: 0;
-      font-size: 15px;
+      font-size: 13.5px;
       font-weight: 900;
       letter-spacing: -0.02em;
       color: var(--text);
       line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .product-price {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 900;
       color: var(--accent-dark);
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .product-description {
       margin: 0;
-      font-size: 12.5px;
-      line-height: 1.38;
+      font-size: 11.5px;
+      line-height: 1.35;
       color: var(--muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
+    /* ── Qty ── */
     .qty-box {
       display: grid;
-      grid-template-columns: 34px 42px 34px;
-      border: 1px solid rgba(148, 163, 184, 0.42);
-      border-radius: 12px;
+      grid-template-columns: 28px 36px 28px;
+      border: 1px solid rgba(148, 163, 184, 0.38);
+      border-radius: 10px;
       overflow: hidden;
       background: #fff;
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.05);
+      flex-shrink: 0;
     }
 
     .qty-btn {
@@ -343,9 +393,13 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       border: none;
       background: #fff;
       color: var(--text);
-      font-size: 19px;
-      height: 36px;
+      font-size: 16px;
+      height: 30px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 120ms;
     }
 
     .qty-btn:hover {
@@ -359,145 +413,141 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 900;
       color: var(--text);
       background: #fff;
     }
 
-    .qty-hidden {
-      display: none;
-    }
+    .qty-hidden { display: none; }
 
+    /* ── Total ── */
     .total-card {
-      margin-top: 12px;
-      padding: 14px;
+      margin-top: 10px;
+      padding: 11px 13px;
       border: 1px solid rgba(37, 99, 235, 0.18);
-      border-radius: 18px;
+      border-radius: 14px;
       background:
-        radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 46%),
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.10), transparent 46%),
         linear-gradient(180deg, #ffffff, #f8fafc);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
+      gap: 12px;
     }
 
     .total-left {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       min-width: 0;
     }
 
     .total-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
       background: var(--accent-soft);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 17px;
       flex-shrink: 0;
     }
 
     .total-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 900;
       color: var(--text);
-      margin-bottom: 2px;
+      margin-bottom: 1px;
     }
 
     .total-subtitle {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--muted);
       line-height: 1.35;
     }
 
     .total-value {
-      font-size: 24px;
+      font-size: 21px;
       font-weight: 950;
       letter-spacing: -0.04em;
       color: var(--text);
       white-space: nowrap;
     }
 
+    /* ── Form ── */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 9px;
     }
 
     .field {
       display: flex;
       flex-direction: column;
-      gap: 7px;
+      gap: 5px;
       min-width: 0;
     }
 
-    .field.full {
-      grid-column: 1 / -1;
-    }
+    .field.full { grid-column: 1 / -1; }
 
     .label {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 850;
       color: var(--text);
     }
 
-    input,
-    textarea {
+    input, textarea {
       width: 100%;
       border: 1px solid rgba(148, 163, 184, 0.38);
-      border-radius: 14px;
-      padding: 12px 13px;
-      font-size: 14px;
+      border-radius: 12px;
+      padding: 9px 11px;
+      font-size: 13px;
       color: var(--text);
       background: rgba(255,255,255,0.92);
       outline: none;
       font-family: inherit;
+      transition: border-color 150ms, box-shadow 150ms;
     }
 
-    input:focus,
-    textarea:focus {
-      border-color: rgba(37, 99, 235, 0.62);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    input:focus, textarea:focus {
+      border-color: rgba(37, 99, 235, 0.58);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
       background: #fff;
     }
 
     textarea {
-      min-height: 96px;
+      min-height: 80px;
       resize: vertical;
     }
 
-    .submit-wrap {
-      display: grid;
-      gap: 8px;
-    }
+    /* ── Submit ── */
+    .submit-wrap { display: grid; gap: 7px; }
 
     .submit-btn {
       width: 100%;
       border: none;
-      border-radius: 18px;
+      border-radius: 15px;
       background:
         radial-gradient(circle at top left, rgba(255,255,255,0.26), transparent 30%),
         linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
       color: #fff;
-      padding: 15px 18px;
-      font-size: 15px;
+      padding: 13px 16px;
+      font-size: 14px;
       font-weight: 900;
       cursor: pointer;
-      box-shadow: 0 16px 32px rgba(37, 99, 235, 0.28);
+      box-shadow: 0 14px 28px rgba(37, 99, 235, 0.26);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 9px;
+      gap: 8px;
+      transition: transform 160ms ease, box-shadow 160ms ease;
     }
 
     .submit-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 22px 42px rgba(37, 99, 235, 0.34);
+      box-shadow: 0 20px 38px rgba(37, 99, 235, 0.32);
     }
 
     .submit-btn:disabled {
@@ -509,19 +559,22 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     .submit-hint {
       text-align: center;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11.5px;
       line-height: 1.4;
     }
 
+    /* ── Messages ── */
     .message {
       display: none;
-      padding: 13px 14px;
-      border-radius: 16px;
-      font-size: 14px;
+      padding: 11px 13px;
+      border-radius: 13px;
+      font-size: 13px;
       line-height: 1.42;
       white-space: pre-wrap;
       word-break: break-word;
       animation: fadeUp 260ms ease both;
+      position: relative;
+      z-index: 1;
     }
 
     .message.success {
@@ -538,8 +591,9 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       border: 1px solid #fecaca;
     }
 
+    /* ── Footer ── */
     .footer {
-      margin-top: 15px;
+      margin-top: 13px;
       text-align: center;
       font-size: 12px;
       line-height: 1.45;
@@ -547,12 +601,11 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .secure-row {
-      margin-top: 14px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 7px;
-      padding: 7px 10px;
+      gap: 6px;
+      padding: 6px 10px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.62);
       border: 1px solid rgba(148, 163, 184, 0.24);
@@ -560,32 +613,25 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     .expires {
-      margin-top: 10px;
+      margin-top: 8px;
       text-align: center;
       color: var(--muted-soft);
       font-size: 11px;
     }
 
     .empty {
-      padding: 28px 18px;
+      padding: 24px 16px;
       text-align: center;
       color: var(--muted);
-      font-size: 14px;
+      font-size: 13px;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    /* ── Animations ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     @keyframes loaderIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px) scale(0.98);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     @keyframes pageIn {
@@ -594,66 +640,38 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     }
 
     @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes cardIn {
-      from {
-        opacity: 0;
-        transform: translateY(16px) scale(0.985);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+      from { opacity: 0; transform: translateY(14px) scale(0.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
+    /* ── Responsive ── */
     @media (max-width: 640px) {
-      .page {
-        padding: 22px 8px 30px;
-      }
+      .page { padding: 18px 8px 28px; }
 
-      h1 {
-        font-size: 32px;
-      }
+      h1 { font-size: 28px; }
 
-      .panel {
-        padding: 11px;
-        border-radius: 22px;
-      }
+      .panel { padding: 10px; border-radius: 22px; }
 
-      .section-inner {
-        padding: 14px;
-      }
+      .section-inner { padding: 11px; }
 
-      .product-card {
-        grid-template-columns: 1fr;
-      }
+      .product-card { grid-template-columns: 1fr; }
 
-      .product-top {
-        flex-direction: column;
-        gap: 4px;
-      }
+      .product-top { flex-direction: column; gap: 2px; }
 
-      .qty-box {
-        width: 100%;
-        grid-template-columns: 1fr 48px 1fr;
-      }
+      .qty-box { width: 100%; grid-template-columns: 1fr 42px 1fr; }
 
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
+      .form-grid { grid-template-columns: 1fr; }
 
-      .total-card {
-        flex-direction: column;
-        align-items: flex-start;
+      .total-card { flex-direction: column; align-items: flex-start; }
+
+      .products-list {
+        /* On mobile show ~3 cards */
+        max-height: calc(3 * 90px + 2 * 8px);
       }
     }
   </style>
@@ -675,7 +693,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
           <span class="brand-dot"></span>
           <span>${safeBrand}</span>
         </div>
-
         <h1>${safeTitle}</h1>
         <p class="subtitle">${safeSubtitle}</p>
       </section>
@@ -762,10 +779,8 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
       textWrap.appendChild(titleEl);
       textWrap.appendChild(subtitleEl);
-
       head.appendChild(iconEl);
       head.appendChild(textWrap);
-
       inner.appendChild(head);
       section.appendChild(inner);
 
@@ -775,13 +790,9 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     function updateTotal() {
       const inputs = document.querySelectorAll('[data-kind="product-quantity"]');
       let total = 0;
-
       inputs.forEach((input) => {
-        const quantity = Number(input.value || 0);
-        const price = Number(input.dataset.productPrice || 0);
-        total += quantity * price;
+        total += Number(input.value || 0) * Number(input.dataset.productPrice || 0);
       });
-
       const totalValue = document.getElementById("totalValue");
       if (totalValue) totalValue.textContent = formatCurrency(total);
     }
@@ -800,11 +811,8 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       const { section, inner } = createSection(
         "🧾",
         "Selecciona productos",
-        "Agrega cantidades y revisa el total estimado antes de enviar."
+        "Agrega cantidades y revisa el total estimado."
       );
-
-      const list = document.createElement("div");
-      list.className = "products-list";
 
       if (!Array.isArray(component.items) || component.items.length === 0) {
         const empty = document.createElement("div");
@@ -813,6 +821,19 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
         inner.appendChild(empty);
         return section;
       }
+
+      /* Scrollable wrapper */
+      const scrollWrap = document.createElement("div");
+      scrollWrap.className = "products-scroll-wrap";
+
+      const list = document.createElement("div");
+      list.className = "products-list";
+
+      /* Track scroll position to hide fade hint at bottom */
+      list.addEventListener("scroll", () => {
+        const atBottom = list.scrollHeight - list.scrollTop <= list.clientHeight + 4;
+        scrollWrap.classList.toggle("at-bottom", atBottom);
+      });
 
       component.items.forEach((item) => {
         const card = document.createElement("div");
@@ -889,8 +910,15 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
         list.appendChild(card);
       });
 
-      inner.appendChild(list);
+      scrollWrap.appendChild(list);
+      inner.appendChild(scrollWrap);
 
+      /* Only show fade hint if there are enough items to scroll */
+      if (component.items.length <= 4) {
+        scrollWrap.classList.add("at-bottom");
+      }
+
+      /* Total */
       const totalCard = document.createElement("div");
       totalCard.className = "total-card";
 
@@ -913,7 +941,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
       totalText.appendChild(totalTitle);
       totalText.appendChild(totalSubtitle);
-
       totalLeft.appendChild(totalIcon);
       totalLeft.appendChild(totalText);
 
@@ -933,7 +960,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       const { section, inner } = createSection(
         "👤",
         "Tus datos",
-        "Completa esta información para que podamos contactarte."
+        "Completa esta información para contactarte."
       );
 
       const grid = document.createElement("div");
@@ -942,10 +969,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       component.fields.forEach((field) => {
         const fieldWrap = document.createElement("div");
         fieldWrap.className = "field";
-
-        if (field.inputType === "textarea") {
-          fieldWrap.classList.add("full");
-        }
+        if (field.inputType === "textarea") fieldWrap.classList.add("full");
 
         const label = document.createElement("label");
         label.className = "label";
@@ -956,10 +980,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
             ? document.createElement("textarea")
             : document.createElement("input");
 
-        if (field.inputType !== "textarea") {
-          input.type = field.inputType || "text";
-        }
-
+        if (field.inputType !== "textarea") input.type = field.inputType || "text";
         input.name = field.name;
         input.dataset.kind = "form-field";
         input.placeholder = field.placeholder || "";
@@ -990,7 +1011,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
       wrap.appendChild(btn);
       wrap.appendChild(hint);
-
       return wrap;
     }
 
@@ -1006,15 +1026,10 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
     async function onSubmit(btn) {
       const selectedItems = [];
-      const quantityInputs = document.querySelectorAll('[data-kind="product-quantity"]');
-
-      quantityInputs.forEach((input) => {
+      document.querySelectorAll('[data-kind="product-quantity"]').forEach((input) => {
         const quantity = Number(input.value || 0);
         const productId = input.dataset.productId;
-
-        if (quantity > 0 && productId) {
-          selectedItems.push({ productId, quantity });
-        }
+        if (quantity > 0 && productId) selectedItems.push({ productId, quantity });
       });
 
       if (selectedItems.length === 0) {
@@ -1027,12 +1042,10 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
       for (const field of formFields) {
         const value = String(field.value || "").trim();
-
         if (field.required && !value) {
           showMessage("error", "Completa los campos obligatorios.");
           return;
         }
-
         customer[field.name] = value;
       }
 
@@ -1046,9 +1059,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
           body: JSON.stringify({
             customer,
             items: selectedItems,
-            raw: {
-              submittedAtClient: new Date().toISOString()
-            }
+            raw: { submittedAtClient: new Date().toISOString() }
           })
         });
 
@@ -1079,7 +1090,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
     config.components.forEach((component, index) => {
       const el = renderComponent(component);
-      el.style.animationDelay = String(index * 90) + "ms";
+      el.style.animationDelay = String(index * 80) + "ms";
       contentEl.appendChild(el);
     });
 
