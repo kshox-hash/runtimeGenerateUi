@@ -22,18 +22,23 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
   <style>
     :root {
-      --bg: #eef2f7;
-      --panel: rgba(255, 255, 255, 0.84);
-      --text: #0f172a;
-      --muted: #64748b;
-      --muted-soft: #94a3b8;
-      --border: rgba(148, 163, 184, 0.30);
-      --accent: #2563eb;
-      --accent-dark: #1e40af;
-      --accent-soft: #dbeafe;
-      --green: #22c55e;
-      --shadow: 0 18px 44px rgba(15, 23, 42, 0.12);
-      --shadow-card: 0 4px 12px rgba(15, 23, 42, 0.055);
+      --bg: #08090b;
+      --panel: #111317;
+      --panel-2: #151820;
+      --surface: #181b22;
+      --surface-soft: #1f232c;
+      --surface-hover: #252a34;
+      --text: #f3f4f6;
+      --muted: #a1a1aa;
+      --muted-soft: #71717a;
+      --border: rgba(255, 255, 255, 0.09);
+      --border-strong: rgba(255, 255, 255, 0.15);
+      --accent: #e5e7eb;
+      --accent-dark: #ffffff;
+      --accent-soft: rgba(255, 255, 255, 0.08);
+      --success: #d4d4d8;
+      --shadow: 0 18px 42px rgba(0, 0, 0, 0.34);
+      --shadow-card: none;
       --radius-xl: 20px;
       --radius-lg: 14px;
     }
@@ -44,10 +49,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     body {
       min-height: 100vh;
       font-family: Inter, Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(37, 99, 235, 0.20), transparent 34%),
-        radial-gradient(circle at top right, rgba(14, 165, 233, 0.16), transparent 32%),
-        linear-gradient(180deg, #f8fafc 0%, var(--bg) 100%);
+      background: var(--bg);
       color: var(--text);
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
@@ -58,11 +60,9 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       position: fixed;
       inset: 0;
       pointer-events: none;
-      background-image:
-        linear-gradient(rgba(15, 23, 42, 0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
-      background-size: 34px 34px;
-      mask-image: linear-gradient(to bottom, black, transparent 78%);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.035), transparent 220px),
+        radial-gradient(circle at top, rgba(255,255,255,0.035), transparent 360px);
     }
 
     /* ── Loader ── */
@@ -73,119 +73,91 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       display: flex;
       align-items: center;
       justify-content: center;
-      background:
-        radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent 34%),
-        linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
-      transition: opacity 220ms ease, visibility 220ms ease;
+      background: var(--bg);
+      transition: opacity 180ms ease, visibility 180ms ease;
     }
 
-    .page-loader.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
+    .page-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
     .loader-card {
-      width: min(260px, calc(100vw - 48px));
-      padding: 20px 18px;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.78);
-      border: 1px solid rgba(148, 163, 184, 0.28);
+      width: min(240px, calc(100vw - 44px));
+      padding: 18px 16px;
+      border-radius: 18px;
+      background: var(--panel);
+      border: 1px solid var(--border);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
       text-align: center;
-      animation: loaderIn 360ms ease both;
+      animation: loaderIn 260ms ease both;
     }
 
     .spinner {
-      width: 30px;
-      height: 30px;
-      margin: 0 auto 12px;
+      width: 28px;
+      height: 28px;
+      margin: 0 auto 10px;
       border-radius: 50%;
-      border: 3px solid rgba(37, 99, 235, 0.14);
-      border-top-color: #2563eb;
-      animation: spin 800ms linear infinite;
+      border: 2px solid rgba(255,255,255,0.12);
+      border-top-color: #f4f4f5;
+      animation: spin 760ms linear infinite;
     }
 
-    .loader-title {
-      font-size: 14px;
-      font-weight: 900;
-      color: var(--text);
-      margin-bottom: 3px;
-    }
-
-    .loader-text {
-      font-size: 11.5px;
-      color: var(--muted);
-      line-height: 1.4;
-    }
+    .loader-title { font-size: 13px; font-weight: 850; color: var(--text); margin-bottom: 3px; }
+    .loader-text { font-size: 11px; color: var(--muted); line-height: 1.35; }
 
     /* ── Layout ── */
-    .page {
-      position: relative;
-      min-height: 100vh;
-      padding: 10px 10px 18px;
-    }
+    .page { position: relative; min-height: 100vh; padding: 10px 10px 16px; }
 
     .shell {
-      width: min(920px, 100%);
-      min-height: calc(100vh - 28px);
+      width: min(980px, 100%);
+      min-height: calc(100vh - 26px);
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      animation: pageIn 520ms ease both;
+      animation: pageIn 360ms ease both;
     }
 
     /* ── Hero ── */
-    .hero {
-      text-align: center;
-      margin-bottom: 7px;
-      padding-top: 0;
-      flex: 0 0 auto;
-    }
+    .hero { text-align: center; margin-bottom: 7px; padding-top: 0; flex: 0 0 auto; }
 
     .brand-pill {
       display: inline-flex;
       align-items: center;
       gap: 7px;
       padding: 5px 10px;
-      border: 1px solid rgba(148, 163, 184, 0.28);
+      border: 1px solid var(--border);
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.66);
-      backdrop-filter: blur(14px);
-      color: #475569;
+      background: rgba(255,255,255,0.045);
+      color: #d4d4d8;
       font-size: 11px;
       font-weight: 800;
-      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
-      animation: fadeUp 520ms ease both;
+      animation: fadeUp 360ms ease both;
     }
 
     .brand-dot {
       width: 7px;
       height: 7px;
       border-radius: 99px;
-      background: var(--accent);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+      background: #f4f4f5;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.06);
     }
 
     h1 {
-      margin: 6px 0 0;
+      margin: 7px 0 0;
       font-size: 24px;
       line-height: 1;
       letter-spacing: -0.055em;
       color: var(--text);
-      animation: fadeUp 580ms ease both;
-      animation-delay: 50ms;
+      animation: fadeUp 380ms ease both;
+      animation-delay: 35ms;
     }
 
     .subtitle {
       margin: 5px auto 0;
-      max-width: 620px;
+      max-width: 640px;
       color: var(--muted);
       font-size: 11.5px;
       line-height: 1.25;
-      animation: fadeUp 620ms ease both;
-      animation-delay: 100ms;
+      animation: fadeUp 400ms ease both;
+      animation-delay: 70ms;
     }
 
     /* ── Panel ── */
@@ -195,66 +167,40 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       min-height: 0;
       margin-top: 7px;
       padding: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       background: var(--panel);
-      backdrop-filter: blur(18px);
       box-shadow: var(--shadow);
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      animation: fadeUp 660ms ease both;
-      animation-delay: 150ms;
+      animation: fadeUp 420ms ease both;
+      animation-delay: 90ms;
     }
 
-    .panel::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      border-radius: inherit;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.72), transparent 42%),
-        radial-gradient(circle at top left, rgba(37,99,235,0.10), transparent 38%);
-    }
+    .panel::before { display: none; }
 
     .content-flow {
       position: relative;
       z-index: 1;
       flex: 1 1 auto;
       min-height: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto auto;
+      gap: 8px;
     }
 
     /* ── Section container ── */
     .section {
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,250,252,0.90));
+      background: var(--panel-2);
       box-shadow: var(--shadow-card);
       overflow: hidden;
-      animation: cardIn 500ms cubic-bezier(.2,.8,.2,1) both;
+      animation: cardIn 360ms cubic-bezier(.2,.8,.2,1) both;
     }
 
-    .products-section {
-      flex: 1 1 auto;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .products-section .section-inner {
-      flex: 1 1 auto;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .section-inner {
-      padding: 10px;
-    }
+    .section-inner { padding: 8px; }
 
     .section-head {
       display: flex;
@@ -267,15 +213,14 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       width: 28px;
       height: 28px;
       border-radius: 10px;
-      background: linear-gradient(145deg, #eaf1ff, #ffffff);
+      background: var(--accent-soft);
+      border: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 15px;
+      font-size: 14px;
       flex-shrink: 0;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.9),
-        0 6px 16px rgba(37, 99, 235, 0.10);
+      filter: grayscale(1);
     }
 
     .section-title {
@@ -283,110 +228,105 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       font-weight: 900;
       letter-spacing: -0.025em;
       color: var(--text);
-      margin-bottom: 2px;
+      margin-bottom: 1px;
     }
 
-    .section-subtitle {
-      font-size: 10.5px;
-      line-height: 1.25;
-      color: var(--muted);
+    .section-subtitle { font-size: 10.5px; line-height: 1.3; color: var(--muted); }
+
+    /* ── Products viewport ── */
+    .products-section {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
 
-    /* ── Products list — compact rows, scrollable when many ── */
+    .products-section .section-inner {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .products-scroll-wrap {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
     .products-list {
       display: grid;
       gap: 6px;
-      flex: 1 1 auto;
-      max-height: clamp(360px, 58vh, 680px);
-      min-height: 280px;
+      max-height: clamp(430px, 66vh, 820px);
+      min-height: 370px;
       overflow-y: auto;
       overscroll-behavior: contain;
       padding-right: 3px;
       scrollbar-width: thin;
-      scrollbar-color: rgba(148,163,184,0.4) transparent;
+      scrollbar-color: rgba(255,255,255,0.24) transparent;
     }
 
     .products-list::-webkit-scrollbar { width: 4px; }
     .products-list::-webkit-scrollbar-track { background: transparent; }
-    .products-list::-webkit-scrollbar-thumb {
-      background: rgba(148, 163, 184, 0.38);
-      border-radius: 4px;
-    }
-
-    .products-scroll-wrap { position: relative; }
+    .products-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.22); border-radius: 4px; }
 
     .products-scroll-wrap::after {
       content: "";
       position: absolute;
-      bottom: 0;
       left: 0;
-      right: 0;
-      height: 22px;
-      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.86));
+      right: 4px;
+      bottom: 0;
+      height: 28px;
+      background: linear-gradient(to bottom, transparent, var(--panel-2));
       pointer-events: none;
-      border-radius: 0 0 10px 10px;
-      transition: opacity 200ms;
+      transition: opacity 160ms;
     }
 
     .products-scroll-wrap.at-bottom::after { opacity: 0; }
 
+    /* ── Product card ── */
     .product-card {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 8px;
       align-items: center;
-      min-height: 46px;
+      min-height: 52px;
       padding: 7px 8px;
-      border: 1px solid rgba(148, 163, 184, 0.24);
-      border-radius: 11px;
-      background: rgba(255,255,255,0.88);
-      transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      transition: background 130ms ease, border-color 130ms ease, transform 130ms ease;
     }
 
-    .product-card:hover {
-      transform: translateY(-1px);
-      border-color: rgba(37, 99, 235, 0.28);
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.075);
-      background: #ffffff;
-    }
+    .product-card:hover { background: var(--surface-hover); border-color: var(--border-strong); transform: translateY(-1px); }
 
-    .product-main {
-      min-width: 0;
-      display: grid;
-      gap: 2px;
-    }
+    .product-main { min-width: 0; }
 
     .product-top {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: baseline;
       gap: 8px;
+      margin-bottom: 2px;
     }
 
     .product-name {
       margin: 0;
       font-size: 12.5px;
-      font-weight: 900;
-      letter-spacing: -0.018em;
+      font-weight: 850;
+      letter-spacing: -0.02em;
       color: var(--text);
-      line-height: 1.1;
+      line-height: 1.15;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .product-price {
-      font-size: 12px;
-      font-weight: 900;
-      color: var(--accent-dark);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
+    .product-price { font-size: 12px; font-weight: 900; color: #fafafa; white-space: nowrap; flex-shrink: 0; }
 
     .product-description {
       margin: 0;
       font-size: 10.5px;
-      line-height: 1.18;
+      line-height: 1.25;
       color: var(--muted);
       display: -webkit-box;
       -webkit-line-clamp: 1;
@@ -397,22 +337,21 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
     /* ── Qty ── */
     .qty-box {
       display: grid;
-      grid-template-columns: 24px 30px 24px;
-      border: 1px solid rgba(148, 163, 184, 0.34);
-      border-radius: 9px;
+      grid-template-columns: 26px 32px 26px;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
       overflow: hidden;
-      background: #fff;
-      box-shadow: 0 3px 8px rgba(15, 23, 42, 0.045);
+      background: #0c0d10;
       flex-shrink: 0;
     }
 
     .qty-btn {
       appearance: none;
       border: none;
-      background: #fff;
+      background: transparent;
       color: var(--text);
-      font-size: 14px;
-      height: 26px;
+      font-size: 15px;
+      height: 28px;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -420,84 +359,48 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       transition: background 120ms;
     }
 
-    .qty-btn:hover {
-      background: var(--accent-soft);
-      color: var(--accent-dark);
-    }
+    .qty-btn:hover { background: rgba(255,255,255,0.08); }
 
     .qty-value {
-      border-left: 1px solid rgba(148, 163, 184, 0.32);
-      border-right: 1px solid rgba(148, 163, 184, 0.32);
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 12px;
       font-weight: 900;
       color: var(--text);
-      background: #fff;
+      background: rgba(255,255,255,0.04);
     }
 
     .qty-hidden { display: none; }
 
     /* ── Total ── */
     .total-card {
-      flex: 0 0 auto;
-      margin-top: 7px;
-      padding: 7px 9px;
-      border: 1px solid rgba(37, 99, 235, 0.18);
-      border-radius: 11px;
-      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      margin-top: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      background: #0c0d10;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
     }
 
-    .total-left {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      min-width: 0;
-    }
-
-    .total-icon {
-      width: 26px;
-      height: 26px;
-      border-radius: 9px;
-      background: var(--accent-soft);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      flex-shrink: 0;
-    }
-
-    .total-title {
-      font-size: 11.5px;
-      font-weight: 900;
-      color: var(--text);
-      margin-bottom: 0;
-    }
-
+    .total-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .total-icon { display: none; }
+    .total-title { font-size: 11.5px; font-weight: 900; color: var(--text); margin-bottom: 0; }
     .total-subtitle { display: none; }
+    .total-value { font-size: 17px; font-weight: 950; letter-spacing: -0.04em; color: var(--text); white-space: nowrap; }
 
-    .total-value {
-      font-size: 16px;
-      font-weight: 950;
-      letter-spacing: -0.035em;
-      color: var(--text);
-      white-space: nowrap;
-    }
-
-    /* ── Form compact/collapsible ── */
-    .form-section {
-      flex: 0 0 auto;
-    }
+    /* ── Form as compact disclosure ── */
+    .form-section { flex: 0 0 auto; background: #101216; }
 
     .form-section summary {
       list-style: none;
       cursor: pointer;
-      padding: 9px 10px;
+      padding: 8px 9px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -507,209 +410,117 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
     .form-section summary::-webkit-details-marker { display: none; }
 
-    .form-summary-left {
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
+    .form-summary-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
     .form-summary-text { min-width: 0; }
 
     .form-toggle-pill {
-      flex: 0 0 auto;
-      border: 1px solid rgba(37, 99, 235, 0.18);
+      flex-shrink: 0;
+      border: 1px solid var(--border);
       border-radius: 999px;
-      padding: 5px 9px;
-      color: var(--accent-dark);
-      background: var(--accent-soft);
-      font-size: 11px;
-      font-weight: 900;
-      white-space: nowrap;
+      padding: 4px 8px;
+      font-size: 10.5px;
+      font-weight: 850;
+      color: var(--text);
+      background: rgba(255,255,255,0.045);
     }
 
-    .form-toggle-pill::after { content: "Abrir"; }
+    .form-toggle-pill::after { content: "Completar"; }
     .form-section[open] .form-toggle-pill::after { content: "Cerrar"; }
 
     .form-section .section-inner {
-      padding-top: 0;
-      border-top: 1px solid rgba(148, 163, 184, 0.18);
+      border-top: 1px solid var(--border);
+      padding: 8px;
       max-height: 240px;
       overflow-y: auto;
     }
 
-    /* ── Form ── */
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 7px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      min-width: 0;
-    }
-
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
     .field.full { grid-column: 1 / -1; }
-
-    .label {
-      font-size: 10.8px;
-      font-weight: 850;
-      color: var(--text);
-    }
+    .label { font-size: 10.5px; font-weight: 800; color: #d4d4d8; }
 
     input, textarea {
       width: 100%;
-      border: 1px solid rgba(148, 163, 184, 0.34);
+      border: 1px solid var(--border-strong);
       border-radius: 10px;
-      padding: 7px 9px;
+      padding: 8px 9px;
       font-size: 12px;
       color: var(--text);
-      background: rgba(255,255,255,0.92);
+      background: #0c0d10;
       outline: none;
       font-family: inherit;
-      transition: border-color 150ms, box-shadow 150ms;
+      transition: border-color 140ms, background 140ms;
     }
 
-    input:focus, textarea:focus {
-      border-color: rgba(37, 99, 235, 0.58);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
-      background: #fff;
-    }
-
-    textarea {
-      min-height: 54px;
-      resize: vertical;
-    }
+    input::placeholder, textarea::placeholder { color: #52525b; }
+    input:focus, textarea:focus { border-color: rgba(255,255,255,0.34); background: #090a0c; }
+    textarea { min-height: 58px; resize: vertical; }
 
     /* ── Submit ── */
-    .submit-wrap { display: grid; gap: 7px; }
+    .submit-wrap { flex: 0 0 auto; display: grid; gap: 6px; }
 
     .submit-btn {
       width: 100%;
-      border: none;
-      border-radius: 12px;
-      background:
-        radial-gradient(circle at top left, rgba(255,255,255,0.26), transparent 30%),
-        linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
-      color: #fff;
-      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 13px;
+      background: #f4f4f5;
+      color: #09090b;
+      padding: 11px 14px;
       font-size: 13px;
-      font-weight: 900;
+      font-weight: 950;
       cursor: pointer;
-      box-shadow: 0 14px 28px rgba(37, 99, 235, 0.26);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: transform 160ms ease, box-shadow 160ms ease;
+      transition: transform 140ms ease, background 140ms ease;
     }
 
-    .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 20px 38px rgba(37, 99, 235, 0.32);
-    }
-
-    .submit-btn:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .submit-hint {
-      text-align: center;
-      color: var(--muted);
-      font-size: 10.5px;
-      line-height: 1.25;
-    }
+    .submit-btn:hover { transform: translateY(-1px); background: #ffffff; }
+    .submit-btn:disabled { opacity: 0.72; cursor: not-allowed; transform: none; }
+    .submit-hint { text-align: center; color: var(--muted-soft); font-size: 10.5px; line-height: 1.3; }
 
     /* ── Messages ── */
     .message {
       display: none;
-      padding: 11px 13px;
-      border-radius: 13px;
-      font-size: 13px;
-      line-height: 1.42;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 1.4;
       white-space: pre-wrap;
       word-break: break-word;
-      animation: fadeUp 260ms ease both;
+      animation: fadeUp 220ms ease both;
       position: relative;
       z-index: 1;
     }
 
-    .message.success {
-      display: block;
-      background: #ecfdf3;
-      color: #166534;
-      border: 1px solid #bbf7d0;
-    }
-
-    .message.error {
-      display: block;
-      background: #fef2f2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
-    }
+    .message.success { display: block; background: #18181b; color: #f4f4f5; border: 1px solid rgba(255,255,255,0.16); }
+    .message.error { display: block; background: #1c1414; color: #fecaca; border: 1px solid rgba(248,113,113,0.28); }
 
     /* ── Footer ── */
-    .footer {
-      margin-top: 9px;
-      text-align: center;
-      font-size: 10.5px;
-      line-height: 1.3;
-      color: var(--muted);
-    }
+    .footer { margin-top: 9px; text-align: center; font-size: 11px; line-height: 1.35; color: var(--muted); }
 
     .secure-row {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 6px 10px;
+      padding: 5px 9px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.62);
-      border: 1px solid rgba(148, 163, 184, 0.24);
-      backdrop-filter: blur(12px);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      filter: grayscale(1);
     }
 
-    .expires {
-      margin-top: 8px;
-      text-align: center;
-      color: var(--muted-soft);
-      font-size: 11px;
-    }
-
-    .empty {
-      padding: 24px 16px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-    }
+    .expires { margin-top: 7px; text-align: center; color: var(--muted-soft); font-size: 10.5px; position: relative; z-index: 1; }
+    .empty { padding: 22px 14px; text-align: center; color: var(--muted); font-size: 12px; }
 
     /* ── Animations ── */
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    @keyframes loaderIn {
-      from { opacity: 0; transform: translateY(10px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    @keyframes pageIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes cardIn {
-      from { opacity: 0; transform: translateY(14px) scale(0.985); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
+    @keyframes loaderIn { from { opacity: 0; transform: translateY(8px) scale(0.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes pageIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(10px) scale(0.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
     /* ── Responsive ── */
     @media (max-width: 640px) {
@@ -721,12 +532,8 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
       .panel { padding: 6px; border-radius: 18px; }
       .section-inner { padding: 7px; }
       .section-head { margin-bottom: 6px; }
-      .products-list { max-height: clamp(390px, 62vh, 720px); min-height: 330px; }
-      .product-card {
-        grid-template-columns: minmax(0, 1fr) auto;
-        padding: 7px;
-        gap: 7px;
-      }
+      .products-list { max-height: clamp(410px, 64vh, 760px); min-height: 340px; }
+      .product-card { grid-template-columns: minmax(0, 1fr) auto; padding: 7px; gap: 7px; }
       .product-top { grid-template-columns: minmax(0, 1fr) auto; }
       .product-name { font-size: 12px; }
       .product-price { font-size: 11.5px; }
