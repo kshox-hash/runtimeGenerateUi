@@ -123,9 +123,9 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
 
   <style>
     :root {
-      --bg: #131414;
+      --bg: #19191a;
 
-      --surface: #1d1f27;
+      --surface: #0d0e11;
       --surface-hover: #17181f;
 
       --text: #e8eaed;
@@ -143,7 +143,7 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
       --red: #f28b82;
       --red-soft: rgba(242, 139, 130, 0.10);
 
-      --border: #1d1f27;
+      --border: #0d0e11;
 
       --border-hover: rgba(
         199,
