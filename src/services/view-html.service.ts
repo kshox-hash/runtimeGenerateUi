@@ -19,9 +19,9 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 :root {
   --bg: #202124;
 
-  --app: #0f1117;
-  --app-2: #12141b;
-  --app-3: #171a23;
+  --app: #0b0c10;;
+  --app-2: #0b0c10;;
+  --app-3: #0b0c10;;
   --app-4: #1d2130;
 
   --section: #151821;
