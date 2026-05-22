@@ -37,11 +37,9 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
   --muted: #a6abb7;
   --muted-soft: #808693;
-  --muted-2: #646b78;
 
   --link: #bfc7ff;
   --link-soft: #22263a;
-  --link-mid: #303654;
 
   --green: #81c995;
   --green-soft: #1d3428;
@@ -101,109 +99,98 @@ textarea {
   margin: 0 auto;
 }
 
-/* HEADER */
+/* MODULE HEADER */
 
-.topbar {
-  min-height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 18px;
-}
-
-.brand {
-  color: var(--text-strong);
-  font-size: 19px;
-  line-height: 1;
-  font-weight: 500;
-  letter-spacing: -0.045em;
-  opacity: 0.94;
-}
-
-/* HERO */
-
-.hero {
-  text-align: center;
-  padding: 4px 8px 30px;
-}
-
-.hero-kicker {
-  width: max-content;
-  max-width: 100%;
-  margin: 0 auto 14px;
-  padding: 7px 13px;
-  border-radius: 999px;
-  background: var(--link-soft);
-  color: var(--link);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-}
-
-h1 {
-  max-width: 620px;
-  margin: 0 auto;
-  color: var(--text-strong);
-  font-size: clamp(31px, 5.2vw, 42px);
-  line-height: 1.08;
-  letter-spacing: -0.055em;
-  font-weight: 500;
-  text-wrap: balance;
-}
-
-.subtitle {
-  max-width: 520px;
-  margin: 15px auto 0;
-  color: var(--muted);
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 1.5;
-}
-
-/* FLOW */
-
-.panel {
-  background: transparent;
-}
-
-.content-flow {
-  display: grid;
-  gap: 18px;
-}
-
-/* SECTION */
-
-.section-wrap {
+.module-shell {
   border-radius: var(--radius-xl);
   background: var(--surface);
   overflow: hidden;
 }
 
+.module-head {
+  padding: 18px 20px 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.module-brand {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.module-title-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 14px;
+}
+
+.module-title {
+  color: var(--text-strong);
+  font-size: 24px;
+  line-height: 1.08;
+  font-weight: 500;
+  letter-spacing: -0.045em;
+}
+
+.module-subtitle {
+  margin-top: 5px;
+  color: var(--muted-soft);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.module-pill {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--link-soft);
+  color: var(--link);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.module-body {
+  display: grid;
+  gap: 18px;
+  padding: 0 20px 20px;
+}
+
+/* PRODUCT SECTION */
+
+.section-wrap {
+  border-radius: var(--radius-lg);
+  background: #101116;
+  overflow: hidden;
+}
+
 .section-header {
-  padding: 20px 20px 0;
+  padding: 16px 16px 0;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: start;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .section-title {
   color: var(--text-strong);
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 500;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.035em;
   line-height: 1.1;
 }
 
 .section-sub {
   color: var(--muted-soft);
-  font-size: 13px;
-  margin-top: 5px;
+  font-size: 12px;
+  margin-top: 4px;
 }
 
 .badge-count {
-  padding: 8px 12px;
+  padding: 7px 11px;
   border-radius: 999px;
   background: var(--link-soft);
   color: var(--link);
@@ -215,17 +202,17 @@ h1 {
 /* SEARCH */
 
 .search-wrap {
-  padding: 0 20px 16px;
+  padding: 0 16px 14px;
 }
 
 .search-shell {
-  height: 52px;
+  height: 48px;
   display: grid;
-  grid-template-columns: 1fr 40px;
+  grid-template-columns: 1fr 38px;
   align-items: center;
   border-radius: 999px;
   background: #05060a;
-  padding: 0 6px 0 18px;
+  padding: 0 6px 0 16px;
 }
 
 .search-input {
@@ -233,8 +220,7 @@ h1 {
   outline: none;
   background: transparent;
   color: var(--text);
-  font-size: 15px;
-  font-weight: 400;
+  font-size: 14px;
 }
 
 .search-input::placeholder {
@@ -242,23 +228,23 @@ h1 {
 }
 
 .search-icon {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 999px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--surface-3);
   color: var(--muted);
-  font-size: 16px;
+  font-size: 15px;
 }
 
 /* PRODUCTS */
 
 .products-scroll {
-  margin: 0 20px 18px;
+  margin: 0 16px 16px;
   padding: 8px;
-  border-radius: var(--radius-lg);
+  border-radius: 18px;
   background: var(--surface-list);
 }
 
@@ -385,9 +371,9 @@ h1 {
 /* TOTAL */
 
 .total-row {
-  margin: 0 20px 20px;
-  padding: 18px;
-  border-radius: var(--radius-lg);
+  margin: 0 16px 16px;
+  padding: 16px;
+  border-radius: 18px;
   background: var(--link-soft);
   display: flex;
   align-items: center;
@@ -402,7 +388,7 @@ h1 {
 
 .total-value {
   color: var(--link);
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 520;
   letter-spacing: -0.05em;
 }
@@ -410,8 +396,8 @@ h1 {
 /* TEXT */
 
 .text-block {
-  padding: 16px 20px;
-  border-radius: var(--radius-xl);
+  padding: 16px;
+  border-radius: var(--radius-lg);
   background: var(--surface);
   color: var(--muted);
   font-size: 14px;
@@ -421,17 +407,17 @@ h1 {
 /* FORM */
 
 .form-collapse {
-  border-radius: var(--radius-xl);
-  background: var(--surface);
+  border-radius: var(--radius-lg);
+  background: #101116;
   overflow: hidden;
 }
 
 .form-toggle {
   width: 100%;
-  min-height: 72px;
+  min-height: 68px;
   border: none;
   background: transparent;
-  padding: 16px 20px;
+  padding: 15px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -445,10 +431,10 @@ h1 {
 }
 
 .form-icon {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   flex-shrink: 0;
-  border-radius: 16px;
+  border-radius: 15px;
   background: var(--link-soft);
   color: var(--link);
   display: flex;
@@ -481,7 +467,7 @@ h1 {
 
 .form-content {
   display: none;
-  padding: 0 20px 20px;
+  padding: 0 16px 16px;
 }
 
 .form-collapse.open .form-content {
@@ -491,7 +477,7 @@ h1 {
 .form-divider {
   height: 1px;
   background: rgba(255,255,255,0.04);
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .form-grid {
@@ -610,61 +596,52 @@ textarea {
 
 @media (max-width: 580px) {
   .page {
-    padding: 16px 12px 36px;
+    padding: 14px 10px 32px;
   }
 
-  .topbar {
-    margin-bottom: 22px;
+  .module-head {
+    padding: 16px 16px 14px;
   }
 
-  .hero {
-    padding: 0 4px 30px;
+  .module-body {
+    padding: 0 16px 16px;
   }
 
-  h1 {
-    font-size: 34px;
+  .module-title-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .module-pill {
+    width: max-content;
+  }
+
+  .module-title {
+    font-size: 22px;
   }
 
   .section-header {
-    padding: 18px 18px 0;
+    padding: 16px 16px 0;
   }
 
   .search-wrap {
-    padding: 0 18px 14px;
+    padding: 0 16px 14px;
   }
 
   .products-scroll {
-    margin: 0 18px 18px;
-    padding: 8px;
+    margin: 0 16px 16px;
   }
 
   .products-scroll.is-scrollable {
     max-height: 620px;
   }
 
-  .product-card {
-    min-height: 52px;
-    padding: 9px 11px;
-  }
-
-  .product-name {
-    font-size: 13.5px;
-  }
-
-  .product-description {
-    font-size: 11px;
-  }
-
   .total-row {
-    margin: 0 18px 18px;
+    margin: 0 16px 16px;
   }
 
   .form-grid {
     grid-template-columns: 1fr;
-  }
-
-  .form-content {
-    padding: 0 18px 18px;
   }
 }
 
@@ -692,21 +669,29 @@ textarea {
 <main class="page">
   <div class="shell">
 
-    <header class="topbar">
-      <div class="brand">Amaru Electric</div>
-    </header>
+    <section class="module-shell">
+      <header class="module-head">
+        <div class="module-brand">Amaru Electric</div>
 
-    <section class="hero">
-      <div class="hero-kicker">Cotizador online</div>
-      <h1>${safeTitle}</h1>
-      <p class="subtitle">${safeSubtitle}</p>
+        <div class="module-title-row">
+          <div>
+            <h1 class="module-title">${safeTitle}</h1>
+            <p class="module-subtitle">${safeSubtitle}</p>
+          </div>
+
+          <div class="module-pill">Cotizador online</div>
+        </div>
+      </header>
+
+      <div class="module-body">
+        <div id="content" class="content-flow"></div>
+        <div id="message" class="message"></div>
+      </div>
     </section>
 
-    <section class="panel">
-      <div id="content" class="content-flow"></div>
-      <div id="message" class="message" style="margin-top:12px"></div>
-      <p class="expires">Este enlace expira el <span id="expiresAt"></span></p>
-    </section>
+    <p class="expires">
+      Este enlace expira el <span id="expiresAt"></span>
+    </p>
 
   </div>
 </main>
