@@ -32,6 +32,7 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
         >
           <div class="module-header">
             <div class="module-icon">${icon}</div>
+
             <div class="${isEnabled ? "module-status active" : "module-status inactive"}">
               <span></span>
               ${tagText}
@@ -70,30 +71,34 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
 
   <style>
     :root {
-  --bg: #121318;
-  --surface: #0f1117;
-  --surface-soft: #15171d;
-  --surface-muted: #1b1d24;
+      --bg: #1f2025;
+      --bg-deep: #121318;
 
-  --text: #f1f3f4;
-  --muted: #c8cbd2;
-  --muted-soft: #90949d;
+      --surface: #0f1016;
+      --surface-soft: #15161d;
+      --surface-muted: #1b1d24;
 
-  --primary: #c7d2ff;
-  --primary-strong: #aebcff;
-  --primary-soft: rgba(199, 210, 255, 0.12);
+      --text: #f1f3f4;
+      --muted: #c8cbd2;
+      --muted-soft: #8f949d;
 
-  --green: #81c995;
-  --green-soft: rgba(129, 201, 149, 0.12);
+      --primary: #c7d2ff;
+      --primary-strong: #aebcff;
+      --primary-soft: rgba(199, 210, 255, 0.11);
 
-  --red: #f28b82;
-  --red-soft: rgba(242, 139, 130, 0.12);
+      --green: #81c995;
+      --green-soft: rgba(129, 201, 149, 0.11);
 
-  --border: rgba(231, 234, 240, 0.18);
-  --border-hover: rgba(199, 210, 255, 0.30);
+      --red: #f28b82;
+      --red-soft: rgba(242, 139, 130, 0.11);
 
-  --shadow-card: 0 20px 48px rgba(0, 0, 0, 0.26);
-}
+      --border: rgba(231, 234, 240, 0.12);
+      --border-hover: rgba(199, 210, 255, 0.28);
+
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+
+      --shadow-card: 0 20px 48px rgba(0, 0, 0, 0.26);
     }
 
     * {
@@ -102,14 +107,10 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
     }
 
     html,
-   body {
-  min-height: 100vh;
-  font-family: "Google Sans", "Inter", "Segoe UI", sans-serif;
-  color: var(--text);
-  background: var(--bg);
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-}
+    body {
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       min-height: 100vh;
@@ -127,7 +128,7 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(32, 33, 36, 0.78);
+      background: rgba(18, 19, 24, 0.82);
       backdrop-filter: blur(10px);
       transition: opacity 160ms ease, visibility 160ms ease;
     }
@@ -149,7 +150,7 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
 
     .page {
       min-height: 100vh;
-      padding: 18px 14px 32px;
+      padding: 16px 14px 32px;
     }
 
     .shell {
@@ -160,48 +161,32 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
     }
 
     .brand-header {
-      min-height: 74px;
+      min-height: 64px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 22px;
-    }
-
-    .brand-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      min-height: 46px;
-      padding: 10px 18px;
-      border-radius: 999px;
-      background: rgba(15, 17, 23, 0.72);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.20);
-    }
-
-    .brand-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 999px;
-      background: var(--green);
-      box-shadow: 0 0 18px rgba(129, 201, 149, 0.70);
+      margin-bottom: 12px;
     }
 
     .brand-name {
       max-width: 300px;
       color: var(--text);
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.035em;
+      font-size: 23px;
+      line-height: 1;
+      font-weight: 600;
+      letter-spacing: -0.055em;
+      text-align: center;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.08),
+        0 10px 24px rgba(199, 210, 255, 0.10);
     }
 
     .hero {
       text-align: center;
-      padding: 16px 10px 34px;
+      padding: 18px 10px 34px;
     }
 
     h1 {
@@ -218,9 +203,9 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
     .subtitle {
       margin: 18px auto 0;
       max-width: 500px;
-      color: var(--primary);
+      color: #d2d6de;
       font-size: 16px;
-      font-weight: 500;
+      font-weight: 400;
       line-height: 1.5;
       text-wrap: balance;
     }
@@ -248,9 +233,10 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
       justify-content: space-between;
       padding: 18px;
       border-radius: var(--radius-lg);
-      background: var(--surface);
+      background: rgba(15, 17, 23, 0.86);
       border: 1px solid var(--border);
       box-shadow: var(--shadow-card);
+      backdrop-filter: blur(10px);
       color: inherit;
       text-decoration: none;
       opacity: 0;
@@ -267,18 +253,18 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
     .module-card:hover {
       transform: translateY(-2px);
       border-color: var(--border-hover);
-      background: var(--surface-soft);
+      background: rgba(21, 23, 29, 0.92);
     }
 
     .module-card-disabled {
-      opacity: 0.62;
+      opacity: 0.58;
       cursor: not-allowed;
     }
 
     .module-card-disabled:hover {
       transform: none;
       border-color: var(--border);
-      background: var(--surface);
+      background: rgba(15, 17, 23, 0.86);
     }
 
     .module-header {
@@ -297,6 +283,7 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
       align-items: center;
       justify-content: center;
       font-size: 23px;
+      color: var(--primary);
       background: var(--primary-soft);
       border: 1px solid rgba(199, 210, 255, 0.14);
     }
@@ -308,7 +295,7 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
       padding: 6px 9px;
       border-radius: 999px;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 650;
       letter-spacing: -0.01em;
       white-space: nowrap;
     }
@@ -322,7 +309,7 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
     .module-status.active {
       color: var(--green);
       background: var(--green-soft);
-      border: 1px solid rgba(129, 201, 149, 0.16);
+      border: 1px solid rgba(129, 201, 149, 0.14);
     }
 
     .module-status.active span {
@@ -333,7 +320,7 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
     .module-status.inactive {
       color: var(--red);
       background: var(--red-soft);
-      border: 1px solid rgba(242, 139, 130, 0.16);
+      border: 1px solid rgba(242, 139, 130, 0.14);
     }
 
     .module-status.inactive span {
@@ -368,7 +355,7 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
       margin-top: 20px;
       color: var(--primary);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 650;
     }
 
     .module-arrow {
@@ -403,7 +390,7 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
       font-size: 14px;
       line-height: 1.45;
       border-radius: var(--radius-lg);
-      background: var(--surface);
+      background: rgba(15, 17, 23, 0.86);
       border: 1px solid var(--border);
     }
 
@@ -411,11 +398,13 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
       margin-top: 18px;
       padding: 18px;
       border-radius: var(--radius-lg);
-      background: #1d1f27;
+      background: rgba(15, 17, 23, 0.86);
       border: 1px solid var(--border);
       display: flex;
       align-items: center;
       gap: 14px;
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(10px);
     }
 
     .notice-icon {
@@ -455,7 +444,7 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
 
     .footer strong {
       color: var(--primary);
-      font-weight: 700;
+      font-weight: 650;
     }
 
     @keyframes spin {
@@ -485,8 +474,12 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
       }
 
       .brand-header {
-        min-height: 66px;
-        margin-bottom: 18px;
+        min-height: 60px;
+        margin-bottom: 10px;
+      }
+
+      .brand-name {
+        font-size: 22px;
       }
 
       .hero {
@@ -548,10 +541,7 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
   <main class="page">
     <div class="shell">
       <header class="brand-header">
-        <div class="brand-pill">
-          <span class="brand-dot"></span>
-          <span class="brand-name">${safeBrand}</span>
-        </div>
+        <div class="brand-name">${safeBrand}</div>
       </header>
 
       <section class="hero">
