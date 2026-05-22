@@ -22,10 +22,10 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
   --app: #0b0c10;;
   --app-2: #0b0c10;;
   --app-3: #0b0c10;;
-  --app-4: #1d2130;
+  --app-4: #0b0c10;;
 
-  --section: #151821;
-  --section-soft: #11131a;
+  --section: #0b0c10;;
+  --section-soft: #0b0c10;;
   --field: #1a1d27;
   --field-focus: #202536;
 
