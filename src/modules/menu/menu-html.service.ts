@@ -102,10 +102,14 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
     }
 
     html,
-    body {
-      margin: 0;
-      padding: 0;
-    }
+   body {
+  min-height: 100vh;
+  font-family: "Google Sans", "Inter", "Segoe UI", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
 
     body {
       min-height: 100vh;
