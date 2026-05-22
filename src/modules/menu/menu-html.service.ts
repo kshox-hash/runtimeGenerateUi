@@ -10,35 +10,42 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
 
   const modules = record.config.modules || [];
 
-  const rowsHtml = modules
+  const cardsHtml = modules
     .map((module, index) => {
       const title = escapeHtml(module.title);
       const description = escapeHtml(module.description);
+      const icon = escapeHtml(module.icon || "•");
       const url = escapeHtml(module.url || "#");
       const isEnabled = Boolean(module.enabled);
 
+      const tagText = isEnabled ? "Activo" : "No disponible";
+      const cardClass = isEnabled ? "module-card" : "module-card module-card-disabled";
       const href = isEnabled ? url : "#";
-      const rowClass = isEnabled ? "module-row" : "module-row module-row-disabled";
       const loadingAttr = isEnabled ? `data-loading-link="true"` : `aria-disabled="true"`;
 
       return `
         <a
-          class="${rowClass}"
+          class="${cardClass}"
           href="${href}"
-          style="--delay: ${index * 45}ms;"
+          style="--delay: ${index * 55}ms;"
           ${loadingAttr}
         >
-          <div class="module-content">
-            <div class="module-title-line">
-              <span class="module-title">${title}</span>
-              <span class="${isEnabled ? "status active" : "status inactive"}">
-                ${isEnabled ? "Activo" : "No disponible"}
-              </span>
+          <div class="module-header">
+            <div class="module-icon">${icon}</div>
+            <div class="${isEnabled ? "module-status active" : "module-status inactive"}">
+              <span></span>
+              ${tagText}
             </div>
+          </div>
 
-            <div class="module-description">
-              ${description}
-            </div>
+          <div class="module-content">
+            <div class="module-title">${title}</div>
+            <div class="module-description">${description}</div>
+          </div>
+
+          <div class="module-footer">
+            <span>${isEnabled ? "Ingresar" : "Próximamente"}</span>
+            <div class="module-arrow">→</div>
           </div>
         </a>
       `;
@@ -63,27 +70,30 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
 
   <style>
     :root {
-      --bg: #121318;
-      --bg-soft: #17181f;
+  --bg: #121318;
+  --surface: #0f1117;
+  --surface-soft: #15171d;
+  --surface-muted: #1b1d24;
 
-      --text: #f1f3f4;
-      --muted: #c8cbd2;
-      --muted-soft: #90949d;
+  --text: #f1f3f4;
+  --muted: #c8cbd2;
+  --muted-soft: #90949d;
 
-      --line: rgba(231, 234, 240, 0.34);
-      --line-soft: rgba(231, 234, 240, 0.18);
+  --primary: #c7d2ff;
+  --primary-strong: #aebcff;
+  --primary-soft: rgba(199, 210, 255, 0.12);
 
-      --accent: #c7d2ff;
-      --accent-soft: rgba(199, 210, 255, 0.12);
+  --green: #81c995;
+  --green-soft: rgba(129, 201, 149, 0.12);
 
-      --active: #81c995;
-      --inactive: #f28b82;
+  --red: #f28b82;
+  --red-soft: rgba(242, 139, 130, 0.12);
 
-      --brand-shadow:
-        0 1px 0 rgba(255, 255, 255, 0.14),
-        0 12px 36px rgba(199, 210, 255, 0.14);
+  --border: rgba(231, 234, 240, 0.18);
+  --border-hover: rgba(199, 210, 255, 0.30);
 
-      --radius: 22px;
+  --shadow-card: 0 20px 48px rgba(0, 0, 0, 0.26);
+}
     }
 
     * {
@@ -113,7 +123,7 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(18, 19, 24, 0.82);
+      background: rgba(32, 33, 36, 0.78);
       backdrop-filter: blur(10px);
       transition: opacity 160ms ease, visibility 160ms ease;
     }
@@ -129,13 +139,13 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
       height: 36px;
       border-radius: 50%;
       border: 3px solid rgba(199, 210, 255, 0.18);
-      border-top-color: var(--accent);
+      border-top-color: var(--primary);
       animation: spin 760ms linear infinite;
     }
 
     .page {
       min-height: 100vh;
-      padding: 18px 0 36px;
+      padding: 18px 14px 32px;
     }
 
     .shell {
@@ -146,306 +156,302 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
     }
 
     .brand-header {
-      height: 74px;
+      min-height: 74px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 24px;
+      margin-bottom: 22px;
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 46px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(15, 17, 23, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.20);
+    }
+
+    .brand-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 18px rgba(129, 201, 149, 0.70);
     }
 
     .brand-name {
-      max-width: 100%;
+      max-width: 300px;
       color: var(--text);
-      font-size: 28px;
-      line-height: 1.1;
-      font-weight: 650;
-      letter-spacing: -0.055em;
-      text-align: center;
-      text-shadow: var(--brand-shadow);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .hero {
-      min-height: 430px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 34px 42px;
-      text-align: center;
-    }
-
-    .visual {
-      width: min(340px, 78vw);
-      height: min(260px, 58vw);
-      position: relative;
-      margin-bottom: 44px;
-    }
-
-    .sun {
-      position: absolute;
-      left: 20px;
-      top: 8px;
-      width: 150px;
-      height: 150px;
-      border-radius: 999px;
-      background: #ffd966;
-    }
-
-    .frame {
-      position: absolute;
-      left: 70px;
-      top: 62px;
-      width: 230px;
-      height: 150px;
-      border: 2px solid #c7cbe0;
-    }
-
-    .camera {
-      position: absolute;
-      right: -58px;
-      top: 32px;
-      width: 72px;
-      height: 98px;
-      border: 2px solid #c7cbe0;
-      clip-path: polygon(0 35%, 100% 0, 100% 100%, 0 65%);
-      opacity: 0.95;
-    }
-
-    .person {
-      position: absolute;
-      left: 125px;
-      top: 100px;
-      width: 120px;
-      height: 96px;
-      border-radius: 999px 999px 24px 24px;
-      background: #eef1ff;
-      transform: rotate(8deg);
-    }
-
-    .person::before {
-      content: "";
-      position: absolute;
-      right: 8px;
-      top: -38px;
-      width: 28px;
-      height: 42px;
-      border-radius: 999px 999px 8px 8px;
-      background: #ff8a75;
-      transform: rotate(-8deg);
-    }
-
-    .legs {
-      position: absolute;
-      left: 86px;
-      top: 175px;
-      width: 180px;
-      height: 34px;
-      background: #ffffff;
-      border-radius: 999px;
-      transform: rotate(8deg);
-    }
-
-    .cat {
-      position: absolute;
-      right: 40px;
-      top: 160px;
-      width: 90px;
-      height: 34px;
-      border-radius: 999px 999px 10px 10px;
-      background: #f8d76a;
-      transform: rotate(3deg);
-    }
-
-    .cat::after {
-      content: "";
-      position: absolute;
-      right: 4px;
-      top: -18px;
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      background: #f8d76a;
-    }
-
-    .shape-red {
-      position: absolute;
-      left: 30px;
-      bottom: 28px;
-      width: 48px;
-      height: 48px;
-      border-left: 24px solid #ff8f86;
-      border-bottom: 24px solid #ff8f86;
-    }
-
-    .shape-green {
-      position: absolute;
-      right: 108px;
-      top: 48px;
-      width: 28px;
-      height: 28px;
-      background: #81c995;
-      box-shadow: 0 16px 0 #81c995;
-      opacity: 0.9;
-    }
-
-    .hero-copy {
-      max-width: 430px;
-      color: var(--muted);
       font-size: 18px;
-      font-weight: 400;
-      line-height: 1.6;
-      letter-spacing: -0.02em;
-    }
-
-    .hero-copy strong {
-      display: block;
-      margin-bottom: 12px;
-      color: var(--text);
-      font-size: 28px;
-      line-height: 1.15;
-      font-weight: 650;
-      letter-spacing: -0.055em;
-    }
-
-    .subtitle {
-      margin: 0;
-      color: var(--muted);
-    }
-
-    .modules {
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .module-row {
-      min-height: 86px;
-      display: flex;
-      align-items: center;
-      padding: 16px 36px;
-      color: inherit;
-      text-decoration: none;
-      border-bottom: 1px solid var(--line);
-      opacity: 0;
-      transform: translateY(8px);
-      animation: rowIn 340ms ease both;
-      animation-delay: var(--delay);
-      transition:
-        background 150ms ease,
-        opacity 150ms ease;
-    }
-
-    .module-row:last-child {
-      border-bottom: 0;
-    }
-
-    .module-row:hover {
-      background: rgba(199, 210, 255, 0.045);
-    }
-
-    .module-row-disabled {
-      opacity: 0.54;
-      cursor: not-allowed;
-    }
-
-    .module-row-disabled:hover {
-      background: transparent;
-    }
-
-    .module-content {
-      width: 100%;
-      min-width: 0;
-    }
-
-    .module-title-line {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 5px;
-    }
-
-    .module-title {
-      min-width: 0;
-      color: var(--accent);
-      font-size: 20px;
-      line-height: 1.15;
-      font-weight: 650;
+      font-weight: 700;
       letter-spacing: -0.035em;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .module-description {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.35;
-      font-weight: 400;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .hero {
+      text-align: center;
+      padding: 16px 10px 34px;
     }
 
-    .status {
-      flex-shrink: 0;
+    h1 {
+      margin: 0 auto;
+      max-width: 520px;
+      font-size: 42px;
+      line-height: 1.05;
+      letter-spacing: -0.065em;
+      font-weight: 700;
+      color: var(--text);
+      text-wrap: balance;
+    }
+
+    .subtitle {
+      margin: 18px auto 0;
+      max-width: 500px;
+      color: var(--primary);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.5;
+      text-wrap: balance;
+    }
+
+    .section-title {
+      margin: 0 4px 16px;
+      font-size: 24px;
+      line-height: 1.1;
+      letter-spacing: -0.045em;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .modules {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .module-card {
+      position: relative;
+      min-height: 176px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+      color: inherit;
+      text-decoration: none;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: cardIn 380ms ease both;
+      animation-delay: var(--delay);
+      transition:
+        transform 160ms ease,
+        border-color 160ms ease,
+        background 160ms ease,
+        opacity 160ms ease;
+    }
+
+    .module-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-hover);
+      background: var(--surface-soft);
+    }
+
+    .module-card-disabled {
+      opacity: 0.62;
+      cursor: not-allowed;
+    }
+
+    .module-card-disabled:hover {
+      transform: none;
+      border-color: var(--border);
+      background: var(--surface);
+    }
+
+    .module-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .module-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 23px;
+      background: var(--primary-soft);
+      border: 1px solid rgba(199, 210, 255, 0.14);
+    }
+
+    .module-status {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 5px 9px;
+      padding: 6px 9px;
       border-radius: 999px;
       font-size: 11px;
-      font-weight: 650;
+      font-weight: 700;
       letter-spacing: -0.01em;
+      white-space: nowrap;
     }
 
-    .status::before {
-      content: "";
+    .module-status span {
       width: 7px;
       height: 7px;
       border-radius: 999px;
     }
 
-    .status.active {
-      color: var(--active);
-      background: rgba(129, 201, 149, 0.10);
+    .module-status.active {
+      color: var(--green);
+      background: var(--green-soft);
+      border: 1px solid rgba(129, 201, 149, 0.16);
     }
 
-    .status.active::before {
-      background: var(--active);
+    .module-status.active span {
+      background: var(--green);
       box-shadow: 0 0 12px rgba(129, 201, 149, 0.72);
     }
 
-    .status.inactive {
-      color: var(--inactive);
-      background: rgba(242, 139, 130, 0.10);
+    .module-status.inactive {
+      color: var(--red);
+      background: var(--red-soft);
+      border: 1px solid rgba(242, 139, 130, 0.16);
     }
 
-    .status.inactive::before {
-      background: var(--inactive);
+    .module-status.inactive span {
+      background: var(--red);
+    }
+
+    .module-title {
+      font-size: 18px;
+      line-height: 1.12;
+      font-weight: 650;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .module-description {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .module-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 20px;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .module-arrow {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-size: 20px;
+      font-weight: 700;
+      background: rgba(199, 210, 255, 0.08);
+      border: 1px solid rgba(199, 210, 255, 0.12);
+      transition: transform 160ms ease;
+    }
+
+    .module-card:hover .module-arrow {
+      transform: translateX(2px);
+    }
+
+    .module-card-disabled .module-footer,
+    .module-card-disabled .module-arrow {
+      color: var(--muted-soft);
     }
 
     .empty {
-      padding: 28px 36px;
+      grid-column: 1 / -1;
+      padding: 28px 18px;
+      text-align: center;
       color: var(--muted);
       font-size: 14px;
       line-height: 1.45;
-      text-align: center;
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+
+    .notice-card {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background: #1d1f27;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .notice-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 16px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      background: rgba(199, 210, 255, 0.10);
+      border: 1px solid rgba(199, 210, 255, 0.12);
+      font-size: 20px;
+    }
+
+    .notice-title {
+      font-size: 14px;
+      font-weight: 650;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .notice-text {
+      font-size: 13px;
+      line-height: 1.35;
+      color: var(--muted-soft);
     }
 
     .footer {
-      padding: 24px 36px 0;
+      margin-top: 24px;
+      padding-bottom: 12px;
       text-align: center;
       color: var(--muted-soft);
       font-size: 12px;
-      line-height: 1.4;
     }
 
     .footer strong {
-      color: var(--accent);
-      font-weight: 650;
+      color: var(--primary);
+      font-weight: 700;
     }
 
     @keyframes spin {
@@ -457,10 +463,10 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
       to { opacity: 1; }
     }
 
-    @keyframes rowIn {
+    @keyframes cardIn {
       from {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(10px);
       }
 
       to {
@@ -471,91 +477,60 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
 
     @media (max-width: 560px) {
       .page {
-        padding-top: 10px;
+        padding: 12px 12px 28px;
       }
 
       .brand-header {
-        height: 66px;
-        padding: 0 20px;
-      }
-
-      .brand-name {
-        font-size: 26px;
+        min-height: 66px;
+        margin-bottom: 18px;
       }
 
       .hero {
-        min-height: 430px;
-        padding: 18px 26px 38px;
+        padding: 14px 4px 30px;
       }
 
-      .visual {
-        margin-bottom: 38px;
+      h1 {
+        font-size: 36px;
       }
 
-      .hero-copy {
-        font-size: 17px;
+      .subtitle {
+        font-size: 15px;
       }
 
-      .hero-copy strong {
-        font-size: 27px;
+      .modules {
+        gap: 12px;
       }
 
-      .module-row {
-        min-height: 82px;
-        padding: 15px 28px;
+      .module-card {
+        min-height: 168px;
+        padding: 16px;
       }
 
       .module-title {
-        font-size: 19px;
+        font-size: 17px;
       }
 
       .module-description {
-        font-size: 13.5px;
+        font-size: 12.5px;
       }
 
-      .status {
+      .module-status {
         font-size: 10.5px;
+        padding: 5px 8px;
       }
     }
 
     @media (max-width: 390px) {
-      .brand-name {
-        font-size: 24px;
+      h1 {
+        font-size: 32px;
       }
 
-      .hero {
-        min-height: 400px;
-        padding-left: 22px;
-        padding-right: 22px;
+      .modules {
+        grid-template-columns: 1fr;
       }
 
-      .visual {
-        width: 300px;
-        height: 230px;
-        transform: scale(0.92);
-        margin-bottom: 28px;
-      }
-
-      .hero-copy strong {
-        font-size: 25px;
-      }
-
-      .module-row {
-        padding-left: 22px;
-        padding-right: 22px;
-      }
-
-      .module-title-line {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 6px;
-      }
-
-      .module-description {
-        white-space: normal;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
+      .module-card {
+        min-height: 142px;
       }
     }
   </style>
@@ -569,33 +544,43 @@ export function renderMenuHtml(record: RuntimeLinkRecord): string {
   <main class="page">
     <div class="shell">
       <header class="brand-header">
-        <div class="brand-name">${safeBrand}</div>
+        <div class="brand-pill">
+          <span class="brand-dot"></span>
+          <span class="brand-name">${safeBrand}</span>
+        </div>
       </header>
 
       <section class="hero">
-        <div class="visual" aria-hidden="true">
-          <div class="sun"></div>
-          <div class="frame">
-            <div class="camera"></div>
-          </div>
-          <div class="person"></div>
-          <div class="legs"></div>
-          <div class="cat"></div>
-          <div class="shape-red"></div>
-          <div class="shape-green"></div>
-        </div>
+        <h1>${safeTitle}</h1>
 
-        <div class="hero-copy">
-          <strong>${safeTitle}</strong>
-          <p class="subtitle">${safeSubtitle}</p>
-        </div>
+        <p class="subtitle">
+          ${safeSubtitle}
+        </p>
       </section>
+
+      <h2 class="section-title">
+        Elige un servicio
+      </h2>
 
       <section class="modules">
         ${
-          rowsHtml ||
+          cardsHtml ||
           `<div class="empty">No hay módulos configurados por el momento.</div>`
         }
+      </section>
+
+      <section class="notice-card">
+        <div class="notice-icon">🔒</div>
+
+        <div>
+          <div class="notice-title">
+            Acceso seguro
+          </div>
+
+          <div class="notice-text">
+            Este enlace fue generado para acceder rápidamente a los servicios disponibles.
+          </div>
+        </div>
       </section>
 
       <footer class="footer">
