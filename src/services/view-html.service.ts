@@ -17,13 +17,13 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
 <style>
 :root {
---bg: #f3f3f3;
+--bg: #202124;
 --surface: #0b0c10;
 --surface-hover: #222638;
 --surface-soft: #20232f;
 --field: #13151e;
 --field-focus: #1a1d2a;
---item: #232738;
+--item: #382335;
 --item-hover: #2b3045;
 
 --text: #c8ccd8;
