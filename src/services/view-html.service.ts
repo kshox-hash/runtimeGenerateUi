@@ -42,7 +42,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 --red: #e88a81;
 --red-soft: #2a1818;
 
---line: rgba(255,255,255,0.06);
+--line: #1c1f2b; 
 
   --radius-md: 16px;
   --radius-lg: 20px;
