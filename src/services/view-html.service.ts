@@ -17,32 +17,32 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
 <style>
 :root {
---bg: #16181f;          /* página: el más oscuro */
---surface: #1c1f2b;     /* panel principal */
---surface-hover: #222638; /* hover sobre surface */
---surface-soft: #20232f; /* variante suave entre bg y surface */
---field: #13151e;       /* inputs: más hundido que surface */
---field-focus: #1a1d2a; /* focus del input */
---item: #232738;        /* product card */
---item-hover: #2b3045;  /* hover de card */
+--bg: #16181f;
+--surface: #1c1f2b;
+--surface-hover: #222638;
+--surface-soft: #20232f;
+--field: #13151e;
+--field-focus: #1a1d2a;
+--item: #232738;
+--item-hover: #2b3045;
 
---text: #c8ccd8;        /* cuerpo */
---text-strong: #eceef5; /* títulos y valores */
---text-soft: #a8adbf;   /* texto secundario */
---muted: #787d90;       /* labels, placeholders */
---muted-soft: #565b6e;  /* hints, fechas, expiración */
+--text: #c8ccd8;
+--text-strong: #eceef5;
+--text-soft: #a8adbf;
+--muted: #787d90;
+--muted-soft: #565b6e;
 
---accent: #a8b4ff;      /* links, precios */
---accent-strong: #cad1ff; /* hover de accent / totales */
---accent-bg: #1e2340;   /* badge, pill background */
---accent-btn: #3a4d85;  /* botón primario */
+--accent: #a8b4ff;
+--accent-strong: #cad1ff;
+--accent-bg: #1e2340;
+--accent-btn: #3a4d85;
 
 --green: #6fcf97;
 --green-soft: #132a20;
 --red: #e88a81;
 --red-soft: #2a1818;
 
---line: #1c1f2b; 
+--line: transparent;
 
   --radius-md: 16px;
   --radius-lg: 20px;
@@ -89,8 +89,6 @@ button {
   touch-action: manipulation;
 }
 
-/* PAGE */
-
 .page {
   min-height: 100vh;
   padding: 12px 8px 32px;
@@ -134,8 +132,6 @@ button {
 .module-body {
   padding: 0;
 }
-
-/* PRODUCTS */
 
 .section-wrap {
   background: transparent;
@@ -184,7 +180,6 @@ button {
   align-items: center;
   border-radius: 999px;
   background: var(--surface);
-  border: 1px solid var(--line);
   padding: 0 5px 0 15px;
 }
 
@@ -213,13 +208,10 @@ button {
   font-size: 15px;
 }
 
-/* SOLO LOS ÍTEMS REALES VAN DENTRO DE ESTA CAJA */
-
 .products-scroll {
   padding: 7px;
   border-radius: var(--radius-lg);
   background: var(--surface);
-  border: 1px solid var(--line);
 }
 
 .products-scroll.is-scrollable {
@@ -257,7 +249,6 @@ button {
   padding: 10px 10px 10px 12px;
   border-radius: var(--radius-md);
   background: var(--item);
-  border: 1px solid rgba(255,255,255,0.035);
 }
 
 .product-card:hover {
@@ -304,8 +295,6 @@ button {
   overflow: hidden;
 }
 
-/* QUANTITY */
-
 .qty-box {
   display: grid;
   grid-template-columns: 28px 30px 28px;
@@ -313,7 +302,6 @@ button {
   border-radius: 999px;
   overflow: hidden;
   background: var(--surface-soft);
-  border: 1px solid rgba(255,255,255,0.05);
 }
 
 .qty-btn {
@@ -340,8 +328,6 @@ button {
 .qty-hidden {
   display: none;
 }
-
-/* TOTAL */
 
 .total-row {
   margin-top: 10px;
@@ -373,24 +359,18 @@ button {
   overflow-wrap: anywhere;
 }
 
-/* TEXT */
-
 .text-block {
   padding: 14px 15px;
   border-radius: var(--radius-lg);
   background: var(--surface);
-  border: 1px solid var(--line);
   color: var(--muted);
   font-size: 13.5px;
   line-height: 1.5;
 }
 
-/* FORM */
-
 .form-collapse {
   border-radius: var(--radius-lg);
   background: var(--surface);
-  border: 1px solid var(--line);
   overflow: hidden;
 }
 
@@ -475,7 +455,7 @@ button {
 
 .form-divider {
   height: 1px;
-  background: var(--line);
+  background: rgba(255,255,255,0.055);
   margin-bottom: 14px;
 }
 
@@ -503,7 +483,7 @@ button {
 input,
 textarea {
   width: 100%;
-  border: 1px solid transparent;
+  border: none;
   outline: none;
   background: var(--field);
   color: var(--text);
@@ -520,15 +500,12 @@ textarea::placeholder {
 input:focus,
 textarea:focus {
   background: var(--field-focus);
-  border-color: rgba(191,199,255,0.22);
 }
 
 textarea {
   min-height: 86px;
   resize: vertical;
 }
-
-/* SUBMIT */
 
 .submit-wrap {
   display: grid;
@@ -562,8 +539,6 @@ textarea {
   cursor: not-allowed;
 }
 
-/* MESSAGE */
-
 .message {
   display: none;
   padding: 14px 16px;
@@ -592,8 +567,6 @@ textarea {
   color: var(--muted-soft);
   font-size: 11px;
 }
-
-/* RESPONSIVE */
 
 @media (min-width: 640px) {
   .page {
