@@ -41,7 +41,7 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
   --accent: #9db7ff;
   --accent-strong: #d9e2ff;
-  --accent-bg: #2a3550;
+  --accent-bg: #1c1f27;
 
   --accent-btn: #516da8;
   --accent-btn-hover: #5f7bbb;
