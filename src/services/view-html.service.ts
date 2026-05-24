@@ -55,8 +55,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 /* Bordes */
 --line: rgba(255,255,255,0.045);
 
---line: transparent;
-
   --radius-md: 16px;
   --radius-lg: 20px;
 
@@ -228,7 +226,7 @@ button {
 }
 
 .products-scroll.is-scrollable {
-  max-height: min(58vh, 640px);
+  max-height: min(52vh, 560px);
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -387,21 +385,12 @@ button {
   overflow: hidden;
 }
 
-.form-toggle {
-  width: 100%;
-  min-height: 64px;
-  border: none;
-  background: transparent;
-  padding: 13px 14px;
+.form-head {
+  padding: 14px 14px 12px;
   display: grid;
-  grid-template-columns: 36px minmax(0, 1fr) 36px;
+  grid-template-columns: 36px minmax(0, 1fr);
   align-items: center;
-  gap: 10px;
-  cursor: pointer;
-}
-
-.form-toggle-left {
-  display: contents;
+  gap: 11px;
 }
 
 .form-icon {
@@ -417,7 +406,6 @@ button {
 
 .form-copy {
   min-width: 0;
-  text-align: center;
 }
 
 .form-title {
@@ -433,42 +421,14 @@ button {
   margin-top: 3px;
 }
 
-.form-arrow {
-  width: 36px;
-  height: 36px;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--muted);
-  background: rgba(255,255,255,0.035);
-  transition: transform 160ms ease;
-}
-
-.form-arrow svg {
-  width: 18px;
-  height: 18px;
-  display: block;
-}
-
-.form-collapse.open .form-arrow {
-  transform: rotate(180deg);
-  color: var(--accent);
-  background: var(--accent-bg);
-}
-
 .form-content {
-  display: none;
-  padding: 0 14px 14px;
-}
-
-.form-collapse.open .form-content {
   display: block;
+  padding: 0 14px 14px;
 }
 
 .form-divider {
   height: 1px;
-  background: rgba(255,255,255,0.055);
+  background: var(--line);
   margin-bottom: 14px;
 }
 
@@ -610,7 +570,7 @@ textarea {
 
 @media (max-width: 520px) {
   .products-scroll.is-scrollable {
-    max-height: 56vh;
+    max-height: 50vh;
   }
 
   .form-grid {
@@ -792,7 +752,7 @@ function renderProducts(component) {
     return wrap;
   }
 
-  if (component.items.length > 20) {
+  if (component.items.length >= 20) {
     scrollBox.classList.add("is-scrollable");
   }
 
@@ -902,33 +862,20 @@ function renderForm(component) {
   wrap.className = "form-collapse";
 
   wrap.innerHTML = \`
-    <button class="form-toggle" type="button" aria-expanded="false">
-      <div class="form-toggle-left">
-        <div class="form-icon" aria-hidden="true">👤</div>
-        <div class="form-copy">
-          <div class="form-title">Mis datos</div>
-          <div class="form-sub">Completa tu información</div>
-        </div>
+    <div class="form-head">
+      <div class="form-icon" aria-hidden="true">👤</div>
+
+      <div class="form-copy">
+        <div class="form-title">Mis datos</div>
+        <div class="form-sub">Completa tu información</div>
       </div>
-      <div class="form-arrow" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </div>
-    </button>
+    </div>
 
     <div class="form-content">
       <div class="form-divider"></div>
       <div class="form-grid"></div>
     </div>
   \`;
-
-  const toggle = wrap.querySelector(".form-toggle");
-
-  toggle.addEventListener("click", () => {
-    wrap.classList.toggle("open");
-    toggle.setAttribute("aria-expanded", wrap.classList.contains("open") ? "true" : "false");
-  });
 
   const grid = wrap.querySelector(".form-grid");
 
@@ -1027,8 +974,6 @@ async function onSubmit(btn, originalLabel) {
     const value = String(field.value || "").trim();
 
     if (field.required && !value) {
-      document.querySelector(".form-collapse")?.classList.add("open");
-      document.querySelector(".form-toggle")?.setAttribute("aria-expanded", "true");
       showMessage("error", "Completa los campos obligatorios.");
       return;
     }
@@ -1067,7 +1012,12 @@ async function onSubmit(btn, originalLabel) {
   }
 }
 
-config.components.forEach((component) => {
+const orderedComponents = [
+  ...config.components.filter((component) => component.type === "form"),
+  ...config.components.filter((component) => component.type !== "form")
+];
+
+orderedComponents.forEach((component) => {
   contentEl.appendChild(renderComponent(component));
 });
 
