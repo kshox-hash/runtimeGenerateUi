@@ -21,33 +21,38 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
 <style>
 :root {
-  --bg: #0a0b0d;
-  --surface-1: #16191f;
-  --surface-2: #21262e;
-  --surface-3: #2a303c;
+:root {
 
-  --on-bg: #f3f4f6;
-  --on-surface: #ffffff;
-  --on-surface-v: #9ca3af;
+  --bg: #0f1011;
 
-  --primary: #6366f1;
-  --primary-bg: #1e2148;
-  --primary-bg-2: #2d327d;
+  --surface-1: #20242d;
+  --surface-2: #22263a;
+  --surface-3: #1b1c25;
 
-  --muted: #9ca3af;
-  --muted-2: #6b7280;
+  --on-bg: #d8dbe2;
+  --on-surface: #e8eaed;
+  --on-surface-v: #b0b4be;
 
-  --green: #10b981;
-  --green-bg: #064e3b;
+  --primary: #bfc7ff;
 
-  --red: #ef4444;
-  --red-bg: #451a1a;
+  --primary-bg: #22263a;
+  --primary-bg-2: #2b3150;
+
+  --muted: #b0b4be;
+  --muted-2: #858a96;
+
+  --green: #81c995;
+  --green-bg: #1d3428;
+
+  --red: #f28b82;
+  --red-bg: #34201f;
 
   --radius-m: 16px;
   --radius-l: 20px;
   --radius-xl: 24px;
 
   --safe-b: env(safe-area-inset-bottom, 0px);
+}
 }
 
 *, *::before, *::after {
@@ -161,7 +166,6 @@ button {
   background: var(--surface-1);
   border-radius: var(--radius-xl);
   overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.05);
 }
 
 .form-header {
@@ -211,7 +215,6 @@ input,
 textarea {
   width: 100%;
   background: var(--surface-2);
-  border: 1px solid transparent;
   border-radius: 12px;
   padding: 14px;
   color: var(--on-surface);
@@ -227,7 +230,6 @@ textarea::placeholder {
 
 input:focus,
 textarea:focus {
-  border-color: var(--primary);
   background: var(--surface-3);
 }
 
@@ -290,7 +292,7 @@ textarea {
 }
 
 .product-item.is-selected {
-  background: var(--primary-bg);
+  background: #252b3f;
 }
 
 .product-info {
@@ -372,7 +374,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid rgba(255,255,255,0.1);
+
   gap: 12px;
 }
 
