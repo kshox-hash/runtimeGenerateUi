@@ -289,7 +289,7 @@ button { touch-action: manipulation; cursor: pointer; }
 /* ─── PRODUCT LIST ─── */
 
 .products-body {
-  padding: 0 8px 8px;
+  padding: 0 10px 10px;
 }
 
 .products-body.scrollable {
@@ -307,7 +307,7 @@ button { touch-action: manipulation; cursor: pointer; }
   border-radius: 999px;
 }
 
-.product-list { display: grid; gap: 2px; }
+.product-list { display: grid; gap: 6px; }
 
 /* ─── PRODUCT ITEM ─── */
 
@@ -315,8 +315,8 @@ button { touch-action: manipulation; cursor: pointer; }
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 16px;
-  padding: 12px 12px 12px 14px;
+  gap: 18px;
+  padding: 17px 14px 17px 16px;
   border-radius: var(--radius-m);
   transition: background 120ms ease;
 }
@@ -341,13 +341,13 @@ button { touch-action: manipulation; cursor: pointer; }
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: 1.3;
-  margin-bottom: 2px;
+  margin-bottom: 5px;
 }
 
 .product-desc {
   font-size: 12px;
   color: var(--muted);
-  line-height: 1.35;
+  line-height: 1.45;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
@@ -389,6 +389,12 @@ button { touch-action: manipulation; cursor: pointer; }
   justify-content: center;
   flex-shrink: 0;
   transition: background 100ms ease, color 100ms ease;
+}
+
+.step-btn svg {
+  width: 13px;
+  height: 13px;
+  display: block;
 }
 
 .stepper.has-qty .step-btn {
@@ -693,7 +699,7 @@ textarea {
 @media (max-width: 380px) {
   .hero-title { font-size: 26px; }
   .section-header { flex-direction: column; }
-  .product-item { grid-template-columns: 1fr; gap: 10px; }
+  .product-item { grid-template-columns: 1fr; gap: 12px; padding: 18px 16px; }
   .stepper { align-self: start; }
   .total-bar { flex-direction: column; align-items: flex-start; gap: 6px; }
   .total-amount { font-size: 24px; }
@@ -869,7 +875,7 @@ function renderProducts(c) {
     minus.className = "step-btn";
     minus.type = "button";
     minus.setAttribute("aria-label", "Disminuir cantidad");
-    minus.innerHTML = "<svg viewBox='0 0 24 24' fill='none'><path d='M5 12h14' stroke='currentColor' stroke-width='2.2' stroke-linecap='round'/></svg>";
+    minus.innerHTML = "<svg viewBox='0 0 24 24' fill='none'><path d='M5 12h14' stroke='currentColor' stroke-width='2' stroke-linecap='round'/></svg>";
 
     const valEl = document.createElement("div");
     valEl.className = "step-val";
@@ -879,7 +885,7 @@ function renderProducts(c) {
     plus.className = "step-btn";
     plus.type = "button";
     plus.setAttribute("aria-label", "Aumentar cantidad");
-    plus.innerHTML = "<svg viewBox='0 0 24 24' fill='none'><path d='M12 5v14M5 12h14' stroke='currentColor' stroke-width='2.2' stroke-linecap='round'/></svg>";
+    plus.innerHTML = "<svg viewBox='0 0 24 24' fill='none'><path d='M12 5v14M5 12h14' stroke='currentColor' stroke-width='2' stroke-linecap='round'/></svg>";
 
     const hidden = document.createElement("input");
     hidden.type = "number";
