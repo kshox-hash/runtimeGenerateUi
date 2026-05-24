@@ -240,12 +240,14 @@ input,
 textarea {
   width: 100%;
   background: var(--surface-2);
+  border: 1px solid transparent;
   border-radius: 12px;
   padding: 14px;
   color: var(--on-surface);
   font-size: 15px;
   outline: none;
   transition:
+    border-color 0.2s ease,
     background 0.2s ease;
 }
 
@@ -256,6 +258,7 @@ textarea::placeholder {
 
 input:focus,
 textarea:focus {
+  border-color: var(--primary);
   background: var(--surface-3);
 }
 
