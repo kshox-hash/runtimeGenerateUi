@@ -52,10 +52,6 @@ export function renderViewHtml(record: RuntimeLinkRecord): string {
 
   --page-max: 840px;
   --safe-b: env(safe-area-inset-bottom, 0px);
-
-  --elev-1: 0 1px 2px rgba(0,0,0,.3), 0 1px 3px 1px rgba(0,0,0,.15);
-  --elev-2: 0 1px 2px rgba(0,0,0,.3), 0 2px 6px 2px rgba(0,0,0,.15);
-  --elev-3: 0 4px 8px 3px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.3);
 }
 
 *, *::before, *::after {
@@ -195,7 +191,6 @@ button { touch-action: manipulation; cursor: pointer; }
 .card {
   background: var(--surface-1);
   border-radius: var(--radius-xl);
-  box-shadow: var(--elev-1);
   overflow: hidden;
 }
 
@@ -504,7 +499,6 @@ button { touch-action: manipulation; cursor: pointer; }
   color: var(--muted);
   font-size: 13.5px;
   line-height: 1.6;
-  box-shadow: var(--elev-1);
 }
 
 /* ─── FORM CARD ─── */
@@ -512,7 +506,6 @@ button { touch-action: manipulation; cursor: pointer; }
 .form-card {
   background: var(--surface-1);
   border-radius: var(--radius-xl);
-  box-shadow: var(--elev-1);
   overflow: hidden;
 }
 
@@ -610,9 +603,7 @@ textarea {
 /* ─── SUBMIT ─── */
 
 .submit-wrap {
-  position: sticky;
-  bottom: calc(12px + var(--safe-b));
-  z-index: 10;
+  margin-top: 12px;
 }
 
 /* Ripple */
@@ -628,21 +619,19 @@ textarea {
   font-size: 15px;
   font-weight: 500;
   letter-spacing: 0.01em;
-  box-shadow: var(--elev-3);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: filter 120ms ease, transform 80ms ease, box-shadow 120ms ease;
+  transition: filter 120ms ease, transform 80ms ease;
 }
 
 .submit-btn:hover {
   filter: brightness(1.06);
-  box-shadow: var(--elev-3), 0 0 0 8px rgba(170,199,255,0.08);
 }
 
 .submit-btn:active { transform: scale(0.985); filter: brightness(0.95); }
-.submit-btn:disabled { opacity: 0.38; cursor: not-allowed; filter: none; transform: none; box-shadow: none; }
+.submit-btn:disabled { opacity: 0.38; cursor: not-allowed; filter: none; transform: none; }
 
 .submit-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
 
