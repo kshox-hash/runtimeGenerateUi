@@ -13,9 +13,6 @@ function buildModuleUrl(
   switch (module.code) {
     case "quote":
       return `${BASE_URL}/open/cotizador-dinamico/${userId}/${safeLeadId}`;
-
-    case "appointments":
-      return `${BASE_URL}/open/reservas/${safeLeadId}`;
       
     case "appointments":
       return `${BASE_URL}/open/calendar/${userId}/${safeLeadId}`;
