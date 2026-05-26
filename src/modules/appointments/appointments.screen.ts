@@ -5,6 +5,7 @@ import { renderBookingHtmlShell } from "../../runtime/booking/bookingHtmlShell";
 import { renderBookingStyles } from "../../runtime/booking/bookingStyles";
 import { renderBookingScript } from "../../runtime/booking/scripts/bookingScript";
 
+
 export function renderBookingHtml(record: RuntimeLinkRecord): string {
   const viewModel = {
     token: record.token,
