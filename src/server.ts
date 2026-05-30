@@ -10,6 +10,8 @@ import companyProfileRoutes from "./modules/profiles/company-profile.router";
 import loginRoutes from "./login/login.router";
 import calendarAdminRoutes from "./modules/appointments/appointments-admin.routes";
 import bookingConfirmationRoutes from "./runtime/booking/routes/bookingConfirmationRoutes";
+import notificationRoutes from "./modules/notifications/notification.routes";
+
 
 const app = express();
 
@@ -33,6 +35,8 @@ app.use(companyProfileRoutes);
 app.use(calendarAdminRoutes);
 app.use("/auth", loginRoutes);
 app.use(bookingConfirmationRoutes);
+app.use("/api", notificationRoutes);
+
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en ${BASE_URL}`);
