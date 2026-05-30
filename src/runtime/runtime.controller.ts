@@ -49,6 +49,8 @@ import {
   sendBookingConfirmationEmail,
 } from "../runtime/booking/services/bookingEmailService";
 
+import { notificationService } from "../modules/notificactions/notificaction.service";
+
 function validateConfig(config: unknown): config is ViewConfig {
   if (!config || typeof config !== "object") return false;
 
@@ -395,51 +397,70 @@ export const runtimeController = {
         });
       }
 
-      const pdfResult = await generateQuotePdf(record, body);
-      const pdfUrl = `${BASE_URL}/generated-pdfs/${pdfResult.fileName}`;
+const pdfResult = await generateQuotePdf(record, body);
+const pdfUrl = `${BASE_URL}/generated-pdfs/${pdfResult.fileName}`;
 
-      record.submissions.push({
-        ...body,
-        submittedAt: new Date().toISOString(),
-        pdfUrl,
-      });
+record.submissions.push({
+  ...body,
+  submittedAt: new Date().toISOString(),
+  pdfUrl,
+});
 
-      record.submittedAt = Date.now();
-      record.status = "used";
+record.submittedAt = Date.now();
+record.status = "used";
 
-      const recipientPhone =
-        typeof record.config.recipientPhone === "string"
-          ? record.config.recipientPhone
-          : "";
+const recipientPhone =
+  typeof record.config.recipientPhone === "string"
+    ? record.config.recipientPhone
+    : "";
 
-      const userId =
-        typeof record.config.userId === "string" ? record.config.userId : "";
+const userId =
+  typeof record.config.userId === "string"
+    ? record.config.userId
+    : "";
 
-      if (recipientPhone && userId) {
-        try {
-          const whatsappConfig = await findWhatsAppConfigByUserId(userId);
+const customerName =
+  typeof body.customer?.name === "string"
+    ? body.customer.name
+    : "Cliente";
 
-          if (
-            whatsappConfig?.phone_number_id &&
-            whatsappConfig?.whatsapp_access_token
-          ) {
-            await sendWhatsAppTextMessage(
-              recipientPhone,
-              `Tu cotización está lista:\n${pdfUrl}`,
-              whatsappConfig.phone_number_id,
-              whatsappConfig.whatsapp_access_token
-            );
-          }
-        } catch (whatsAppError) {
-          console.error("Error enviando link a WhatsApp:", whatsAppError);
-        }
-      }
+// NOTIFICACIÓN
+if (userId) {
+  await notificationService.quoteCreated({
+    userId,
+    quoteId: token,
+    customerName,
+  });
+}
 
-      return res.json({
-        ok: true,
-        message: "Tu cotización está lista",
-        pdfUrl,
-      });
+if (recipientPhone && userId) {
+  try {
+    const whatsappConfig = await findWhatsAppConfigByUserId(userId);
+
+    if (
+      whatsappConfig?.phone_number_id &&
+      whatsappConfig?.whatsapp_access_token
+    ) {
+      await sendWhatsAppTextMessage(
+        recipientPhone,
+        `Tu cotización está lista:\n${pdfUrl}`,
+        whatsappConfig.phone_number_id,
+        whatsappConfig.whatsapp_access_token
+      );
+    }
+  } catch (whatsAppError) {
+    console.error(
+      "Error enviando link a WhatsApp:",
+      whatsAppError
+    );
+  }
+}
+
+return res.json({
+  ok: true,
+  message: "Tu cotización está lista",
+  pdfUrl,
+});
     } catch (error) {
       console.error("Error submitRuntimeLink:", error);
 
