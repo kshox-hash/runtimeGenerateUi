@@ -500,7 +500,7 @@ if (existingPayment?.checkout_url) {
   });
 }
 
-    const amount = Number(booking.payment_amount || 2000);
+    const amount = Number(booking.payment_amount || 3000);
 
     if (!Number.isFinite(amount) || amount <= 0) {
       return res.status(400).json({
@@ -555,13 +555,18 @@ if (existingPayment?.checkout_url) {
 
     const updatedPaymentResult = await pool.query(
       `
-      UPDATE payments
+    UPDATE payments
       SET
-        checkout_url = $1
-      WHERE id = $2
+        checkout_url = $1,
+        preference_id = $2
+      WHERE id = $3
       RETURNING *
       `,
-      [mercadoPagoPreference.checkoutUrl, payment.id]
+      [
+  mercadoPagoPreference.checkoutUrl,
+  mercadoPagoPreference.preferenceId,
+  payment.id,
+]
     );
 
     const updatedPayment = updatedPaymentResult.rows[0];
@@ -762,6 +767,8 @@ async openPublicReservas(req: Request, res: Response) {
     return res.status(500).send("Error abriendo reservas públicas");
   }
 },
+
+
 async openPublicPortal(req: Request, res: Response) {
   try {
     const rawPublicSlug = req.params.publicSlug;
@@ -781,11 +788,32 @@ async openPublicPortal(req: Request, res: Response) {
 
     const modules = await findEnabledModulesByUserId(profile.user_id);
 
+    const modulesWithUrls = modules.map((module) => {
+      if (module.code === "quote") {
+        return {
+          ...module,
+          url: `/open/${publicSlug}/cotizador`,
+        };
+      }
+
+      if (module.code === "appointments") {
+        return {
+          ...module,
+          url: `/open/${publicSlug}/reservas`,
+        };
+      }
+
+      return {
+        ...module,
+        url: "#",
+      };
+    });
+
     const html = renderMenuHtml({
       title: profile.business_name,
       brand: profile.business_name,
       subtitle: "Selecciona un servicio para continuar.",
-      modules,
+      modules: modulesWithUrls,
     });
 
     return res.status(200).send(html);
