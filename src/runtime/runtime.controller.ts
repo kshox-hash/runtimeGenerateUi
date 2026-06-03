@@ -72,9 +72,236 @@ function validateConfig(config: unknown): config is ViewConfig {
 
 export const runtimeController = {
 
+  paymentSuccess(req: Request, res: Response) {
+  return res.send(`
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pago recibido</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #0f1011;
+      color: #f3f4f6;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 460px;
+      background: #16191f;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 26px;
+      padding: 34px;
+      text-align: center;
+    }
+
+    .icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
+      background: #064e3b;
+      color: #10b981;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 22px;
+      font-size: 38px;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 28px;
+      line-height: 1.1;
+    }
+
+    p {
+      color: #b8bdc7;
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .small {
+      margin-top: 22px;
+      font-size: 12px;
+      color: #8b929f;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">✓</div>
+    <h1>Pago recibido</h1>
+    <p>Tu pago fue aprobado. Estamos confirmando tu reserva.</p>
+    <div class="small">Puedes cerrar esta ventana.</div>
+  </div>
+</body>
+</html>
+  `);
+},
+
+paymentFailure(req: Request, res: Response) {
+  return res.send(`
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pago no completado</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #0f1011;
+      color: #f3f4f6;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 460px;
+      background: #16191f;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 26px;
+      padding: 34px;
+      text-align: center;
+    }
+
+    .icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
+      background: #451a1a;
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 22px;
+      font-size: 34px;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 28px;
+      line-height: 1.1;
+    }
+
+    p {
+      color: #b8bdc7;
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">!</div>
+    <h1>Pago no completado</h1>
+    <p>No se pudo completar el pago. Puedes volver e intentarlo nuevamente.</p>
+  </div>
+</body>
+</html>
+  `);
+},
+
+paymentPending(req: Request, res: Response) {
+  return res.send(`
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pago pendiente</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #0f1011;
+      color: #f3f4f6;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 460px;
+      background: #16191f;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 26px;
+      padding: 34px;
+      text-align: center;
+    }
+
+    .icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
+      background: #3b2f12;
+      color: #f59e0b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 22px;
+      font-size: 34px;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 28px;
+      line-height: 1.1;
+    }
+
+    p {
+      color: #b8bdc7;
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">…</div>
+    <h1>Pago pendiente</h1>
+    <p>Tu pago está siendo procesado. Te avisaremos cuando quede confirmado.</p>
+  </div>
+</body>
+</html>
+  `);
+},
+
 
 async mercadoPagoWebhook(req: Request, res: Response) {
   try {
+    const topic = req.query.topic || req.query.type || req.body?.type;
+
+    if (topic && topic !== "payment") {
+      return res.status(200).json({
+        ok: true,
+        ignored: true,
+        topic,
+      });
+    }
+
     const paymentId =
       req.body?.data?.id ||
       req.query?.["data.id"] ||
@@ -89,23 +316,80 @@ async mercadoPagoWebhook(req: Request, res: Response) {
     }
 
     console.log("Payment ID recibido:", paymentId);
-    const paymentInfo = await getPaymentById( process.env.ACCESS_TOKEN_MP! ,  String(paymentId));
 
-console.log("Pago Mercado Pago:", paymentInfo);
+    const paymentInfo = await getPaymentById(
+      process.env.ACCESS_TOKEN_MP!,
+      String(paymentId)
+    );
 
-if (paymentInfo.status !== "approved") {
-  return res.status(200).json({
-    ok: true,
-    ignored: true,
-    paymentId,
-    status: paymentInfo.status,
-  });
-}
+    console.log("Pago Mercado Pago:", paymentInfo);
+
+    if (paymentInfo.status !== "approved") {
+      return res.status(200).json({
+        ok: true,
+        ignored: true,
+        paymentId,
+        status: paymentInfo.status,
+      });
+    }
+
+    const bookingId = String(paymentInfo.external_reference || "");
+
+    if (!bookingId) {
+      return res.status(200).json({
+        ok: true,
+        ignored: true,
+        message: "Pago aprobado sin external_reference.",
+        paymentId,
+      });
+    }
+
+    const pool = DB.getPool();
+
+    const paymentResult = await pool.query(
+      `
+      UPDATE payments
+      SET
+        status = 'paid',
+        provider_payment_id = $1,
+        paid_at = NOW()
+      WHERE booking_id = $2
+        AND provider = 'mercadopago'
+      RETURNING *
+      `,
+      [String(paymentId), bookingId]
+    );
+
+    const payment = paymentResult.rows[0];
+
+    if (!payment) {
+      return res.status(200).json({
+        ok: true,
+        ignored: true,
+        message: "Pago aprobado, pero no existe payment interno.",
+        paymentId,
+        bookingId,
+      });
+    }
+
+    await pool.query(
+      `
+      UPDATE calendar_bookings
+      SET
+        payment_status = 'paid',
+        paid_at = NOW(),
+        status = 'confirmed'
+      WHERE id = $1
+      `,
+      [bookingId]
+    );
 
     return res.status(200).json({
       ok: true,
-      received: true,
+      message: "Pago aprobado y reserva actualizada.",
       paymentId,
+      bookingId,
+      payment,
     });
   } catch (error) {
     console.error("Error webhook Mercado Pago:", error);
@@ -116,7 +400,6 @@ if (paymentInfo.status !== "approved") {
     });
   }
 },
-
 
 async createPublicBookingPayment(req: Request, res: Response) {
   try {

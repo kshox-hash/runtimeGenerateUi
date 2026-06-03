@@ -63,7 +63,9 @@ router.post(
   "/api/payments/webhook",
   runtimeController.mercadoPagoWebhook
 );
-
+router.get("/payment/success", runtimeController.paymentSuccess);
+router.get("/payment/failure", runtimeController.paymentFailure);
+router.get("/payment/pending", runtimeController.paymentPending);
 //example payment
 
 router.get(
