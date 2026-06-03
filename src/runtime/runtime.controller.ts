@@ -45,10 +45,6 @@ import {
   createBookingConfirmationToken,
 } from "../runtime/booking/services/bookingTokenService";
 
-import {
-  sendBookingConfirmationEmail,
-} from "../runtime/booking/services/bookingEmailService";
-
 import { notificationService } from "../modules/notifications/notification.service";
 
 import { companyProfileService } from "../modules/profiles/company_profile.service";
@@ -57,6 +53,17 @@ import { findEnabledModulesByUserId } from "../modules/menus/user-modules.reposi
 import DB from "../db/db_configuration";
 import { createPreference , getPaymentById} from "../modules/payments/mercado.service";
 
+import {
+  sendBookingConfirmationEmail,
+} from "../runtime/booking/services/bookingEmailService";
+
+import {
+  sendBookingPaidEmail,
+} from "../runtime/booking/services/bookingPaidEmailService";
+
+import {
+  sendBusinessBookingPaidEmail,
+} from "../runtime/booking/services/businessBookingPaidEmailService";
 
 function validateConfig(config: unknown): config is ViewConfig {
   if (!config || typeof config !== "object") return false;
@@ -372,17 +379,52 @@ async mercadoPagoWebhook(req: Request, res: Response) {
       });
     }
 
-    await pool.query(
-      `
-      UPDATE calendar_bookings
-      SET
-        payment_status = 'paid',
-        paid_at = NOW(),
-        status = 'confirmed'
-      WHERE id = $1
-      `,
-      [bookingId]
-    );
+    const bookingUpdateResult = await pool.query(
+  `
+  UPDATE calendar_bookings
+  SET
+    payment_status = 'paid',
+    paid_at = NOW(),
+    status = 'confirmed'
+  WHERE id = $1
+  RETURNING
+    id,
+    user_id,
+    client_name,
+    client_email,
+    client_phone,
+    booking_date,
+    start_time
+  `,
+  [bookingId]
+);
+
+const confirmedBooking = bookingUpdateResult.rows[0];
+
+if (confirmedBooking?.client_email) {
+  await sendBookingPaidEmail({
+    to: confirmedBooking.client_email,
+    customerName: confirmedBooking.client_name || "Cliente",
+    businessName: "Flowers",
+    bookingDate: new Date(confirmedBooking.booking_date).toLocaleDateString("es-CL"),
+    bookingTime: String(confirmedBooking.start_time).slice(0, 5),
+  });
+}
+
+const businessEmail = process.env.BUSINESS_NOTIFICATION_EMAIL;
+
+if (businessEmail && confirmedBooking) {
+  await sendBusinessBookingPaidEmail({
+    to: businessEmail,
+    businessName: "Flowers",
+    customerName: confirmedBooking.client_name || "Cliente",
+    customerEmail: confirmedBooking.client_email || "",
+    customerPhone: confirmedBooking.client_phone || "",
+    bookingDate: new Date(confirmedBooking.booking_date).toLocaleDateString("es-CL"),
+    bookingTime: String(confirmedBooking.start_time).slice(0, 5),
+    amount: Number(payment.amount || 0),
+  });
+}
 
     return res.status(200).json({
       ok: true,
@@ -500,7 +542,7 @@ if (existingPayment?.checkout_url) {
   });
 }
 
-    const amount = Number(booking.payment_amount || 3000);
+    const amount = Number(booking.payment_amount || 2000);
 
     if (!Number.isFinite(amount) || amount <= 0) {
       return res.status(400).json({
