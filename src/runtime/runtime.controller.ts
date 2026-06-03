@@ -89,7 +89,7 @@ async mercadoPagoWebhook(req: Request, res: Response) {
     }
 
     console.log("Payment ID recibido:", paymentId);
-    const paymentInfo = await getPaymentById("APP_USR-1220956273814202-060201-3f58ba8e09ece26415f66a1e586b907d-3442108509",  String(paymentId));
+    const paymentInfo = await getPaymentById( process.env.ACCESS_TOKEN_MP! ,  String(paymentId));
 
 console.log("Pago Mercado Pago:", paymentInfo);
 
