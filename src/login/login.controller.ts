@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { loginUser } from "./login.service";
 
+
 export async function loginController(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
@@ -23,6 +24,38 @@ export async function loginController(req: Request, res: Response) {
     });
   } catch (error: any) {
     console.error("LOGIN ERROR:", error.message);
+
+    return res.status(401).json({
+      ok: false,
+      message: error.message,
+    });
+  }
+}
+
+
+
+import { loginWithGoogle } from "./login.service";
+
+export async function googleLoginController(req: Request, res: Response) {
+  try {
+    const { idToken } = req.body;
+
+    if (!idToken) {
+      return res.status(400).json({
+        ok: false,
+        message: "Token de Google obligatorio",
+      });
+    }
+
+    const result = await loginWithGoogle(idToken);
+
+    return res.status(200).json({
+      ok: true,
+      token: result.token,
+      user: result.user,
+    });
+  } catch (error: any) {
+    console.error("GOOGLE LOGIN ERROR:", error.message);
 
     return res.status(401).json({
       ok: false,
