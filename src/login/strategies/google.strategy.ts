@@ -13,6 +13,8 @@ passport.use(
     async (_accessToken, _refreshToken, profile, done) => {
       try {
         const email = profile.emails?.[0]?.value;
+        const name = profile.displayName;
+        const picture = profile.photos?.[0]?.value;
 
         if (!email) {
           return done(new Error("Google no devolvió correo"));
@@ -22,10 +24,10 @@ passport.use(
 
         let result = await pool.query(
           `
-          select id, email
-          from users
-          where lower(email) = lower($1)
-          limit 1
+          SELECT id, email
+          FROM users
+          WHERE lower(email) = lower($1)
+          LIMIT 1
           `,
           [email]
         );
@@ -35,9 +37,15 @@ passport.use(
         if (!user) {
           result = await pool.query(
             `
-            insert into users (email, password)
-            values ($1, $2)
-            returning id, email
+            INSERT INTO users (
+              email,
+              password
+            )
+            VALUES (
+              $1,
+              $2
+            )
+            RETURNING id, email
             `,
             [email, null]
           );
@@ -58,11 +66,18 @@ passport.use(
 
         return done(null, {
           token,
-          user,
+          user: {
+            id: user.id,
+            email: user.email,
+            name,
+            picture,
+          },
         });
       } catch (error) {
-        return done(error);
+        return done(error as Error);
       }
     }
   )
 );
+
+export {};

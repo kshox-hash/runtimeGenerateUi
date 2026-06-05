@@ -21,10 +21,11 @@ export async function googleCallbackController(req: Request, res: Response) {
 
   const redirectUrl =
     `${deeplinkBase}` +
-    `?token=${encodeURIComponent(authUser.token)}` +
-    `&userId=${encodeURIComponent(authUser.user.id)}` +
-    `&email=${encodeURIComponent(authUser.user.email)}`;
-
+      `?token=${encodeURIComponent(authUser.token)}` +
+  `&userId=${encodeURIComponent(authUser.user.id)}` +
+  `&email=${encodeURIComponent(authUser.user.email)}` +
+  `&name=${encodeURIComponent(authUser.user.name ?? "")}` +
+  `&picture=${encodeURIComponent(authUser.user.picture ?? "")}`;
   return res.redirect(redirectUrl);
 }
 
