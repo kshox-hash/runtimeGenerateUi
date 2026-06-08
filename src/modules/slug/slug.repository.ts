@@ -8,7 +8,7 @@ export async function findSlugByUserIdRepository(userId: string) {
   const result = await pool.query(
     `
     SELECT *
-    FROM public_slug
+    FROM user_slug_settings
     WHERE user_id = $1
     LIMIT 1
     `,

@@ -14,15 +14,21 @@ export async function getMySlugController(
       });
     }
 
-    const slug = await getSlugByUserIdService(userId);
+    const slugRecord = await getSlugByUserIdService(userId);
+
+    if (!slugRecord) {
+      return res.status(200).json({
+        configured: false,
+        slug: null,
+      });
+    }
 
     return res.status(200).json({
-      configured: Boolean(slug),
-      slug: slug?.slug ?? null,
-      isAvailable: Boolean(slug?.is_available ?? slug?.isAvailable ?? true),
+      configured: true,
+      slug: slugRecord.slug,
     });
   } catch (error) {
-    return res.status(400).json({
+    return res.status(500).json({
       error:
         error instanceof Error
           ? error.message
@@ -45,6 +51,12 @@ export async function insertSlugController(
       });
     }
 
+    if (!slug || typeof slug !== "string") {
+      return res.status(400).json({
+        error: "Slug requerido",
+      });
+    }
+
     await insertSlugService({
       userId,
       slug,
@@ -54,11 +66,11 @@ export async function insertSlugController(
       message: "Slug creado correctamente",
     });
   } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Error creando slug";
+
     return res.status(400).json({
-      error:
-        error instanceof Error
-          ? error.message
-          : "Error creando slug",
+      error: message,
     });
   }
 }

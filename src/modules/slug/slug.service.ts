@@ -4,7 +4,7 @@ import {
 } from "./slug.repository";
 
 export async function getSlugByUserIdService(userId: string) {
-  return findSlugByUserIdRepository(userId);
+    return await findSlugByUserIdRepository(userId);
 }
 
 export async function insertSlugService({
