@@ -1,4 +1,4 @@
-import { ProductsComponent, ProductItem, RuntimeLinkRecord, SubmitBody, ViewConfig } from "../runtime/runtime";
+import { ProductsComponent, ProductItem, RuntimeLinkRecord, SubmitBody, ViewConfig } from "../runtime/runtime.types";
 
 export function formatCurrencyCLP(value: number): string {
   return new Intl.NumberFormat("es-CL", {
@@ -10,7 +10,7 @@ export function formatCurrencyCLP(value: number): string {
 
 export function getProductsFromConfig(config: ViewConfig): ProductItem[] {
   const productsComponent = config.components.find(
-    (component): component is ProductsComponent => component.type === "products"
+    (component : any): component is ProductsComponent => component.type === "products"
   );
 
   return productsComponent?.items || [];
@@ -22,7 +22,7 @@ export function buildQuoteDetail(record: RuntimeLinkRecord, submitBody: SubmitBo
   const customer = submitBody?.customer || {};
 
   const lines = selectedItems
-    .map((selected) => {
+    .map((selected : any) => {
       const product = catalog.find((item) => item.id === selected.productId);
       if (!product) return null;
 

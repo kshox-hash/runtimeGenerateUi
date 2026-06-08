@@ -1,5 +1,5 @@
 import { getPdfConfig } from "./quote-config.service";
-import { ViewConfig } from "../../runtime/runtime";
+import { ViewConfig } from "../../runtime/runtime.types";
 
 export async function buildRuntimeConfigFromSavedPdf(
   userId: string,

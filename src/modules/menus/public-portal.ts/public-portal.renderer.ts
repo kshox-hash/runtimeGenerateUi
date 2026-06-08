@@ -1,4 +1,4 @@
-import { MenuModuleItem } from "../../../runtime/runtime";
+import { MenuModuleItem } from "../../../runtime/runtime.types";
 
 type PublicPortalRenderData = {
   businessName: string;
