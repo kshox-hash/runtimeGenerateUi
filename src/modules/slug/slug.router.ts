@@ -7,7 +7,7 @@ import {
 
 const router = Router();
 
-router.get("/me", authMiddleware, getMySlugController);
+router.get("/slugs/me", authMiddleware, getMySlugController);
 
 router.post("/slugs", authMiddleware, insertSlugController);
 
