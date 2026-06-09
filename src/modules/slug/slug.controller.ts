@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
-import { insertSlugService, getSlugByUserIdService } from "./slug.service";
+import {
+  insertSlugService,
+  getSlugByUserIdService,
+} from "./slug.service";
 
 export async function getMySlugController(
   req: Request,
@@ -25,7 +28,8 @@ export async function getMySlugController(
 
     return res.status(200).json({
       configured: true,
-      slug: slugRecord.slug,
+      slug: slugRecord.public_slug,
+      isPublicEnabled: slugRecord.is_public_enabled,
     });
   } catch (error) {
     return res.status(500).json({
@@ -53,7 +57,7 @@ export async function insertSlugController(
 
     if (!slug || typeof slug !== "string") {
       return res.status(400).json({
-        error: "Slug requerido",
+        error: "Debe ingresar un nombre válido",
       });
     }
 
@@ -63,13 +67,17 @@ export async function insertSlugController(
     });
 
     return res.status(201).json({
+      success: true,
       message: "Slug creado correctamente",
     });
   } catch (error) {
     const message =
-      error instanceof Error ? error.message : "Error creando slug";
+      error instanceof Error
+        ? error.message
+        : "Error creando slug";
 
     return res.status(400).json({
+      success: false,
       error: message,
     });
   }
