@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const createProductSchema = z.object({
-  code: z.string().min(1, "Código obligatorio").max(50),
+  code: z.string().min(1).max(50).optional(),
   name: z.string().min(1, "Nombre obligatorio").max(200),
   price: z.coerce
     .number({ error: () => "Precio debe ser número" })
