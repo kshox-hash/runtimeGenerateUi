@@ -3,7 +3,7 @@ import { MenuModuleItem } from "../../runtime/runtime.types";
 
 const DEFAULT_MODULES: MenuModuleItem[] = [
   {
-    code: "quote",
+    code: "cotizador",
     title: "Cotizador",
     description: "Selecciona productos o servicios y envía una solicitud de cotización.",
     icon: "🧾",
@@ -11,7 +11,7 @@ const DEFAULT_MODULES: MenuModuleItem[] = [
     sortOrder: 1,
   },
   {
-    code: "appointments",
+    code: "reservas",
     title: "Reservas",
     description: "Agenda una hora seleccionando servicio, día y horario.",
     icon: "📅",

@@ -1,36 +1,16 @@
-import { RuntimeLinkRecord, MenuModuleItem } from "../../runtime/runtime.types";
+
 import { escapeHtml } from "../../utils/html";
 
 
-export type MenuViewData = {
-  title: string;
-  brand: string;
-  subtitle: string;
-  modules: MenuModuleItem[];
-};
+export function menuPublicHtml(data : any) : string {
 
-export function renderMenuHtml(record: MenuViewData): string {
-  const safeTitle = escapeHtml(record.title || "Menú de servicios");
-
-  const safeBrand = escapeHtml(
-    record.brand || ""
-  );
-
-  const safeSubtitle = escapeHtml(
-    record.subtitle ||
-      "Selecciona el módulo que quieres utilizar."
-  );
-
-  const modules = record.modules || [];
-
-  const cardsHtml = modules
-    .map((module, index) => {
+    const cardsHtml = data.module
+    .map((module : any, index : any) => {
       const title = escapeHtml(module.title || "Módulo");
       const description = escapeHtml(module.description || "");
       const icon = escapeHtml(module.icon || "•");
       const url = escapeHtml(module.url || "#");
       const enabled = Boolean(module.enabled);
-
       return `
         <a
           class="module-card animate ${!enabled ? "module-card-disabled" : ""}"
@@ -92,7 +72,7 @@ export function renderMenuHtml(record: MenuViewData): string {
   content="width=device-width, initial-scale=1.0, viewport-fit=cover"
 />
 
-<title>${safeTitle}</title>
+<title>${data.title}</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 
@@ -576,7 +556,7 @@ button {
       </div>
 
       <span class="brand-name">
-        ${safeBrand}
+        ${data.brand}
       </span>
 
     </header>
@@ -584,11 +564,11 @@ button {
     <section class="hero animate" style="animation-delay: 0.08s">
 
       <h1 class="hero-title">
-        ${safeTitle}
+        ${data.title}
       </h1>
 
       <p class="hero-sub">
-        ${safeSubtitle}
+        ${data.subTitle}
       </p>
 
     </section>
@@ -650,4 +630,4 @@ button {
 </body>
 </html>
 `;
-}
+    }

@@ -2,12 +2,10 @@ import { Request, Response } from "express";
 import { BASE_URL } from "../config/env";
 
 import {
-  buildChatbotConfig,
-  buildCotizadorConfig,
+
   buildReservasConfig,
 } from "../builders/view-config.builder";
 
-import { buildRuntimeConfigFromSavedPdf } from "../modules/quotes/runtime-config-from-quote.builder";
 import { generateQuotePdf } from "../modules/quotes/quote.service";
 
 import {
@@ -16,7 +14,6 @@ import {
   runtimeLinks,
 } from "./runtime.service";
 
-import { renderViewHtml } from "../modules/quotes/quote-html.service";
 
 import { sendWhatsAppTextMessage } from "../whatsapp/whatsapp.service";
 import { findWhatsAppConfigByUserId } from "../whatsapp/whatsapp_configuration_repository";
@@ -29,9 +26,6 @@ import {
 } from "./runtime.types";
 
 import { generateToken } from "../utils/token";
-
-import { buildMenuConfig } from "../modules/menus/menu.builder";
-import { renderMenuHtml } from "../modules/menus/menu-html.service";
 
 import { renderBookingHtml } from "../modules/appointments/appointments.screen";
 
@@ -48,14 +42,10 @@ import {
 import { notificationService } from "../modules/notifications/notification.service";
 
 import { companyProfileService } from "../modules/profiles/company_profile.service";
-import { findEnabledModulesByUserId } from "../modules/menus/user-modules.repository";
+
 
 import DB from "../db/db_configuration";
 import { createPreference , getPaymentById} from "../modules/payments/mercado.service";
-
-import {
-  sendBookingConfirmationEmail,
-} from "../runtime/booking/services/bookingEmailService";
 
 import {
   sendBookingPaidEmail,
@@ -791,10 +781,7 @@ async createPublicBooking(req: Request, res: Response) {
     });
   }
 },
-  async openPublicCotizador(req: Request, res: Response) {
-  return res.send(`Cotizador público funcionando: ${req.params.publicSlug}`);
-},
-
+ 
 async openPublicReservas(req: Request, res: Response) {
   try {
     const rawPublicSlug = req.params.publicSlug;
@@ -828,60 +815,7 @@ async openPublicReservas(req: Request, res: Response) {
 },
 
 
-async openPublicPortal(req: Request, res: Response) {
-  try {
-    const rawPublicSlug = req.params.publicSlug;
-    const publicSlug = Array.isArray(rawPublicSlug)
-      ? rawPublicSlug[0]
-      : rawPublicSlug;
 
-    if (!publicSlug || !publicSlug.trim()) {
-      return res.status(400).send("Slug público obligatorio");
-    }
-
-    const profile = await companyProfileService.getByPublicSlug(publicSlug);
-
-    if (!profile) {
-      return res.status(404).send("Negocio no encontrado");
-    }
-
-    const modules = await findEnabledModulesByUserId(profile.user_id);
-
-    const modulesWithUrls = modules.map((module) => {
-      if (module.code === "quote") {
-        return {
-          ...module,
-          url: `/open/${publicSlug}/cotizador`,
-        };
-      }
-
-      if (module.code === "appointments") {
-        return {
-          ...module,
-          url: `/open/${publicSlug}/reservas`,
-        };
-      }
-
-      return {
-        ...module,
-        url: "#",
-      };
-    });
-
-    const html = renderMenuHtml({
-      title: profile.business_name,
-      brand: profile.business_name,
-      subtitle: "Selecciona un servicio para continuar.",
-      modules: modulesWithUrls,
-    });
-
-    return res.status(200).send(html);
-  } catch (error) {
-    console.error("Error abriendo portal público:", error);
-
-    return res.status(500).send("Error abriendo portal público");
-  }
-},
 
   async openCalendar(
     req: Request<{ userId: string; leadId: string }>,
@@ -994,58 +928,6 @@ async openPublicPortal(req: Request, res: Response) {
     }
   },
 
-  async openMenu(
-    req: Request<{ userId: string; leadId: string }>,
-    res: Response
-  ) {
-    try {
-      const { userId, leadId } = req.params;
-
-      if (!userId || !leadId) {
-        return res.status(400).send("Parámetros inválidos.");
-      }
-
-      const config = await buildMenuConfig(userId, leadId);
-      const record = createRuntimeRecord(config, 30);
-
-      return res.redirect(`/menu/${record.token}`);
-    } catch (error) {
-      console.error("Error abriendo menú:", error);
-
-      return res.status(500).send(
-        `No se pudo abrir el menú: ${
-          error instanceof Error ? error.message : "error desconocido"
-        }`
-      );
-    }
-  },
-
- renderMenuView(req: Request<{ token: string }>, res: Response) {
-  const { token } = req.params;
-
-  const record = getRecordOrNull(token);
-
-  if (!record) {
-    return res.status(404).send("<h1>404</h1><p>Menú no encontrado.</p>");
-  }
-
-  if (record.status === "expired") {
-    return res
-      .status(410)
-      .send("<h1>Menú expirado</h1><p>Este enlace ya no está disponible.</p>");
-  }
-
-  record.openedAt = Date.now();
-
-  return res.send(
-    renderMenuHtml({
-      title: record.config.title,
-      brand: record.config.brand ?? record.config.title,
-      subtitle: record.config.subtitle ?? "",
-      modules: record.config.modules ?? [],
-    })
-  );
-},
 
   createRuntimeLink(req: Request<{}, {}, CreateRuntimeLinkBody>, res: Response) {
     const { expiresInMinutes = 10, config } = req.body;
@@ -1307,131 +1189,6 @@ async submitRuntimeLink(
     });
   },
 
-  renderRuntimeView(req: Request<{ token: string }>, res: Response) {
-    const { token } = req.params;
-
-    const record = getRecordOrNull(token);
-
-    if (!record) {
-      return res.status(404).send("<h1>404</h1><p>Link no encontrado.</p>");
-    }
-
-    if (record.status === "expired") {
-      return res
-        .status(410)
-        .send("<h1>Link expirado</h1><p>Este enlace ya no está disponible.</p>");
-    }
-
-    record.openedAt = Date.now();
-
-    return res.send(renderViewHtml(record));
-  },
-
-  createDemo(_req: Request, res: Response) {
-    const demoConfig: ViewConfig = {
-      brand: "Automatiza Fácil",
-      title: "Cotización Inteligente",
-      subtitle: "Selecciona productos y envía tu solicitud.",
-      successMessage: "Solicitud enviada correctamente.",
-      recipientPhone: "56900000000",
-      components: [
-        {
-          type: "products",
-          items: [
-            {
-              id: "p1",
-              name: "Producto A",
-              price: 50000,
-              description: "Descripción opcional del producto.",
-            },
-            {
-              id: "p2",
-              name: "Producto B",
-              price: 50000,
-              description: "Descripción opcional del producto.",
-            },
-            {
-              id: "p3",
-              name: "Producto C",
-              price: 50000,
-              description: "Descripción opcional del producto.",
-            },
-          ],
-        },
-        {
-          type: "form",
-          fields: [
-            {
-              name: "name",
-              label: "Nombre completo",
-              inputType: "text",
-              required: true,
-              placeholder: "Ej: Juan Pérez",
-            },
-            {
-              name: "email",
-              label: "Correo electrónico",
-              inputType: "email",
-              required: true,
-              placeholder: "Ej: juan@correo.com",
-            },
-            {
-              name: "notes",
-              label: "Mensaje (opcional)",
-              inputType: "textarea",
-              required: false,
-              placeholder: "Escribe aquí cualquier detalle adicional...",
-            },
-          ],
-        },
-        {
-          type: "button",
-          label: "Enviar Cotización",
-          action: { type: "submit" },
-        },
-      ],
-    };
-
-    const record = createRuntimeRecord(demoConfig, 15);
-
-    return res.json({
-      ok: true,
-      token: record.token,
-      url: `${BASE_URL}/v/${record.token}`,
-      expiresAt: new Date(record.expiresAt).toISOString(),
-    });
-  },
-
-  async openCotizador(req: Request<{ leadId: string }>, res: Response) {
-    try {
-      const rawLeadId = req.params.leadId;
-
-      if (rawLeadId.includes("__")) {
-        const [userId, leadId] = rawLeadId.split("__");
-
-        if (!userId || !leadId) {
-          return res.status(400).send("Parámetros inválidos.");
-        }
-
-        const config = await buildRuntimeConfigFromSavedPdf(userId, leadId);
-        const record = createRuntimeRecord(config, 15);
-
-        return res.redirect(`/v/${record.token}`);
-      }
-
-      const record = createRuntimeRecord(buildCotizadorConfig(rawLeadId), 15);
-
-      return res.redirect(`/v/${record.token}`);
-    } catch (error) {
-      console.error("Error abriendo cotizador:", error);
-
-      return res.status(500).send(
-        `No se pudo abrir el cotizador: ${
-          error instanceof Error ? error.message : "error desconocido"
-        }`
-      );
-    }
-  },
 
   openReservas(req: Request<{ leadId: string }>, res: Response) {
     const record = createRuntimeRecord(buildReservasConfig(req.params.leadId), 15);
@@ -1439,30 +1196,6 @@ async submitRuntimeLink(
     return res.redirect(`/v/${record.token}`);
   },
 
-  openChatbot(req: Request<{ leadId: string }>, res: Response) {
-    const record = createRuntimeRecord(buildChatbotConfig(req.params.leadId), 15);
 
-    return res.redirect(`/v/${record.token}`);
-  },
-
-  async openCotizadorDinamico(
-    req: Request<{ userId: string; leadId: string }>,
-    res: Response
-  ) {
-    try {
-      const { userId, leadId } = req.params;
-
-      const config = await buildRuntimeConfigFromSavedPdf(userId, leadId);
-      const record = createRuntimeRecord(config, 15);
-
-      return res.redirect(`/v/${record.token}`);
-    } catch (error) {
-      console.error("Error creando cotizador dinámico:", error);
-
-      return res.status(500).json({
-        ok: false,
-        message: "No se pudo crear el cotizador dinámico.",
-      });
-    }
-  },
+  
 };

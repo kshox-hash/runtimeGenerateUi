@@ -25,7 +25,7 @@ export async function getMySlugController(
         slug: null,
       });
     }
-
+    
     return res.status(200).json({
       configured: true,
       slug: slugRecord.public_slug,
