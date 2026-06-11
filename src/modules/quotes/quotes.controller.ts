@@ -106,20 +106,39 @@ export const quotesSubmitController = {
     phone: customer.phone,
     notes: customer.message || "",
   },
-  lines,   // ya lo tienes calculado arriba
-  total,   // ya lo tienes calculado arriba
+  lines,
+  total,
 });
 
-      // 7. Limpiar PDF del disco después de enviarlo
-      fs.unlink(filePath, () => {}); // silencioso, no bloqueante
+if (customer.email?.trim()) {
+  try {
+    console.log("[quotesSubmit] Enviando correo a:", customer.email.trim());
+    await sendQuoteEmail({
+      to: customer.email.trim(),
+      customerName: customer.name,
+      brandName: slug.business_name || slug.public_slug,
+      pdfPath: filePath,
+      pdfFileName: fileName,
+      items: lines,
+      total,
+    });
+    console.log("[quotesSubmit] Correo enviado OK");
+  } catch (emailError: any) {
+    console.error("[quotesSubmit] Error enviando correo:", emailError?.message);
+    // No bloqueamos la respuesta si falla el correo
+  } finally {
+    fs.unlink(filePath, () => {});
+  }
+} else {
+  fs.unlink(filePath, () => {});
+}
 
-      return res.status(200).json({
-        ok: true,
-        message: customer.email?.trim()
-          ? "¡Cotización enviada! Revisa tu correo."
-          : "Cotización recibida. Nos contactaremos pronto.",
-      });
-
+return res.status(200).json({
+  ok: true,
+  message: customer.email?.trim()
+    ? "¡Cotización enviada! Revisa tu correo."
+    : "Cotización recibida. Nos contactaremos pronto.",
+});
     } catch (error: any) {
      
   console.error("[quotesSubmit] Error:", error?.message || error);
