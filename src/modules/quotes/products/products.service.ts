@@ -11,13 +11,13 @@ import {
 export const productsService = {
 
   async create(userId: string, body: unknown) {
-    const parsed = createProductSchema.safeParse(body);
-    if (!parsed.success) {
-      throw { status: 400, message: 'error[safeparse]' };
-    }
-    const product = await createProductRepository(userId, parsed.data);
-    return product;
-  },
+  const parsed = createProductSchema.safeParse(body);
+  if (!parsed.success) {
+    console.error(JSON.stringify(parsed.error.flatten(), null, 2)); // 👈
+    throw { status: 400, message: 'error[safeparse]' };
+  }
+  return createProductRepository(userId, parsed.data);
+},
 
   async getAll(userId: string) {
     return getProductsRepository(userId);
