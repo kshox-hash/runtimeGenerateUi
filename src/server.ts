@@ -44,9 +44,9 @@ app.use("/auth", loginRoutes);
 app.use(bookingConfirmationRoutes);
 app.use("/api", notificationRoutes);
 app.use("/api", slugRoutes);
-app.use(publicPortalRouter) // ajusta el path
+app.use(publicPortalRouter)
 
-app.use("/api", productsRouter);
+app.use("/api/products", productsRouter);
 app.use(errorMiddleware);
 
 app.listen(PORT, () => {
