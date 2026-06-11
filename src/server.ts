@@ -46,7 +46,7 @@ app.use("/api", notificationRoutes);
 app.use("/api", slugRoutes);
 app.use(publicPortalRouter)
 
-app.use("/api/produts", productsRouter);
+app.use("/products", productsRouter);
 app.use(errorMiddleware);
 
 app.listen(PORT, () => {
