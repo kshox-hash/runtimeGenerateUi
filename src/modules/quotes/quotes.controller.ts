@@ -95,20 +95,20 @@ export const quotesSubmitController = {
         items,
       };
 
-      const { fileName, filePath } = await generateQuotePdf(record as any);
-
-      // 6. Enviar correo solo si el cliente dejó email
-      if (customer.email?.trim()) {
-        await sendQuoteEmail({
-          to: customer.email.trim(),
-          customerName: customer.name,
-          brandName: slug.business_name || slug.public_slug,
-          pdfPath: filePath,
-          pdfFileName: fileName,
-          items: lines,
-          total,
-        });
-      }
+      const { fileName, filePath } = await generateQuotePdf({
+  token: `${publicSlug}-${Date.now()}`,
+  brand: slug.business_name || slug.public_slug,
+  title: "Cotización",
+  subtitle: "",
+  customer: {
+    name: customer.name,
+    email: customer.email || "",
+    phone: customer.phone,
+    notes: customer.message || "",
+  },
+  lines,   // ya lo tienes calculado arriba
+  total,   // ya lo tienes calculado arriba
+});
 
       // 7. Limpiar PDF del disco después de enviarlo
       fs.unlink(filePath, () => {}); // silencioso, no bloqueante
