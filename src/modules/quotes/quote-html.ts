@@ -392,7 +392,7 @@ async function onSubmit(button, originalLabel) {
   try {
     button.disabled = true;
     button.textContent = "Enviando...";
-    const response = await fetch("/api/shop/" + publicSlug + "/quotes/submit", {
+    const response = await fetch("/shop/" + publicSlug + "/quotes/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ customer, items: selectedItems, raw: { submittedAtClient: new Date().toISOString() } })

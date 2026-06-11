@@ -126,7 +126,7 @@ export const quotesSubmitController = {
   console.error("[quotesSubmit] Stack:", error?.stack);
   return res.status(500).json({ ok: false, message: "Error procesando la cotización." });
 }
-      return res.status(500).json({ ok: false, message: "Error procesando la cotización." });
+      
     }
   
 };
