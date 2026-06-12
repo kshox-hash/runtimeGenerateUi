@@ -34,8 +34,6 @@ export async function loginController(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
 
-    console.log("BODY:", req.body);
-
     if (!email || !password) {
       return res.status(400).json({
         ok: false,

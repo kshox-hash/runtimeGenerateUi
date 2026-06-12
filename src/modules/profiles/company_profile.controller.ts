@@ -129,12 +129,17 @@ export const companyProfileController = {
     res: Response,
   ): Promise<Response> {
     try {
-      const profile = await companyProfileService.upsert(req.body);
+      const userId = req.user?.userId;
+      if (!userId) {
+        return res.status(401).json({ ok: false, message: "Usuario no autenticado" });
+      }
 
-      return res.json({
-        ok: true,
-        profile,
+      const profile = await companyProfileService.upsert({
+        ...req.body,
+        user_id: userId,
       });
+
+      return res.json({ ok: true, profile });
     } catch (error) {
       return res.status(400).json({
         ok: false,

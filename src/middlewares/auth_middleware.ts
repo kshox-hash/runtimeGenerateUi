@@ -23,6 +23,8 @@ declare global {
   }
 }
 
+import { JWT_SECRET } from "../config/env";
+
 export function authMiddleware(
   req: Request,
   res: Response,
@@ -32,23 +34,16 @@ export function authMiddleware(
     const authorization = req.headers.authorization;
 
     if (!authorization) {
-      return res.status(401).json({
-        error: "Token requerido",
-      });
+      return res.status(401).json({ error: "Token requerido" });
     }
 
     if (!authorization.startsWith("Bearer ")) {
-      return res.status(401).json({
-        error: "Formato de token inválido",
-      });
+      return res.status(401).json({ error: "Formato de token inválido" });
     }
 
     const token = authorization.replace("Bearer ", "").trim();
 
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET as string
-    ) as AuthUser;
+    const decoded = jwt.verify(token, JWT_SECRET) as AuthUser;
 
     req.user = {
       userId: decoded.userId,
