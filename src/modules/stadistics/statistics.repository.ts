@@ -33,7 +33,7 @@ export class StatisticsRepository {
         ON CONFLICT (user_id, module_id, metric)
         DO UPDATE SET count = statistics.count + 1, updated_at = NOW()
         `,
-        [userId, moduleId ?? null, metric]
+        [userId, moduleId ?? '', metric]
       );
 
       // 2) NUEVO: suma 1 al contador de HOY en statistics_daily
@@ -166,7 +166,7 @@ export class StatisticsRepository {
         AND metric = $2
         AND module_id IS NOT DISTINCT FROM $3
       `,
-      [userId, metric, moduleId ?? null]
+      [userId, metric, moduleId ?? '']
     );
   }
 }
