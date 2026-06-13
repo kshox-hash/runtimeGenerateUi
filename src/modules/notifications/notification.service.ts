@@ -51,7 +51,6 @@ export class NotificationService {
 
   async quoteCreated(params: {
     userId: string;
-    quoteId: string;
     customerName?: string;
   }): Promise<NotificationItem> {
     return this.create({
@@ -62,7 +61,7 @@ export class NotificationService {
       message: params.customerName
         ? `Se creó una cotización para ${params.customerName}.`
         : "Se creó una nueva cotización.",
-      entityId: params.quoteId,
+      entityId: null,
       entityType: "quote",
       action: "open_quote",
     });

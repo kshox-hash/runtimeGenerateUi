@@ -139,7 +139,6 @@ if (customer.email?.trim()) {
 
     await notificationService.quoteCreated({
   userId: slug.user_id,
-  quoteId: `${publicSlug}-${Date.now()}`,
   customerName: customer.name,
 });
 
