@@ -80,7 +80,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 @keyframes bpulse{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* LAYOUT */
-.main{position:fixed;top:var(--hdr);bottom:var(--nav);left:0;right:0;overflow:hidden}
+.main{position:fixed;top:var(--hdr);bottom:calc(var(--nav) + env(safe-area-inset-bottom));left:0;right:0;overflow:hidden}
 .panel{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden}
 .panel.active{display:flex}
 .panel-scroll{flex:1;overflow-y:auto;padding:20px 16px 16px;-webkit-overflow-scrolling:touch}
@@ -189,7 +189,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 
 /* CHAT — input */
 .chat-bar{
-  padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  padding:10px 14px 10px;
   background:transparent;flex-shrink:0;
 }
 .input-box{
@@ -203,14 +203,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 }
 .msg-input{
   display:block;width:100%;background:none;border:none;outline:none;
-  padding:14px 52px 14px 18px;color:var(--text);
+  padding:14px 56px 14px 18px;color:var(--text);
   font-size:15px;font-family:inherit;resize:none;line-height:1.5;
   min-height:50px;max-height:160px;
 }
 .msg-input::placeholder{color:var(--muted)}
 .send-btn{
-  position:absolute;right:8px;bottom:7px;
-  width:36px;height:36px;border-radius:10px;
+  position:absolute;right:7px;bottom:6px;
+  width:40px;height:40px;border-radius:12px;
   background:var(--primary);border:none;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   transition:background .15s,transform .12s,opacity .15s;
@@ -305,7 +305,7 @@ a.info-row:active,button.info-row:active{background:var(--s2)}
     <div class="chat-bar">
       <div class="input-box">
         <textarea class="msg-input" id="chatInput" placeholder="Pregúntame lo que quieras…" rows="1"></textarea>
-        <button class="send-btn" id="sendBtn" onclick="sendMsg()">
+        <button class="send-btn" id="sendBtn" type="button">
           <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
         </button>
       </div>
@@ -414,19 +414,19 @@ a.info-row:active,button.info-row:active{background:var(--s2)}
 </main>
 
 <nav class="nav">
-  <button class="nb active" id="nb-chat" onclick="showTab('chat')">
+  <button class="nb active" id="nb-chat" type="button">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     <span>Chat</span>
   </button>
-  <button class="nb" id="nb-reservas" onclick="showTab('reservas')">
+  <button class="nb" id="nb-reservas" type="button">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     <span>Reservas</span>
   </button>
-  <button class="nb" id="nb-cotizar" onclick="showTab('cotizar')">
+  <button class="nb" id="nb-cotizar" type="button">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
     <span>Servicios</span>
   </button>
-  <button class="nb" id="nb-nosotros" onclick="showTab('nosotros')">
+  <button class="nb" id="nb-nosotros" type="button">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     <span>Nosotros</span>
   </button>
@@ -596,7 +596,14 @@ function quickAction(a){
 }
 
 document.addEventListener('DOMContentLoaded',function(){
-  const inp=document.getElementById('chatInput');
+
+  /* send button y textarea */
+  var inp = document.getElementById('chatInput');
+  var btn = document.getElementById('sendBtn');
+
+  btn.addEventListener('click', function(){ sendMsg(); });
+  btn.addEventListener('touchend', function(e){ e.preventDefault(); sendMsg(); });
+
   inp.addEventListener('input',function(){
     this.style.height='auto';
     this.style.height=Math.min(this.scrollHeight,160)+'px';
@@ -604,6 +611,25 @@ document.addEventListener('DOMContentLoaded',function(){
   inp.addEventListener('keydown',function(e){
     if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}
   });
+
+  /* nav buttons */
+  document.getElementById('nb-chat').addEventListener('click',function(){ showTab('chat'); });
+  document.getElementById('nb-reservas').addEventListener('click',function(){ showTab('reservas'); });
+  document.getElementById('nb-cotizar').addEventListener('click',function(){ showTab('cotizar'); });
+  document.getElementById('nb-nosotros').addEventListener('click',function(){ showTab('nosotros'); });
+
+  /* prompt cards */
+  var cards = document.querySelectorAll('.prompt-card');
+  cards[0] && cards[0].addEventListener('click', function(){ quickAction('reservas'); });
+  cards[1] && cards[1].addEventListener('click', function(){ quickAction('cotizar'); });
+  cards[2] && cards[2].addEventListener('click', function(){ quickAction('precios'); });
+  cards[3] && cards[3].addEventListener('click', function(){ quickAction('info'); });
+
+  /* saludo automático al abrir */
+  setTimeout(function(){
+    startChat();
+    addAi('¡Hola! 👋 Soy el asistente de **' + BIZ + '**. Estoy aquí para ayudarte con preguntas sobre nuestros servicios, precios y disponibilidad. ¿En qué te puedo ayudar hoy?');
+  }, 600);
 });
 </script>
 </body>
