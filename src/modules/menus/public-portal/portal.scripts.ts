@@ -192,89 +192,235 @@ function addConfirmCard(icon,title,rows,note){
   m.body.appendChild(card); appendAiRow(m.row);
 }
 
-// ── FLOW: RESERVAS ────────────────────────────────────────────────────────────
-function startReservasFlow(){
-  S.flow='reservas'; S.date=null; S.time=null;
-  showTyping();
+// ── PANEL DE RESERVAS (slide-in) ──────────────────────────────────────────────
+function makeBPHeader(title,onBack){
+  var hdr=document.createElement('div'); hdr.className='qp-header';
+  var back=document.createElement('button'); back.type='button'; back.className='qp-back';
+  back.innerHTML='<svg viewBox="0 0 24 24" fill="none"><polyline points="15 18 9 12 15 6"/></svg>'+(arguments[2]||(onBack===closeBookingPanel?'Volver':'Atrás'));
+  back.addEventListener('click',onBack);
+  var ttl=document.createElement('div'); ttl.className='qp-title'; ttl.textContent=title;
+  var spc=document.createElement('div'); spc.className='qp-spacer';
+  hdr.appendChild(back); hdr.appendChild(ttl); hdr.appendChild(spc);
+  return hdr;
+}
+
+function fetchAndRenderDates(){
   fetch('/api/public/'+SLUG+'/slots')
     .then(function(r){ return r.json(); })
     .then(function(data){
-      hideTyping();
       S.slots=parseSlotsResponse(data);
       var dates=Object.keys(S.slots);
-      if(!dates.length){
-        addAiWithChips('No hay horarios disponibles por el momento.',[
-          {label:'🔄 Intentar de nuevo',onClick:function(){startReservasFlow();}},
-          {label:'🏠 Ver otras opciones',onClick:function(){addAiWithModules();}}
-        ]); return;
+      if(!dates.length){ renderBPEmpty('No hay horarios disponibles en este momento.'); return; }
+      renderBPDates(dates);
+    })
+    .catch(function(){ renderBPEmpty('No se pudo cargar la disponibilidad. Verifica tu conexión.'); });
+}
+
+function openBookingPanel(){
+  S.flow='reservas'; S.date=null; S.time=null;
+  renderBPLoading();
+  document.getElementById('bookingPanel').classList.add('open');
+  fetchAndRenderDates();
+}
+
+function closeBookingPanel(){
+  document.getElementById('bookingPanel').classList.remove('open');
+  setTimeout(function(){ var p=document.getElementById('bookingPanel'); if(p) p.innerHTML=''; },360);
+}
+
+function renderBPLoading(){
+  var panel=document.getElementById('bookingPanel');
+  panel.innerHTML='';
+  panel.appendChild(makeBPHeader('Reservar hora',closeBookingPanel));
+  var body=document.createElement('div'); body.className='qp-body';
+  var loading=document.createElement('div'); loading.className='qp-loading';
+  loading.innerHTML='<div class="qp-loading-spinner"></div><span>Buscando disponibilidad...</span>';
+  body.appendChild(loading);
+  panel.appendChild(body);
+}
+
+function renderBPEmpty(msg){
+  var panel=document.getElementById('bookingPanel');
+  panel.innerHTML='';
+  panel.appendChild(makeBPHeader('Reservar hora',closeBookingPanel));
+  var body=document.createElement('div'); body.className='qp-body';
+  var empty=document.createElement('div'); empty.className='qp-empty';
+  var icon=document.createElement('div'); icon.className='qp-empty-icon'; icon.textContent='📅';
+  var msgEl=document.createElement('div'); msgEl.className='qp-empty-msg'; msgEl.textContent=msg;
+  var actions=document.createElement('div'); actions.className='qp-empty-actions';
+  var retryBtn=document.createElement('button'); retryBtn.type='button'; retryBtn.className='qp-btn'; retryBtn.style.marginBottom='8px'; retryBtn.textContent='🔄 Intentar de nuevo';
+  retryBtn.addEventListener('click',function(){ renderBPLoading(); fetchAndRenderDates(); });
+  var closeBtn=document.createElement('button'); closeBtn.type='button'; closeBtn.className='qp-empty-btn'; closeBtn.textContent='Volver al chat';
+  closeBtn.addEventListener('click',closeBookingPanel);
+  actions.appendChild(retryBtn); actions.appendChild(closeBtn);
+  empty.appendChild(icon); empty.appendChild(msgEl); empty.appendChild(actions);
+  body.appendChild(empty);
+  panel.appendChild(body);
+}
+
+function renderBPDates(dates){
+  var panel=document.getElementById('bookingPanel');
+  panel.innerHTML='';
+  panel.appendChild(makeBPHeader('Reservar hora',closeBookingPanel));
+  var body=document.createElement('div'); body.className='qp-body';
+  var lbl=document.createElement('p'); lbl.className='qp-section-title'; lbl.textContent='Elige un día';
+  body.appendChild(lbl);
+  var list=document.createElement('div'); list.className='bp-dates';
+  var DAYS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  dates.slice(0,14).forEach(function(date){
+    var times=S.slots[date]||[];
+    var dt=new Date(date+'T12:00:00');
+    var card=document.createElement('div'); card.className='bp-date-card';
+    var iconEl=document.createElement('div'); iconEl.className='bp-date-icon';
+    iconEl.innerHTML='<div class="bp-date-day">'+DAYS[dt.getDay()]+'</div><div class="bp-date-num">'+dt.getDate()+'</div>';
+    var info=document.createElement('div'); info.className='bp-date-info';
+    info.innerHTML='<div class="bp-date-label">'+escH(formatDate(date))+'</div>'
+      +'<div class="bp-date-slots">'+times.length+' horario'+(times.length!==1?'s':'')+' disponible'+(times.length!==1?'s':'')+'</div>';
+    var arrow=document.createElement('svg'); arrow.setAttribute('viewBox','0 0 24 24'); arrow.setAttribute('fill','none'); arrow.className='bp-date-arrow';
+    arrow.innerHTML='<polyline points="9 18 15 12 9 6"/>';
+    card.appendChild(iconEl); card.appendChild(info); card.appendChild(arrow);
+    (function(d){ card.addEventListener('click',function(){ S.date=d; renderBPTimes(d,S.slots[d]||[]); }); })(date);
+    list.appendChild(card);
+  });
+  body.appendChild(list);
+  panel.appendChild(body);
+}
+
+function renderBPTimes(date,times){
+  var panel=document.getElementById('bookingPanel');
+  panel.innerHTML='';
+  var allDates=Object.keys(S.slots);
+  panel.appendChild(makeBPHeader('Reservar hora',function(){ renderBPDates(allDates); }));
+  var body=document.createElement('div'); body.className='qp-body';
+  var lbl=document.createElement('p'); lbl.className='qp-section-title'; lbl.textContent='Elige un horario';
+  var dateEl=document.createElement('div'); dateEl.style.cssText='font-size:14px;color:var(--muted2);margin-bottom:14px';
+  dateEl.textContent=formatDate(date);
+  body.appendChild(lbl); body.appendChild(dateEl);
+  var grid=document.createElement('div'); grid.className='bp-times';
+  times.forEach(function(t){
+    var chip=document.createElement('button'); chip.type='button'; chip.className='bp-time-chip'; chip.textContent=t;
+    (function(time){ chip.addEventListener('click',function(){ S.time=time; renderBPForm(); }); })(t);
+    grid.appendChild(chip);
+  });
+  body.appendChild(grid);
+  panel.appendChild(body);
+}
+
+function renderBPForm(){
+  var panel=document.getElementById('bookingPanel');
+  panel.innerHTML='';
+  var savedDate=S.date; var savedTimes=S.slots[savedDate]||[];
+  panel.appendChild(makeBPHeader('Tus datos',function(){ renderBPTimes(savedDate,savedTimes); }));
+  var body=document.createElement('div'); body.className='qp-body';
+  // Resumen de la reserva
+  var sumLbl=document.createElement('p'); sumLbl.className='qp-section-title'; sumLbl.textContent='Tu reserva';
+  body.appendChild(sumLbl);
+  var sumBox=document.createElement('div'); sumBox.className='qp-summary';
+  sumBox.innerHTML='<div class="cart-line"><span>Fecha</span><span>'+escH(formatDate(S.date))+'</span></div>'
+    +'<div class="cart-line" style="margin-bottom:0"><span>Hora</span><span>'+escH(S.time)+'</span></div>';
+  body.appendChild(sumBox);
+  // Formulario
+  var formLbl=document.createElement('p'); formLbl.className='qp-section-title'; formLbl.textContent='Tus datos de contacto';
+  body.appendChild(formLbl);
+  var nameInp=document.createElement('input'); nameInp.type='text'; nameInp.placeholder='Nombre completo'; nameInp.className='qp-input'; nameInp.setAttribute('autocomplete','name');
+  var phoneInp=document.createElement('input'); phoneInp.type='tel'; phoneInp.placeholder='Teléfono'; phoneInp.className='qp-input'; phoneInp.setAttribute('autocomplete','tel');
+  var emailInp=document.createElement('input'); emailInp.type='email'; emailInp.placeholder='Email'; emailInp.className='qp-input'; emailInp.setAttribute('autocomplete','email');
+  var errEl=document.createElement('div'); errEl.className='qp-error';
+  body.appendChild(nameInp); body.appendChild(phoneInp); body.appendChild(emailInp); body.appendChild(errEl);
+  // Footer
+  var footer=document.createElement('div'); footer.className='qp-footer';
+  var confirmBtn=document.createElement('button'); confirmBtn.type='button'; confirmBtn.className='qp-btn'; confirmBtn.textContent='Confirmar reserva';
+  confirmBtn.addEventListener('click',function(){
+    var name=nameInp.value.trim(); var phone=phoneInp.value.trim(); var email=emailInp.value.trim();
+    if(!name||!phone){ errEl.textContent='El nombre y teléfono son obligatorios.'; errEl.style.display='block'; return; }
+    errEl.style.display='none';
+    nameInp.disabled=true; phoneInp.disabled=true; emailInp.disabled=true;
+    if(!name||!phone||!email){ errEl.textContent='Nombre, teléfono y email son obligatorios.'; errEl.style.display='block';
+      nameInp.disabled=false; phoneInp.disabled=false; emailInp.disabled=false;
+      confirmBtn.disabled=false; confirmBtn.textContent='Confirmar reserva'; return; }
+    confirmBtn.disabled=true; confirmBtn.textContent='Confirmando...';
+    fetch('/api/public/'+SLUG+'/bookings',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({customer:{name:name,phone:phone,email:email,notes:''},slot:{date:S.date,time:S.time}})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.ok&&d.booking){
+        renderBPPayment(d.booking.id,name);
+      } else {
+        nameInp.disabled=false; phoneInp.disabled=false; emailInp.disabled=false;
+        confirmBtn.disabled=false; confirmBtn.textContent='Confirmar reserva';
+        errEl.textContent=d.message||'No se pudo crear la reserva. Intenta de nuevo.'; errEl.style.display='block';
       }
-      addAiWithChips(
-        '¿Qué día prefieres?',
-        dates.slice(0,7).map(function(d){
-          return {label:formatDate(d),onClick:(function(date){ return function(){ S.date=date; addUser(formatDate(date)); showTimesStep(date); }; })(d)};
-        })
-      );
     })
-    .catch(function(){ hideTyping(); addAiWithChips('No pude cargar la disponibilidad.',[
-      {label:'🔄 Intentar de nuevo',onClick:function(){startReservasFlow();}},
-      {label:'🏠 Ver otras opciones',onClick:function(){addAiWithModules();}}
-    ]); });
+    .catch(function(){
+      nameInp.disabled=false; phoneInp.disabled=false; emailInp.disabled=false;
+      confirmBtn.disabled=false; confirmBtn.textContent='Confirmar reserva';
+      errEl.textContent='Error de conexión. Intenta de nuevo.'; errEl.style.display='block';
+    });
+  });
+  footer.appendChild(confirmBtn);
+  panel.appendChild(body); panel.appendChild(footer);
+  setTimeout(function(){ nameInp.focus(); },200);
 }
 
-function showTimesStep(date){
-  var times=S.slots[date]||[];
-  if(!times.length){ addAiWithChips('No hay horarios disponibles para ese día.',[
-    {label:'← Elegir otro día',onClick:function(){startReservasFlow();}},
-    {label:'🏠 Ver otras opciones',onClick:function(){addAiWithModules();}}
-  ]); return; }
-  addAiWithChips(
-    '¿A qué hora?',
-    times.map(function(t){
-      return {label:t,onClick:(function(time){ return function(){ S.time=time; addUser(time); showBookingFormStep(); }; })(t)};
+function renderBPPayment(bookingId,name){
+  var panel=document.getElementById('bookingPanel');
+  panel.innerHTML='';
+  panel.appendChild(makeBPHeader('Reserva lista',closeBookingPanel,'Cerrar'));
+  // Body
+  var body=document.createElement('div'); body.className='qp-body';
+  // Indicador de éxito
+  var successWrap=document.createElement('div'); successWrap.className='qp-empty'; successWrap.style.paddingTop='28px';
+  var successIcon=document.createElement('div');
+  successIcon.style.cssText='width:60px;height:60px;border-radius:18px;background:rgba(52,211,153,.12);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:6px';
+  successIcon.textContent='✅';
+  var successTitle=document.createElement('div'); successTitle.style.cssText='font-size:17px;font-weight:700;color:#fff;margin-bottom:4px'; successTitle.textContent='Reserva creada';
+  var successMsg=document.createElement('div'); successMsg.style.cssText='font-size:14px;color:var(--muted2);text-align:center;line-height:1.55'; successMsg.textContent='Para confirmar tu hora, completa el pago con MercadoPago.';
+  successWrap.appendChild(successIcon); successWrap.appendChild(successTitle); successWrap.appendChild(successMsg);
+  body.appendChild(successWrap);
+  // Resumen
+  var sumLbl=document.createElement('p'); sumLbl.className='qp-section-title'; sumLbl.textContent='Detalle de tu reserva';
+  body.appendChild(sumLbl);
+  var sumBox=document.createElement('div'); sumBox.className='qp-summary';
+  sumBox.innerHTML='<div class="cart-line"><span>Nombre</span><span>'+escH(name)+'</span></div>'
+    +'<div class="cart-line"><span>Fecha</span><span>'+escH(formatDate(S.date))+'</span></div>'
+    +'<div class="cart-line" style="margin-bottom:0"><span>Hora</span><span>'+escH(S.time)+'</span></div>';
+  body.appendChild(sumBox);
+  // Footer
+  var footer=document.createElement('div'); footer.className='qp-footer';
+  var errEl=document.createElement('div'); errEl.className='qp-error'; errEl.style.marginBottom='8px';
+  var payBtn=document.createElement('button'); payBtn.type='button'; payBtn.className='qp-btn';
+  payBtn.textContent='Pagar con MercadoPago →';
+  payBtn.addEventListener('click',function(){
+    payBtn.disabled=true; payBtn.textContent='Generando enlace...'; errEl.style.display='none';
+    fetch('/api/public/'+SLUG+'/bookings/'+encodeURIComponent(bookingId)+'/pay',{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})
     })
-  );
-}
-
-function showBookingFormStep(){
-  addAiWithForm(
-    'Perfecto, casi listo. ¿Me dejas tus datos para la reserva?',
-    [
-      {id:'name',  placeholder:'Nombre completo',            type:'text',  autocomplete:'name'},
-      {id:'phone', placeholder:'Teléfono',                   type:'tel',   autocomplete:'tel'},
-      {id:'email', placeholder:'Email (para confirmación)',  type:'email', autocomplete:'email'},
-    ],
-    'Confirmar reserva',
-    function(v){ submitBooking(v); }
-  );
-}
-
-function submitBooking(v){
-  showTyping();
-  fetch('/api/public/'+SLUG+'/bookings',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({customer:{name:v.name,phone:v.phone,email:v.email,notes:''},slot:{date:S.date,time:S.time}})
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(d){
-    hideTyping();
-    if(d.ok){
-      addConfirmCard('✅','¡Reserva creada!',[
-        {label:'Nombre', value:v.name},
-        {label:'Fecha',  value:formatDate(S.date)},
-        {label:'Hora',   value:S.time},
-      ],'📧 Te enviamos un correo de confirmación.');
-    } else {
-      addAiWithChips(d.message||'No se pudo crear la reserva.',[
-        {label:'🔄 Intentar de nuevo',onClick:function(){showBookingFormStep();}},
-        {label:'🏠 Ver otras opciones',onClick:function(){addAiWithModules();}}
-      ]);
-    }
-  })
-  .catch(function(){ hideTyping(); addAiWithChips('Error de conexión.',[
-    {label:'🔄 Intentar de nuevo',onClick:function(){showBookingFormStep();}},
-    {label:'🏠 Ver otras opciones',onClick:function(){addAiWithModules();}}
-  ]); });
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.ok&&d.checkoutUrl){
+        window.location.href=d.checkoutUrl;
+      } else {
+        payBtn.disabled=false; payBtn.textContent='Pagar con MercadoPago →';
+        errEl.textContent=d.message||'No se pudo generar el enlace de pago.'; errEl.style.display='block';
+      }
+    })
+    .catch(function(){
+      payBtn.disabled=false; payBtn.textContent='Pagar con MercadoPago →';
+      errEl.textContent='Error de conexión. Intenta de nuevo.'; errEl.style.display='block';
+    });
+  });
+  var laterBtn=document.createElement('button'); laterBtn.type='button'; laterBtn.className='qp-empty-btn'; laterBtn.style.marginTop='8px';
+  laterBtn.textContent='Pagar después';
+  laterBtn.addEventListener('click',function(){
+    closeBookingPanel();
+    setTimeout(function(){
+      addAi('Tu reserva para el '+formatDate(S.date)+' a las '+S.time+' fue creada y está pendiente de pago. Contáctanos cuando estés listo para completarlo.',false);
+    },420);
+  });
+  footer.appendChild(errEl); footer.appendChild(payBtn); footer.appendChild(laterBtn);
+  panel.appendChild(body); panel.appendChild(footer);
 }
 
 // ── PANEL DE COTIZACIÓN (slide-in) ────────────────────────────────────────────
@@ -482,7 +628,7 @@ async function sendMsg(){
 
 // ── Acciones rápidas ──────────────────────────────────────────────────────────
 function quickAction(a){
-  if(a==='reservas'){      addUser('Quiero reservar una hora');    startReservasFlow(); }
+  if(a==='reservas'){      addUser('Quiero reservar una hora');    openBookingPanel(); }
   else if(a==='cotizar'){  addUser('Quiero pedir una cotización'); startCotizarFlow();  }
   else if(a==='precios'){  document.getElementById('chatInput').value='¿Cuáles son los precios?'; sendMsg(); }
   else if(a==='info'){     document.getElementById('chatInput').value='¿Qué servicios ofrecen?'; sendMsg(); }

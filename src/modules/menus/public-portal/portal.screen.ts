@@ -66,6 +66,7 @@ export function renderPortalHtml(data: PortalViewData): string {
 </button>
 
 <div id="quotePanel" class="quote-panel"></div>
+<div id="bookingPanel" class="quote-panel"></div>
 <script>${portalScripts(publicSlug, safe.name, enabledModules, products)}</script>
 </body>
 </html>`;
