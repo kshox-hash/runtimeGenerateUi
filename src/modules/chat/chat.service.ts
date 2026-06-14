@@ -139,11 +139,19 @@ export function buildAvailabilityAnswer(slotsData: unknown): string {
   return `Tenemos disponibilidad en:\n\n${formatted}\n\nPuedes reservar tu hora directamente desde el menú.`;
 }
 
+type PDFParseInstance = {
+  load(): Promise<void>;
+  getText(): Promise<{ pages: Array<{ text: string }> }>;
+};
+
 export async function extractChunksFromPdf(buffer: Buffer): Promise<string[]> {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const pdfParseModule = require("pdf-parse");
-  const pdfParse: (b: Buffer) => Promise<{ text: string }> = pdfParseModule.default ?? pdfParseModule;
-  const { text } = await pdfParse(buffer);
+  const { PDFParse } = require("pdf-parse") as { PDFParse: new (data: Uint8Array) => PDFParseInstance };
+
+  const parser = new PDFParse(new Uint8Array(buffer));
+  await parser.load();
+  const result = await parser.getText();
+  const text = result.pages.map(p => p.text).join("\n\n");
 
   const rawChunks = text
     .split(/\n{2,}/)
