@@ -16,7 +16,6 @@ export function portalStyles(): string {
   --muted2:#8891a8;
   --green:#34d399;
   --hdr:56px;
-  --nav:60px;
   --r:16px;
 }
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
@@ -30,18 +29,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 @keyframes bpulse{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* LAYOUT */
-.main{position:fixed;top:var(--hdr);bottom:calc(var(--nav) + env(safe-area-inset-bottom));left:0;right:0;overflow:hidden}
+.main{position:fixed;top:var(--hdr);bottom:0;left:0;right:0;overflow:hidden}
 .panel{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden}
 .panel.active{display:flex}
 .panel-scroll{flex:1;overflow-y:auto;padding:20px 16px 16px;-webkit-overflow-scrolling:touch}
 
-/* BOTTOM NAV */
-.nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:rgba(10,11,15,.94);border-top:1px solid var(--border);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:grid;grid-template-columns:repeat(4,1fr);z-index:200}
-.nb{background:none;border:none;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;font-family:inherit;transition:color .2s;-webkit-tap-highlight-color:transparent}
-.nb.active{color:var(--primary)}
-.nb svg{width:21px;height:21px;stroke-width:1.8;transition:transform .18s}
-.nb.active svg{transform:scale(1.1)}
-.nb span{font-size:10px;font-weight:500;letter-spacing:.025em}
+/* BOTÓN VOLVER AL CHAT */
+.btn-back-chat{display:none;position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);align-items:center;gap:6px;background:rgba(17,19,24,.92);border:1px solid var(--border);border-radius:24px;padding:10px 20px 10px 14px;font-size:13.5px;font-weight:600;color:var(--text);cursor:pointer;font-family:inherit;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 24px rgba(0,0,0,.4);z-index:300;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:background .15s,transform .12s}
+.btn-back-chat svg{width:17px;height:17px;flex-shrink:0;stroke:var(--primary)}
+.btn-back-chat.visible{display:flex}
+.btn-back-chat:active{transform:translateX(-50%) scale(.95)}
 
 /* CHAT — messages */
 .chat-msgs{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px 14px 10px;display:flex;flex-direction:column;gap:0;background:radial-gradient(ellipse at 8% 4%,rgba(91,156,246,.05) 0%,transparent 55%),radial-gradient(ellipse at 92% 96%,rgba(167,139,250,.04) 0%,transparent 55%),var(--bg)}

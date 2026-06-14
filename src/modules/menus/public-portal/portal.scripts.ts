@@ -109,8 +109,9 @@ let sending=false;
 function showTab(t){
   TABS.forEach(function(x){
     document.getElementById('panel-'+x).classList.toggle('active',x===t);
-    document.getElementById('nb-'+x).classList.toggle('active',x===t);
   });
+  var back=document.getElementById('btnBackChat');
+  if(back) back.classList.toggle('visible',t!=='chat');
   if(t==='chat') scrollChat();
 }
 
@@ -316,7 +317,11 @@ async function sendMsg(){
     });
     var d=await r.json();
     hideTyping();
-    addAi(d.answer||'No pude procesar tu pregunta. Intenta de nuevo.');
+    if(d.answer){
+      addAi(d.answer);
+    } else {
+      addAi(d.message||'No encontr\\u00e9 informaci\\u00f3n sobre eso. \\u00bfPuedes reformular tu pregunta?',false);
+    }
   }catch(e){
     hideTyping();
     addAi('Hubo un problema al conectar. Intenta de nuevo.',false);
@@ -357,10 +362,8 @@ function quickAction(a){
     if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMsg(); }
   });
 
-  document.getElementById('nb-chat').addEventListener('click',function(){ showTab('chat'); });
-  document.getElementById('nb-reservas').addEventListener('click',function(){ showTab('reservas'); });
-  document.getElementById('nb-cotizar').addEventListener('click',function(){ showTab('cotizar'); });
-  document.getElementById('nb-nosotros').addEventListener('click',function(){ showTab('nosotros'); });
+  var backBtn=document.getElementById('btnBackChat');
+  if(backBtn) backBtn.addEventListener('click',function(){ showTab('chat'); });
 
   setTimeout(function(){ addAiWithModules(); },600);
 })();

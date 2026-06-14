@@ -59,26 +59,12 @@ export function renderPortalHtml(data: PortalViewData): string {
   ${nosotrosTabHtml(safe, locationLine, initials)}
 </main>
 
-<nav class="nav">
-  <button class="nb active" id="nb-chat" type="button">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <span>Chat</span>
-  </button>
-  <button class="nb" id="nb-reservas" type="button">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-    <span>Reservas</span>
-  </button>
-  <button class="nb" id="nb-cotizar" type="button">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
-    <span>Servicios</span>
-  </button>
-  <button class="nb" id="nb-nosotros" type="button">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    <span>Nosotros</span>
-  </button>
-</nav>
+<button class="btn-back-chat" id="btnBackChat" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+  Volver al chat
+</button>
 
-<script>${portalScripts(safe.slug, safe.name, enabledModules)}</script>
+<script>${portalScripts(publicSlug, safe.name, enabledModules)}</script>
 </body>
 </html>`;
 }
