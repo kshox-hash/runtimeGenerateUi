@@ -4,9 +4,7 @@ import { getBusinessChatConfig, upsertBusinessChatConfig, FaqItem } from "./chat
 
 const router = express.Router();
 
-router.use(authMiddleware);
-
-router.get("/chat/:userId/config", async (req: Request, res: Response) => {
+router.get("/chat/:userId/config", authMiddleware, async (req: Request, res: Response) => {
   try {
     const userId    = String(req.params["userId"] || "").trim();
     const requester = req.user?.userId ?? "";
@@ -26,7 +24,7 @@ router.get("/chat/:userId/config", async (req: Request, res: Response) => {
   }
 });
 
-router.put("/chat/:userId/config", async (req: Request, res: Response) => {
+router.put("/chat/:userId/config", authMiddleware, async (req: Request, res: Response) => {
   try {
     const userId    = String(req.params["userId"] || "").trim();
     const requester = req.user?.userId ?? "";

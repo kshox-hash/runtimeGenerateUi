@@ -18,10 +18,8 @@ const upload = multer({
   },
 });
 
-router.use(authMiddleware);
-
-router.post("/chat/:userId/upload", upload.single("pdf"), chatAdminController.uploadPdf);
-router.get("/chat/:userId/sources", chatAdminController.listSources);
-router.delete("/chat/:userId/sources/:sourceId", chatAdminController.deleteSource);
+router.post("/chat/:userId/upload", authMiddleware, upload.single("pdf"), chatAdminController.uploadPdf);
+router.get("/chat/:userId/sources", authMiddleware, chatAdminController.listSources);
+router.delete("/chat/:userId/sources/:sourceId", authMiddleware, chatAdminController.deleteSource);
 
 export default router;
