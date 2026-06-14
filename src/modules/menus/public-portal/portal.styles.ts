@@ -16,29 +16,31 @@ export function portalStyles(): string {
   --muted2:#8891a8;
   --green:#34d399;
   --hdr:56px;
+  --nav:58px;
   --r:16px;
 }
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
 
 /* HEADER */
-.hdr{position:fixed;top:0;left:0;right:0;height:var(--hdr);background:rgba(10,11,15,.88);border-bottom:1px solid var(--border);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;align-items:center;gap:11px;padding:0 16px;z-index:200}
-.hdr-av{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.hdr{position:fixed;top:0;left:0;right:0;height:var(--hdr);background:rgba(10,11,15,.88);border-bottom:1px solid var(--border);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;align-items:center;gap:10px;padding:0 16px;z-index:200}
 .hdr-name{font-size:15px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.012em}
 .hdr-badge{font-size:10.5px;font-weight:500;background:rgba(52,211,153,.1);color:var(--green);border:1px solid rgba(52,211,153,.2);border-radius:20px;padding:3px 9px;display:flex;align-items:center;gap:5px;flex-shrink:0}
 .hdr-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:bpulse 2.5s infinite}
 @keyframes bpulse{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* LAYOUT */
-.main{position:fixed;top:var(--hdr);bottom:0;left:0;right:0;overflow:hidden}
+.main{position:fixed;top:var(--hdr);bottom:calc(var(--nav) + env(safe-area-inset-bottom));left:0;right:0;overflow:hidden}
 .panel{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden}
 .panel.active{display:flex}
 .panel-scroll{flex:1;overflow-y:auto;padding:20px 16px 16px;-webkit-overflow-scrolling:touch}
 
-/* BOTÓN VOLVER AL CHAT */
-.btn-back-chat{display:none;position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);align-items:center;gap:6px;background:rgba(17,19,24,.92);border:1px solid var(--border);border-radius:24px;padding:10px 20px 10px 14px;font-size:13.5px;font-weight:600;color:var(--text);cursor:pointer;font-family:inherit;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 24px rgba(0,0,0,.4);z-index:300;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:background .15s,transform .12s}
-.btn-back-chat svg{width:17px;height:17px;flex-shrink:0;stroke:var(--primary)}
-.btn-back-chat.visible{display:flex}
-.btn-back-chat:active{transform:translateX(-50%) scale(.95)}
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:rgba(10,11,15,.94);border-top:1px solid var(--border);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;align-items:flex-start;padding-top:8px;z-index:200}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;color:var(--muted);cursor:pointer;font-family:inherit;padding:4px 0;-webkit-tap-highlight-color:transparent;transition:color .18s}
+.bn-item svg{width:22px;height:22px}
+.bn-item span{font-size:10px;font-weight:500;letter-spacing:.02em}
+.bn-item.active{color:var(--primary)}
+.bn-item:active{opacity:.6}
 
 /* CHAT — messages */
 .chat-msgs{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px 14px 10px;display:flex;flex-direction:column;gap:0;background:radial-gradient(ellipse at 8% 4%,rgba(91,156,246,.05) 0%,transparent 55%),radial-gradient(ellipse at 92% 96%,rgba(167,139,250,.04) 0%,transparent 55%),var(--bg)}

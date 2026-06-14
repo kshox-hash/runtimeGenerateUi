@@ -48,7 +48,6 @@ export function renderPortalHtml(data: PortalViewData): string {
 <body>
 
 <header class="hdr">
-  <div class="hdr-av">${initials}</div>
   <div class="hdr-name">${safe.name}</div>
   <div class="hdr-badge">En línea</div>
 </header>
@@ -60,10 +59,24 @@ export function renderPortalHtml(data: PortalViewData): string {
   ${nosotrosTabHtml(safe, locationLine, initials)}
 </main>
 
-<button class="btn-back-chat" id="btnBackChat" type="button">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
-  Volver al chat
-</button>
+<nav class="bottom-nav" id="bottomNav">
+  <button class="bn-item active" data-tab="chat" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span>Chat</span>
+  </button>
+  <button class="bn-item" data-tab="reservas" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span>Reservas</span>
+  </button>
+  <button class="bn-item" data-tab="cotizar" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    <span>Cotizar</span>
+  </button>
+  <button class="bn-item" data-tab="nosotros" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    <span>Nosotros</span>
+  </button>
+</nav>
 
 <div id="quotePanel" class="quote-panel"></div>
 <div id="bookingPanel" class="quote-panel"></div>
