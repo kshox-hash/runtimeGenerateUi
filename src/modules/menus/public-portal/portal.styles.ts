@@ -51,7 +51,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .ai-row{display:flex;gap:10px;align-items:flex-start;margin:4px 0 20px;animation:msgIn .3s cubic-bezier(.22,1,.36,1) both}
 .ai-row--intro{margin-bottom:10px}
 @keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.ai-icon-sm{width:32px;height:32px;border-radius:var(--r);flex-shrink:0;margin-top:2px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff}
+.ai-icon-sm{width:32px;height:32px;border-radius:50%;flex-shrink:0;margin-top:2px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;letter-spacing:-.02em}
 .ai-body{flex:1;min-width:0}
 .ai-label{font-size:10px;font-weight:700;color:var(--muted2);margin-bottom:5px;letter-spacing:.08em;text-transform:uppercase}
 .ai-greeting{font-size:15.5px;line-height:1.7;color:var(--text)}
@@ -150,7 +150,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 
 /* NOSOTROS */
 .biz-hero{display:flex;flex-direction:column;align-items:center;padding:28px 0 22px;text-align:center}
-.biz-av{width:72px;height:72px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:#fff;margin-bottom:14px;letter-spacing:-.03em}
+.biz-av{width:72px;height:72px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:#fff;margin-bottom:14px;letter-spacing:-.03em}
 .biz-name{font-size:20px;font-weight:700;letter-spacing:-.04em;margin-bottom:4px;color:var(--text)}
 .biz-tag{font-size:13px;color:var(--muted)}
 .info-group{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}

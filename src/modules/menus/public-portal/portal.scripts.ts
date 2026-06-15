@@ -27,7 +27,8 @@ export function portalScripts(
     businessHours: string | null;
     instagramUrl: string | null;
     whatsappNumber: string | null;
-  }
+  },
+  initials: string
 ): string {
   const moduleCards  = buildModuleCards(modules);
   const safeProducts = products.map(p => ({
@@ -40,6 +41,7 @@ export function portalScripts(
   return `
 const SLUG=${JSON.stringify(slug)};
 const BIZ=${JSON.stringify(bizName)};
+const BIZ_INITIALS=${JSON.stringify(initials)};
 const BIZ_INFO=${JSON.stringify(bizInfo)};
 const WELCOME_MSG=${JSON.stringify(bizInfo.welcomeMessage)};
 const BIZ_HOURS=${JSON.stringify(bizInfo.businessHours)};
@@ -105,7 +107,7 @@ function typeWrite(el,rawText){
 // ── Constructor base de mensajes AI ──────────────────────────────────────────
 function makeAiRow(){
   var row=document.createElement('div'); row.className='ai-row';
-  var icon=document.createElement('div'); icon.className='ai-icon-sm'; icon.textContent='✦';
+  var icon=document.createElement('div'); icon.className='ai-icon-sm'; icon.textContent=BIZ_INITIALS;
   var body=document.createElement('div'); body.className='ai-body';
   var lbl=document.createElement('div'); lbl.className='ai-label'; lbl.textContent=BIZ;
   body.appendChild(lbl); row.appendChild(icon); row.appendChild(body);
@@ -150,7 +152,7 @@ function addAiWithChips(text,chips){
 // ── Indicador de escritura ────────────────────────────────────────────────────
 function showTyping(){
   var row=document.createElement('div'); row.className='typing-row'; row.id='typingRow';
-  var icon=document.createElement('div'); icon.className='ai-icon-sm'; icon.textContent='✦';
+  var icon=document.createElement('div'); icon.className='ai-icon-sm'; icon.textContent=BIZ_INITIALS;
   var dots=document.createElement('div'); dots.className='typing-dots'; dots.innerHTML='<span></span><span></span><span></span>';
   row.appendChild(icon); row.appendChild(dots); document.getElementById('chatMsgs').appendChild(row); scrollChat();
 }
