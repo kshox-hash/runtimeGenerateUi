@@ -50,13 +50,14 @@ body{height:100%;background:transparent;color:var(--text);font-family:'Inter',sy
 
 /* HOME PORTAL */
 .home-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:rgba(247,246,242,.82)}
-.home-hero{padding:36px 20px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
-.home-avatar{width:80px;height:80px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff;letter-spacing:-.03em;user-select:none}
-.home-biz-name{font-size:22px;font-weight:700;letter-spacing:-.05em;color:var(--text);line-height:1.2}
-.home-biz-desc{font-size:14px;color:var(--muted);max-width:280px;text-align:center;line-height:1.5}
-.home-badge{display:inline-flex;align-items:center;gap:5px;background:var(--green-dim);color:var(--green);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;padding:4px 11px;margin-top:2px}
+.home-banner{padding:38px 22px 32px;background:var(--primary);border-radius:0 0 28px 28px;position:relative;overflow:hidden}
+.home-banner::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px;pointer-events:none}
+.home-banner-name{font-size:27px;font-weight:700;color:#fff;letter-spacing:-.055em;line-height:1.15;margin-bottom:7px;position:relative;z-index:1}
+.home-banner-desc{font-size:14px;color:rgba(255,255,255,.6);line-height:1.5;position:relative;z-index:1}
+.home-status{padding:16px 20px 0;display:flex;align-items:center}
+.home-badge{display:inline-flex;align-items:center;gap:5px;background:var(--green-dim);color:var(--green);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;padding:4px 11px}
 .home-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:bpulse 2.5s infinite;flex-shrink:0}
-.home-welcome{margin:0 16px 4px;background:var(--s1);border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.6;color:var(--muted);text-align:center}
+.home-welcome{margin:14px 16px 0;background:var(--s1);border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.6;color:var(--muted)}
 .home-section{font-size:10px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.1em;padding:20px 16px 12px}
 .home-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 32px}
 .home-tile{background:var(--s1);border:none;border-radius:18px;padding:20px 16px 18px;display:flex;flex-direction:column;align-items:flex-start;gap:7px;cursor:pointer;transition:background .18s,transform .15s;-webkit-tap-highlight-color:transparent;font-family:inherit;text-align:left}

@@ -55,7 +55,7 @@ export function renderPortalHtml(data: PortalViewData): string {
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<meta name="theme-color" content="#111113"/>
+<meta name="theme-color" content="#F7F6F2"/>
 <title>${safe.name}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>

@@ -30,10 +30,11 @@ export function chatTabHtml(safe: HomeData, initials: string): string {
   return `
   <div id="panel-chat" class="panel active">
     <div class="home-scroll">
-      <div class="home-hero">
-        <div class="home-avatar">${initials}</div>
-        <div class="home-biz-name">${safe.name}</div>
-        ${safe.description ? `<div class="home-biz-desc">${safe.description}</div>` : ""}
+      <div class="home-banner">
+        <div class="home-banner-name">${safe.name}</div>
+        ${safe.description ? `<div class="home-banner-desc">${safe.description}</div>` : ""}
+      </div>
+      <div class="home-status">
         <div class="home-badge"><span class="home-badge-dot"></span>En línea</div>
       </div>
       ${safe.welcomeMessage ? `<div class="home-welcome">${safe.welcomeMessage}</div>` : ""}
