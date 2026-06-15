@@ -98,7 +98,7 @@ export function renderPortalHtml(data: PortalViewData): string {
 
 <div id="quotePanel" class="quote-panel"></div>
 <div id="bookingPanel" class="quote-panel"></div>
-<script>${portalScripts(publicSlug, safe.name, enabledModules, products, { phone: safe.phone, address: safe.address, city: safe.city, welcomeMessage: welcomeMessage ?? null, businessHours: safe.businessHours, instagramUrl: safe.instagramUrl, whatsappNumber: safe.whatsappNumber }, initials)}</script>
+<script>${portalScripts(publicSlug, safe.name, enabledModules, products, { phone: safe.phone, address: safe.address, city: safe.city, description: safe.description, welcomeMessage: welcomeMessage ?? null, businessHours: safe.businessHours, instagramUrl: safe.instagramUrl, whatsappNumber: safe.whatsappNumber }, initials)}</script>
 </body>
 </html>`;
 }

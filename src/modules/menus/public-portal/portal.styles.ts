@@ -75,6 +75,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .ai-mod-card:hover::after{transform:translateX(3px);color:var(--text)}
 .ai-mod-card:active{background:var(--s1);opacity:.7}
 .ai-mod-card.used{opacity:.15;pointer-events:none}
+.ai-biz-desc{font-size:13px;color:var(--muted);line-height:1.45;margin-top:10px;padding:0 2px;letter-spacing:-.01em}
 
 /* CHAT — chips de sugerencia */
 .ai-chips{display:flex;flex-direction:column;gap:4px;margin-top:10px;margin-left:-42px;width:calc(100% + 42px)}
