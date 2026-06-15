@@ -67,22 +67,25 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 @keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.35}28%{transform:translateY(-6px);opacity:1}}
 
 /* CHAT — módulos IA */
-.ai-modules{display:flex;flex-direction:column;gap:6px;margin-top:14px}
-.ai-mod-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;display:flex;align-items:center;gap:13px;cursor:pointer;transition:background .25s cubic-bezier(.22,1,.36,1),border-color .25s,box-shadow .3s,transform .3s cubic-bezier(.22,1,.36,1);-webkit-tap-highlight-color:transparent;font-family:inherit;color:var(--text);text-align:left;width:100%}
-.ai-mod-card:hover{background:var(--s2);border-color:var(--border-strong);box-shadow:0 4px 18px rgba(0,0,0,.06);transform:translateY(-1px)}
-.ai-mod-card:active{transform:scale(.975);box-shadow:none}
+.ai-modules{display:flex;flex-direction:column;gap:5px;margin-top:14px;margin-left:-42px;width:calc(100% + 42px)}
+.ai-mod-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;display:flex;align-items:center;gap:13px;cursor:pointer;transition:background .25s cubic-bezier(.22,1,.36,1),border-color .25s,box-shadow .3s;-webkit-tap-highlight-color:transparent;font-family:inherit;color:var(--text);text-align:left;width:100%}
+.ai-mod-card:hover{background:var(--s2);border-color:var(--border-strong);box-shadow:0 3px 14px rgba(0,0,0,.05)}
+.ai-mod-card:active{opacity:.7}
 .ai-mod-card.used{opacity:.18;pointer-events:none}
-.ai-mod-emoji{font-size:18px;flex-shrink:0;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--s2);border-radius:4px;border:1px solid var(--border)}
+.ai-mod-emoji{font-size:16px;flex-shrink:0;width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--bg);border-radius:4px;border:1px solid var(--border)}
 .ai-mod-texts{flex:1;min-width:0}
-.ai-mod-title{font-size:14px;font-weight:600;margin-bottom:2px;color:var(--text);letter-spacing:-.02em}
-.ai-mod-desc{font-size:12px;color:var(--muted);line-height:1.4}
-.ai-mod-arrow{width:14px;height:14px;flex-shrink:0;stroke:var(--muted2);opacity:.8}
+.ai-mod-title{font-size:13.5px;font-weight:600;margin-bottom:1px;color:var(--text);letter-spacing:-.02em}
+.ai-mod-desc{font-size:11.5px;color:var(--muted);line-height:1.4}
+.ai-mod-arrow{width:13px;height:13px;flex-shrink:0;stroke:var(--muted2);opacity:.6;transition:transform .25s cubic-bezier(.22,1,.36,1)}
+.ai-mod-card:hover .ai-mod-arrow{transform:translateX(3px);opacity:1}
 
 /* CHAT — chips de sugerencia */
-.ai-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.ai-chip{background:transparent;border:1px solid var(--border-strong);border-radius:3px;padding:7px 14px;font-size:13px;font-weight:500;color:var(--text);cursor:pointer;transition:all .25s cubic-bezier(.22,1,.36,1);-webkit-tap-highlight-color:transparent;font-family:inherit;white-space:nowrap;letter-spacing:.01em}
-.ai-chip:hover{background:var(--primary);color:#fff;border-color:var(--primary);transform:translateY(-1px);box-shadow:0 3px 12px rgba(0,0,0,.14)}
-.ai-chip:active{transform:scale(.95)}
+.ai-chips{display:flex;flex-direction:column;gap:4px;margin-top:10px;margin-left:-42px;width:calc(100% + 42px)}
+.ai-chip{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:11px 14px;font-size:13.5px;font-weight:500;color:var(--text);cursor:pointer;transition:background .22s cubic-bezier(.22,1,.36,1),border-color .22s,color .22s;-webkit-tap-highlight-color:transparent;font-family:inherit;text-align:left;display:flex;align-items:center;justify-content:space-between;letter-spacing:-.01em;line-height:1.3}
+.ai-chip::after{content:'→';font-size:13px;color:var(--muted2);flex-shrink:0;margin-left:8px;transition:transform .22s cubic-bezier(.22,1,.36,1),color .22s}
+.ai-chip:hover{background:var(--s1);border-color:var(--border-strong)}
+.ai-chip:hover::after{transform:translateX(3px);color:var(--text)}
+.ai-chip:active{opacity:.6}
 .ai-chip.used{opacity:.15;pointer-events:none}
 
 /* CHAT — formulario inline */
