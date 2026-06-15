@@ -16,6 +16,7 @@ type UpsertBody = {
   city?: string;
   address?: string;
   phone?: string;
+  brand_color?: string | null;
 };
 
 type UpsertMeBody = {
@@ -24,6 +25,7 @@ type UpsertMeBody = {
   city?: string;
   address?: string;
   phone?: string;
+  brand_color?: string | null;
 };
 
 export const companyProfileController = {

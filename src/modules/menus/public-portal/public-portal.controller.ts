@@ -76,9 +76,10 @@ export const publicPortalController = {
         businessName: slug.business_name ?? publicSlug,
         publicSlug,
         productCount: products.length,
-        phone:   profile?.phone   ?? null,
-        address: profile?.address ?? null,
-        city:    profile?.city    ?? null,
+        phone:       profile?.phone       ?? null,
+        address:     profile?.address     ?? null,
+        city:        profile?.city        ?? null,
+        brandColor:  profile?.brand_color ?? null,
         enabledModules,
         products: products.map((p: any) => ({
           id:          String(p.id),

@@ -14,12 +14,19 @@ export type PortalViewData = {
   phone?: string | null;
   address?: string | null;
   city?: string | null;
+  brandColor?: string | null;
   enabledModules: MenuModuleItem[];
   products: { id: string | number; name: string; price: number; description?: string | null }[];
 };
 
+function sanitizeBrandColor(color: string | null | undefined): string | null {
+  if (!color) return null;
+  return /^#[0-9a-fA-F]{6}$/.test(color.trim()) ? color.trim() : null;
+}
+
 export function renderPortalHtml(data: PortalViewData): string {
-  const { businessName, publicSlug, productCount, phone, address, city, enabledModules, products } = data;
+  const { businessName, publicSlug, productCount, phone, address, city, brandColor, enabledModules, products } = data;
+  const safeColor = sanitizeBrandColor(brandColor);
 
   const safe = {
     name:    escapeHtml(businessName),
@@ -43,7 +50,7 @@ export function renderPortalHtml(data: PortalViewData): string {
 <title>${safe.name}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<style>${portalStyles()}</style>
+<style>${portalStyles()}${safeColor ? `:root{--primary:${safeColor}}` : ""}</style>
 </head>
 <body>
 

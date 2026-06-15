@@ -18,6 +18,7 @@ const getByUserId = async (userId: string): Promise<CompanyProfile | null> => {
       city,
       address,
       phone,
+      brand_color,
       created_at,
       updated_at
     FROM business_profiles
@@ -46,6 +47,7 @@ const getByPublicSlug = async (
       city,
       address,
       phone,
+      brand_color,
       created_at,
       updated_at
     FROM business_profiles
@@ -73,10 +75,11 @@ const upsert = async (
       city,
       address,
       phone,
+      brand_color,
       created_at,
       updated_at
     )
-    VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
+    VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
     ON CONFLICT (user_id)
     DO UPDATE SET
       business_name = EXCLUDED.business_name,
@@ -84,6 +87,7 @@ const upsert = async (
       city = EXCLUDED.city,
       address = EXCLUDED.address,
       phone = EXCLUDED.phone,
+      brand_color = EXCLUDED.brand_color,
       updated_at = NOW()
     RETURNING
       id,
@@ -95,6 +99,7 @@ const upsert = async (
       city,
       address,
       phone,
+      brand_color,
       created_at,
       updated_at
   `;
@@ -106,6 +111,7 @@ const upsert = async (
     input.city,
     input.address,
     input.phone,
+    input.brand_color ?? null,
   ];
 
   const result = await pool.query<CompanyProfile>(query, values);

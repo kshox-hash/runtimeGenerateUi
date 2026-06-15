@@ -42,6 +42,7 @@ const upsert = async (
     city: input.city?.trim() ?? "",
     address: input.address?.trim() ?? "",
     phone: input.phone?.trim() ?? "",
+    brand_color: input.brand_color ?? null,
   };
 
   return companyProfileRepository.upsert(sanitizedInput);

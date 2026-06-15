@@ -8,6 +8,7 @@ export type CompanyProfile = {
   city: string;
   address: string;
   phone: string;
+  brand_color: string | null;
   created_at: Date;
   updated_at: Date;
 };
@@ -19,4 +20,5 @@ export type CompanyProfileInput = {
   city?: string;
   address?: string;
   phone?: string;
+  brand_color?: string | null;
 };
