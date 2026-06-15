@@ -45,8 +45,7 @@ export function renderPortalHtml(data: PortalViewData): string {
     businessHours:  businessHours  ? escapeHtml(businessHours)  : null,
   };
 
-  const initials = businessName.split(" ").slice(0, 2)
-    .map(w => w[0] ?? "").join("").toUpperCase() || "?";
+  const initials = publicSlug.replace(/[^a-zA-Z0-9]/g, "").slice(0, 2).toUpperCase() || "?";
 
   const locationLine = [safe.address, safe.city].filter(Boolean).join(", ");
 
