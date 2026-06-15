@@ -9,6 +9,7 @@ type CreatePreferenceInput = {
   customerEmail?: string;
   customerName?: string;
   businessName?: string;
+  marketplaceFee?: number;
 };
 
 const APP_URL =
@@ -62,6 +63,10 @@ export async function createPreference(
       auto_return: "approved",
 
       notification_url: `${APP_URL}/api/payments/webhook`,
+
+      ...(input.marketplaceFee && input.marketplaceFee > 0
+        ? { marketplace_fee: input.marketplaceFee }
+        : {}),
     },
   });
 

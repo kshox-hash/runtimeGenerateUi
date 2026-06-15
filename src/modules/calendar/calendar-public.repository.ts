@@ -81,6 +81,15 @@ export async function createPaymentRecord(
   return result.rows[0];
 }
 
+export async function getPlatformFeePct(userId: string): Promise<number> {
+  const pool = DB.getPool();
+  const result = await pool.query(
+    `SELECT platform_fee_pct FROM business_profiles WHERE user_id = $1 LIMIT 1`,
+    [userId]
+  );
+  return Number(result.rows[0]?.platform_fee_pct ?? 2.5);
+}
+
 export async function updatePaymentWithPreference(
   paymentId: string,
   checkoutUrl: string,

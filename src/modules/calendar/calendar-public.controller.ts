@@ -15,6 +15,7 @@ import {
   getMpAccessToken,
   createPaymentRecord,
   updatePaymentWithPreference,
+  getPlatformFeePct,
 } from "./calendar-public.repository";
 import { sendBookingPaymentLinkEmail } from "./booking/services/bookingPaymentLinkEmailService";
 
@@ -141,6 +142,8 @@ export const calendarPublicController = {
         const accessToken = await getMpAccessToken(profile.user_id);
         if (accessToken) {
           const amount = Number((booking as Record<string,unknown>)["payment_amount"] ?? 3000);
+          const feePct = await getPlatformFeePct(profile.user_id);
+          const marketplaceFee = Math.round(amount * feePct / 100);
           const payment = await createPaymentRecord(profile.user_id, booking.id, amount);
           const bookingDateStr = new Date(bookingDate).toLocaleDateString("es-CL");
           const preference = await createPreference({
@@ -152,6 +155,7 @@ export const calendarPublicController = {
             customerEmail,
             customerName,
             businessName: profile.business_name,
+            marketplaceFee,
           });
           if (preference.checkoutUrl) {
             await updatePaymentWithPreference(payment.id, preference.checkoutUrl, preference.preferenceId ?? "");
@@ -240,6 +244,9 @@ export const calendarPublicController = {
         });
       }
 
+      const feePct = await getPlatformFeePct(profile.user_id);
+      const marketplaceFee = Math.round(amount * feePct / 100);
+
       const payment = await createPaymentRecord(profile.user_id, bookingId, amount);
 
       const bookingDateStr = new Date(booking.booking_date).toLocaleDateString("es-CL");
@@ -253,6 +260,7 @@ export const calendarPublicController = {
         customerEmail: booking.client_email,
         customerName: booking.client_name,
         businessName: profile.business_name,
+        marketplaceFee,
       });
 
       const updatedPayment = await updatePaymentWithPreference(

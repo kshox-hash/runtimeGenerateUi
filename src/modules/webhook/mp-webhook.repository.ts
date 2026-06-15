@@ -44,7 +44,7 @@ export async function confirmBooking(
 export async function getBusinessNameByUserId(userId: string): Promise<string | null> {
   const pool = DB.getPool();
   const result = await pool.query(
-    `SELECT business_name FROM company_profiles WHERE user_id = $1 LIMIT 1`,
+    `SELECT business_name FROM business_profiles WHERE user_id = $1 LIMIT 1`,
     [userId]
   );
   return result.rows[0]?.business_name ?? null;

@@ -2,3 +2,4 @@ node_modules
 .env
 ejemplo_negocio.pdf
 automatiza_dashboard
+migrations/add_platform_fee.sql
