@@ -17,7 +17,7 @@ export const quoteHistoryController = {
     try {
       const userId = req.user?.userId;
       if (!userId) return res.status(401).json({ ok: false, message: "No autorizado" });
-      const deleted = await repo.deleteQuoteHistory(userId, req.params.quoteId);
+      const deleted = await repo.deleteQuoteHistory(userId, String(req.params["quoteId"]));
       if (!deleted) return res.status(404).json({ ok: false, message: "No encontrado" });
       return res.json({ ok: true });
     } catch (e: any) {

@@ -37,7 +37,7 @@ export const quoteServicesController = {
     try {
       const userId = req.user?.userId;
       if (!userId) return res.status(401).json({ ok: false, message: "No autorizado" });
-      const { serviceId } = req.params;
+      const serviceId = String(req.params["serviceId"]);
       const { name, description, unit, price, isActive } = req.body;
       const service = await repo.updateQuoteService(userId, serviceId, {
         name: name?.trim(),
@@ -57,7 +57,7 @@ export const quoteServicesController = {
     try {
       const userId = req.user?.userId;
       if (!userId) return res.status(401).json({ ok: false, message: "No autorizado" });
-      const deleted = await repo.deleteQuoteService(userId, req.params.serviceId);
+      const deleted = await repo.deleteQuoteService(userId, String(req.params["serviceId"]));
       if (!deleted) return res.status(404).json({ ok: false, message: "Servicio no encontrado" });
       return res.json({ ok: true });
     } catch (e: any) {
