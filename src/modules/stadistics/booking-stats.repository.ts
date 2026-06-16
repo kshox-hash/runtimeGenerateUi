@@ -132,3 +132,100 @@ export async function getClientStats(userId: string): Promise<ClientStats> {
     new_clients:       Number(row.new_clients),
   };
 }
+
+// ── Reviews ────────────────────────────────────────────────────────────────────
+
+export type ReviewsStats = {
+  average: number;
+  total: number;
+  recent: Array<{
+    rating: number;
+    comment: string | null;
+    client_name: string | null;
+    created_at: string;
+  }>;
+};
+
+export async function getReviewsStats(userId: string): Promise<ReviewsStats> {
+  const pool = DB.getPool();
+  const [summaryRes, recentRes] = await Promise.all([
+    pool.query(
+      `SELECT ROUND(AVG(rating)::numeric, 1) AS average, COUNT(*) AS total
+       FROM reviews WHERE user_id = $1`,
+      [userId]
+    ),
+    pool.query(
+      `SELECT rating, comment, client_name, created_at
+       FROM reviews WHERE user_id = $1
+       ORDER BY created_at DESC LIMIT 2`,
+      [userId]
+    ),
+  ]);
+  const row = summaryRes.rows[0];
+  return {
+    average: row.average ? Number(row.average) : 0,
+    total:   Number(row.total),
+    recent:  recentRes.rows.map((r) => ({
+      rating:      Number(r.rating),
+      comment:     r.comment,
+      client_name: r.client_name,
+      created_at:  String(r.created_at),
+    })),
+  };
+}
+
+// ── Quotes ─────────────────────────────────────────────────────────────────────
+
+export type QuotesStats = {
+  count_this_month: number;
+  total_this_month: number;
+  count_last_month: number;
+  avg_amount: number;
+};
+
+export async function getQuotesStats(userId: string): Promise<QuotesStats> {
+  const pool = DB.getPool();
+  const result = await pool.query(
+    `SELECT
+       COUNT(*) FILTER (WHERE sent_at >= DATE_TRUNC('month', NOW()))::int                           AS count_this_month,
+       COALESCE(SUM(total) FILTER (WHERE sent_at >= DATE_TRUNC('month', NOW())), 0)                AS total_this_month,
+       COUNT(*) FILTER (WHERE sent_at >= DATE_TRUNC('month', NOW() - INTERVAL '1 month')
+                          AND sent_at <  DATE_TRUNC('month', NOW()))::int                           AS count_last_month,
+       COALESCE(ROUND(AVG(total)), 0)                                                              AS avg_amount
+     FROM quote_history
+     WHERE user_id = $1`,
+    [userId]
+  );
+  const row = result.rows[0];
+  return {
+    count_this_month: Number(row.count_this_month),
+    total_this_month: Number(row.total_this_month),
+    count_last_month: Number(row.count_last_month),
+    avg_amount:       Number(row.avg_amount),
+  };
+}
+
+// ── Portal visits ──────────────────────────────────────────────────────────────
+
+export type PortalStats = {
+  visits_this_month: number;
+  visits_last_month: number;
+};
+
+export async function getPortalStats(userId: string): Promise<PortalStats> {
+  const pool = DB.getPool();
+  const result = await pool.query(
+    `SELECT
+       COALESCE(SUM(count) FILTER (WHERE day >= DATE_TRUNC('month', NOW())), 0)                    AS visits_this_month,
+       COALESCE(SUM(count) FILTER (WHERE day >= DATE_TRUNC('month', NOW() - INTERVAL '1 month')
+                                     AND day <  DATE_TRUNC('month', NOW())), 0)                    AS visits_last_month
+     FROM statistics_daily
+     WHERE user_id = $1 AND metric = 'link_opens'`,
+    [userId]
+  );
+  const row = result.rows[0];
+  return {
+    visits_this_month: Number(row.visits_this_month),
+    visits_last_month: Number(row.visits_last_month),
+  };
+}

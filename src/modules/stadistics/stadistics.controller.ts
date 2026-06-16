@@ -3,9 +3,11 @@ import { StatisticsService } from "./stadistics.service";
 import { ReviewsService } from "./reviews.service";
 import {
   getRevenueStats,
-  getConversionStats,
   getBusiestSlots,
   getClientStats,
+  getReviewsStats,
+  getQuotesStats,
+  getPortalStats,
 } from "./booking-stats.repository";
 
 const statsService = new StatisticsService();
@@ -111,13 +113,15 @@ export const statisticsController = {
     try {
       if (isForbidden(req)) return res.status(403).json({ ok: false, message: "Forbidden" });
       const userId = uid(req);
-      const [revenue, conversion, busiestSlots, clients] = await Promise.all([
+      const [revenue, portal, busiestSlots, clients, reviews, quotes] = await Promise.all([
         getRevenueStats(userId),
-        getConversionStats(userId),
+        getPortalStats(userId),
         getBusiestSlots(userId),
         getClientStats(userId),
+        getReviewsStats(userId),
+        getQuotesStats(userId),
       ]);
-      return res.json({ ok: true, revenue, conversion, busiestSlots, clients });
+      return res.json({ ok: true, revenue, portal, busiestSlots, clients, reviews, quotes });
     } catch (error: any) {
       return res.status(500).json({ ok: false, message: error?.message || "Error interno" });
     }
