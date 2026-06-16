@@ -18,8 +18,9 @@ export function generateMpAuthUrl(userId: string): string {
   pendingStates.set(state, { userId, expiresAt: Date.now() + 10 * 60 * 1000 });
 
   const params = new URLSearchParams({
-    client_id:    appId,
+    client_id:     appId,
     response_type: "code",
+    platform_id:   "mp",
     redirect_uri:  redirectUri,
     state,
   });
