@@ -28,7 +28,9 @@
       "PowerShell($content = Get-Content \"c:\\\\Users\\\\josep\\\\Desktop\\\\runtimeGenerateUi\\\\node_modules\\\\pdfkit\\\\js\\\\pdfkit.js\" -Raw; $idx = $content.IndexOf\\(\"_normalizeColor\"\\); if\\($idx -ge 0\\) { $content.Substring\\($idx, 1500\\) } else { \"NOT FOUND\" })",
       "PowerShell($content = Get-Content \"c:\\\\Users\\\\josep\\\\Desktop\\\\runtimeGenerateUi\\\\node_modules\\\\pdfkit\\\\js\\\\pdfkit.js\" -Raw; $content.Substring\\(52224, 800\\))",
       "PowerShell($content = Get-Content \"c:\\\\Users\\\\josep\\\\Desktop\\\\runtimeGenerateUi\\\\node_modules\\\\pdfkit\\\\js\\\\pdfkit.js\" -Raw; $idx = $content.IndexOf\\(\"_fillColor\"\\); $content.Substring\\($idx, 2000\\))",
-      "PowerShell($content = Get-Content \"c:\\\\Users\\\\josep\\\\Desktop\\\\runtimeGenerateUi\\\\node_modules\\\\pdfkit\\\\js\\\\pdfkit.js\" -Raw; $matches = [regex]::Matches\\($content, \"_fillColor\"\\); foreach\\($m in $matches\\) { $content.Substring\\([Math]::Max\\(0,$m.Index-50\\), 150\\) + \"`n---\" })"
+      "PowerShell($content = Get-Content \"c:\\\\Users\\\\josep\\\\Desktop\\\\runtimeGenerateUi\\\\node_modules\\\\pdfkit\\\\js\\\\pdfkit.js\" -Raw; $matches = [regex]::Matches\\($content, \"_fillColor\"\\); foreach\\($m in $matches\\) { $content.Substring\\([Math]::Max\\(0,$m.Index-50\\), 150\\) + \"`n---\" })",
+      "Bash(git ls-tree *)",
+      "Bash(git checkout *)"
     ]
   }
 }
