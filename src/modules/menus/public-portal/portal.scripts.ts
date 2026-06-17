@@ -18,26 +18,9 @@ export function portalScripts(
   return `
 const SLUG=${JSON.stringify(slug)};
 const PRODUCTS=${JSON.stringify(safeProducts)};
-const TABS=['chat','reservas','cotizar','nosotros'];
 
 // ── Estado compartido ─────────────────────────────────────────────────────────
 var S={flow:null,date:null,time:null,slots:{},cart:{},providerId:null,providerName:null,providers:[]};
-
-// ── Tabs ──────────────────────────────────────────────────────────────────────
-function setNavActive(t){
-  document.querySelectorAll('.bn-item').forEach(function(el){ el.classList.toggle('active',el.getAttribute('data-tab')===t); });
-}
-function showTab(t){
-  TABS.forEach(function(x){ document.getElementById('panel-'+x).classList.toggle('active',x===t); });
-  setNavActive(t);
-  if(t==='chat') scrollChat();
-}
-
-// ── Scroll ────────────────────────────────────────────────────────────────────
-function scrollChat(){
-  var el=document.getElementById('chatMsgs');
-  if(el) requestAnimationFrame(function(){ el.scrollTop=el.scrollHeight; });
-}
 
 // ── Utilidades ────────────────────────────────────────────────────────────────
 function renderMd(t){
@@ -93,7 +76,6 @@ function fetchAndRenderDates(){
 
 function openBookingPanel(){
   S.flow='reservas'; S.date=null; S.time=null; S.providerId=null; S.providerName=null;
-  setNavActive('reservas');
   renderBPLoading();
   document.getElementById('bookingPanel').classList.add('open');
   fetch('/api/public/'+SLUG+'/providers')
@@ -152,7 +134,6 @@ function renderBPProviders(){
 
 function closeBookingPanel(){
   document.getElementById('bookingPanel').classList.remove('open');
-  showTab('chat');
   setTimeout(function(){ var p=document.getElementById('bookingPanel'); if(p) p.innerHTML=''; },360);
 }
 
@@ -350,13 +331,11 @@ function renderBPPayment(bookingId,name){
 // ── PANEL DE COTIZACIÓN (slide-in) ────────────────────────────────────────────
 function openQuotePanel(){
   S.cart={};
-  setNavActive('cotizar');
   renderQPStep1();
   document.getElementById('quotePanel').classList.add('open');
 }
 function closeQuotePanel(){
   document.getElementById('quotePanel').classList.remove('open');
-  showTab('chat');
   setTimeout(function(){ var p=document.getElementById('quotePanel'); if(p) p.innerHTML=''; },360);
 }
 
@@ -527,25 +506,10 @@ function renderQPSuccess(name){
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 (function init(){
-  document.querySelectorAll('.bn-item').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var tab=btn.getAttribute('data-tab');
-      if(tab==='reservas'){ openBookingPanel(); }
-      else if(tab==='cotizar'){ openQuotePanel(); }
-      else{ showTab(tab); }
-    });
-  });
-  document.querySelectorAll('.home-tile').forEach(function(tile){
-    tile.addEventListener('click',function(){
-      var action=tile.getAttribute('data-action');
-      if(action==='reservas')     openBookingPanel();
-      else if(action==='cotizar') openQuotePanel();
-      else if(action==='precios') showTab('cotizar');
-      else if(action==='info')    showTab('nosotros');
-    });
-  });
-  var hdr=document.querySelector('.hdr');
-  if(hdr) hdr.addEventListener('click',function(){ showTab('nosotros'); });
+  var bookingBtn=document.getElementById('btn-booking');
+  var quoteBtn=document.getElementById('btn-quote');
+  if(bookingBtn) bookingBtn.addEventListener('click',openBookingPanel);
+  if(quoteBtn)   quoteBtn.addEventListener('click',openQuotePanel);
 })();
 `;
 }
