@@ -45,6 +45,7 @@ export function chatTabHtml(safe: HomeData, initials: string): string {
     <div class="home-scroll">
 
       <div class="h-hero">
+        <div class="h-glow"></div>
         <div class="h-avatar">${initials}</div>
         <div class="h-badge"><span class="h-dot"></span>En línea</div>
         <h1 class="h-name">${safe.name}</h1>
