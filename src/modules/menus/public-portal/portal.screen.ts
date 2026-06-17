@@ -16,28 +16,47 @@ export type PortalViewData = {
   instagramUrl?: string | null;
   whatsappNumber?: string | null;
   businessHours?: string | null;
+  logoUrl?: string | null;
   enabledModules: MenuModuleItem[];
   products: { id: string | number; name: string; price: number; description?: string | null }[];
 };
 
-function sanitizeBrandColor(color: string | null | undefined): string | null {
-  if (!color) return null;
-  return /^#[0-9a-fA-F]{6}$/.test(color.trim()) ? color.trim() : null;
+function sanitizeBrandColor(c: string | null | undefined): string | null {
+  if (!c) return null;
+  return /^#[0-9a-fA-F]{6}$/.test(c.trim()) ? c.trim() : null;
+}
+
+function sanitizeImageUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  return url.startsWith("https://") ? escapeHtml(url) : null;
 }
 
 function formatPrice(price: number): string {
   return "$" + price.toLocaleString("es-CL");
 }
 
-const SVG_CALENDAR = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
-const SVG_QUOTE    = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`;
-const SVG_SVC      = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>`;
+const MODULE_ICONS: Record<string, string> = {
+  reservas: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+  cotizador: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+};
+const DEFAULT_MOD_ICON = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`;
+const CHEVRON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+
+const MOD_ACTION: Record<string, string> = {
+  reservas:  "reservas",
+  cotizador: "cotizador",
+};
 
 export function renderPortalHtml(data: PortalViewData): string {
-  const { businessName, publicSlug, phone, address, city, brandColor, description,
-          welcomeMessage, instagramUrl, whatsappNumber, businessHours, enabledModules, products } = data;
+  const {
+    businessName, publicSlug, brandColor, description, welcomeMessage,
+    instagramUrl, whatsappNumber, businessHours, phone, address, city,
+    logoUrl, enabledModules, products,
+  } = data;
 
-  const safeColor = sanitizeBrandColor(brandColor);
+  const safeColor   = sanitizeBrandColor(brandColor);
+  const safeLogoUrl = sanitizeImageUrl(logoUrl);
+  const initials    = publicSlug.replace(/[^a-zA-Z0-9]/g, "").slice(0, 2).toUpperCase() || "?";
 
   const safe = {
     name:           escapeHtml(businessName),
@@ -49,80 +68,31 @@ export function renderPortalHtml(data: PortalViewData): string {
     instagramUrl:   instagramUrl   ? escapeHtml(instagramUrl)   : null,
     whatsappNumber: whatsappNumber ? escapeHtml(whatsappNumber) : null,
     businessHours:  businessHours  ? escapeHtml(businessHours)  : null,
-    initials:       publicSlug.replace(/[^a-zA-Z0-9]/g, "").slice(0, 2).toUpperCase() || "?",
   };
 
-  const hasBooking = enabledModules.some(m => m.code === "reservas");
-  const hasCotizar = enabledModules.some(m => m.code === "cotizador");
   const locationLine = [safe.address, safe.city].filter(Boolean).join(", ");
 
-  // ── Hero CTAs ────────────────────────────────────────────────────────────────
-  const bookingBtn = hasBooking ? `
-    <button class="hero-btn hero-btn-primary" id="btn-booking" type="button">
-      ${SVG_CALENDAR} Reservar hora
-    </button>` : "";
+  // ── Hero avatar ────────────────────────────────────────────────────────────
+  const avatarHtml = safeLogoUrl
+    ? `<img src="${safeLogoUrl}" class="hero-avatar hero-avatar-img" alt="${safe.name}"/>`
+    : `<div class="hero-avatar hero-avatar-txt">${initials}</div>`;
 
-  const quoteBtn = hasCotizar ? `
-    <button class="hero-btn hero-btn-secondary" id="btn-quote" type="button">
-      ${SVG_QUOTE} Pedir cotización
-    </button>` : "";
-
-  // ── Preview card decorativo ──────────────────────────────────────────────────
-  const previewCard = `
-    <div class="hero-preview">
-      <div class="preview-card">
-        <div class="preview-card-head">
-          <div class="preview-cal-icon">${SVG_CALENDAR}</div>
-          <span class="preview-card-title">Disponibilidad</span>
-        </div>
-        <div class="preview-slots">
-          <div class="preview-slot preview-slot-on">
-            <span class="preview-slot-dot preview-slot-dot-on"></span>
-            Lun · 10:00 am
-            <span class="preview-slot-badge">Disponible</span>
-          </div>
-          <div class="preview-slot">
-            <span class="preview-slot-dot preview-slot-dot-off"></span>
-            Lun · 11:30 am
-          </div>
-          <div class="preview-slot preview-slot-on">
-            <span class="preview-slot-dot preview-slot-dot-on"></span>
-            Mar · 09:00 am
-            <span class="preview-slot-badge">Disponible</span>
-          </div>
-        </div>
-        ${hasBooking ? `<div class="preview-cta">Reservar ahora →</div>` : ""}
-      </div>
-    </div>`;
-
-  // ── Servicios grid ───────────────────────────────────────────────────────────
-  const isSingleCol = products.some(p => (p.name.length + (p.description?.length ?? 0)) > 40);
-
-  const servicesHtml = products.map(p => {
-    const name  = escapeHtml(String(p.name));
-    const desc  = p.description ? escapeHtml(String(p.description)) : "";
-    const price = p.price > 0 ? formatPrice(p.price) : "";
-    if (isSingleCol) {
-      return `
-        <div class="svc-card svc-card-row">
-          <div class="svc-icon">${SVG_SVC}</div>
-          <div class="svc-info">
-            <div class="svc-name">${name}</div>
-            ${desc ? `<div class="svc-desc">${desc}</div>` : ""}
-          </div>
-          ${price ? `<div class="svc-price">${price}</div>` : ""}
-        </div>`;
-    }
+  // ── Module cards ───────────────────────────────────────────────────────────
+  const moduleCardsHtml = enabledModules.map(m => {
+    const icon   = MODULE_ICONS[m.code] ?? DEFAULT_MOD_ICON;
+    const action = MOD_ACTION[m.code]   ?? m.code;
     return `
-      <div class="svc-card">
-        <div class="svc-icon">${SVG_SVC}</div>
-        <div class="svc-name">${name}</div>
-        ${desc ? `<div class="svc-desc">${desc}</div>` : ""}
-        ${price ? `<div class="svc-price">${price}</div>` : ""}
-      </div>`;
+    <button class="mod-card" data-action="${escapeHtml(action)}" type="button">
+      <div class="mod-icon-wrap">${icon}</div>
+      <div class="mod-body">
+        <div class="mod-title">${escapeHtml(m.title)}</div>
+        <div class="mod-desc">${escapeHtml(m.description)}</div>
+      </div>
+      <div class="mod-arrow">${CHEVRON}</div>
+    </button>`;
   }).join("");
 
-  // ── Contacto ────────────────────────────────────────────────────────────────
+  // ── Contact rows ───────────────────────────────────────────────────────────
   const phoneRow = safe.phone ? `
     <a class="contact-row" href="tel:${safe.phone}">
       <div class="contact-icon-wrap">
@@ -166,7 +136,7 @@ export function renderPortalHtml(data: PortalViewData): string {
   const contactBlock = [phoneRow, waRow, locationRow, hoursRow, igRow].filter(Boolean).join("");
 
   const colorVars = safeColor
-    ? `:root{--accent:${safeColor};--accent2:${safeColor}aa}`
+    ? `:root{--accent:${safeColor};--accent2:${safeColor}bb}`
     : "";
 
   return `<!doctype html>
@@ -182,48 +152,44 @@ export function renderPortalHtml(data: PortalViewData): string {
 </head>
 <body>
 
-  <!-- ── HERO (full-width) ── -->
-  <section class="hero">
-    <div class="hero-glow"></div>
-    <div class="hero-glow2"></div>
-    <div class="hero-inner">
-      <div class="hero-content">
-        <div class="hero-badge"><span class="hero-dot"></span>En línea</div>
-        <h1 class="hero-title">${safe.name}</h1>
-        ${safe.description ? `<p class="hero-sub">${safe.description}</p>` : ""}
-        ${safe.welcomeMessage && !safe.description ? `<p class="hero-sub">${safe.welcomeMessage}</p>` : ""}
-        ${bookingBtn || quoteBtn ? `<div class="hero-ctas">${bookingBtn}${quoteBtn}</div>` : ""}
-      </div>
-      ${previewCard}
-    </div>
-  </section>
-
-  <!-- ── CONTENIDO ── -->
-  <div class="page">
-
-    <!-- SERVICIOS -->
-    ${products.length > 0 ? `
-    <div class="section-card">
-      <h2 class="section-title">Nuestros servicios</h2>
-      <p class="section-sub">Todo lo que ofrecemos para ti</p>
-      <div class="svc-grid${isSingleCol ? " svc-grid-full" : ""}">${servicesHtml}</div>
-    </div>` : ""}
-
-    <!-- CONTACTO -->
-    ${contactBlock ? `
-    <div class="section-card">
-      <h2 class="section-title">Contáctanos</h2>
-      <p class="section-sub" style="margin-bottom:14px">Estamos para ayudarte</p>
-      <div class="contact-list">${contactBlock}</div>
-    </div>` : ""}
-
-    <div class="pg-footer">Powered by <strong>Automatiza Fácil</strong></div>
-
+<!-- ── HERO (full-width) ── -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-inner">
+    ${avatarHtml}
+    <div class="hero-badge"><span class="hero-dot"></span>En línea</div>
+    <h1 class="hero-title">${safe.name}</h1>
+    ${safe.description
+      ? `<p class="hero-sub">${safe.description}</p>`
+      : safe.welcomeMessage
+        ? `<p class="hero-sub">${safe.welcomeMessage}</p>`
+        : ""}
   </div>
+</section>
+
+<!-- ── CONTENIDO ── -->
+<div class="page">
+
+  ${moduleCardsHtml ? `
+  <div class="section-card">
+    <h2 class="section-title">¿Cómo podemos ayudarte?</h2>
+    <div class="mod-list">${moduleCardsHtml}</div>
+  </div>` : ""}
+
+  ${contactBlock ? `
+  <div class="section-card">
+    <h2 class="section-title">Contáctanos</h2>
+    <div class="contact-list" style="margin-top:14px">${contactBlock}</div>
+  </div>` : ""}
+
+  <div class="pg-footer">Powered by <strong>Automatiza Fácil</strong></div>
+
+</div>
 
 <div id="quotePanel" class="quote-panel"></div>
 <div id="bookingPanel" class="quote-panel"></div>
-<script>${portalScripts(publicSlug, safe.name, enabledModules, products, { phone: safe.phone, address: safe.address, city: safe.city, description: safe.description, welcomeMessage: welcomeMessage ?? null, businessHours: safe.businessHours, instagramUrl: safe.instagramUrl, whatsappNumber: safe.whatsappNumber }, safe.initials)}</script>
+<script>${portalScripts(publicSlug, safe.name, enabledModules, products, { phone: safe.phone, address: safe.address, city: safe.city, description: safe.description, welcomeMessage: welcomeMessage ?? null, businessHours: safe.businessHours, instagramUrl: safe.instagramUrl, whatsappNumber: safe.whatsappNumber }, initials)}</script>
 </body>
 </html>`;
 }

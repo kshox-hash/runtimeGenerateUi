@@ -506,10 +506,13 @@ function renderQPSuccess(name){
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 (function init(){
-  var bookingBtn=document.getElementById('btn-booking');
-  var quoteBtn=document.getElementById('btn-quote');
-  if(bookingBtn) bookingBtn.addEventListener('click',openBookingPanel);
-  if(quoteBtn)   quoteBtn.addEventListener('click',openQuotePanel);
+  document.querySelectorAll('.mod-card').forEach(function(card){
+    card.addEventListener('click',function(){
+      var action=card.getAttribute('data-action');
+      if(action==='reservas')      openBookingPanel();
+      else if(action==='cotizador') openQuotePanel();
+    });
+  });
 })();
 `;
 }
