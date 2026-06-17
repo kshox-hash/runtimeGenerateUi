@@ -216,7 +216,7 @@ export async function getCalendarBookingsByUserId(userId: string) {
     FROM calendar_bookings cb
     LEFT JOIN calendar_providers cp ON cb.provider_id = cp.id
     WHERE cb.user_id = $1
-      AND cb.payment_status = 'paid'
+      AND cb.payment_status IN ('paid', 'free')
     ORDER BY cb.booking_date ASC, cb.start_time ASC
     `,
     [userId]

@@ -26,7 +26,7 @@ export async function getBookingsDueTomorrow(): Promise<ReminderBooking[]> {
      FROM calendar_bookings cb
      LEFT JOIN business_profiles bp ON bp.user_id = cb.user_id
      WHERE cb.booking_date = CURRENT_DATE + INTERVAL '1 day'
-       AND cb.payment_status = 'paid'
+       AND cb.payment_status IN ('paid', 'free')
        AND cb.status         = 'confirmed'
        AND cb.reminder_sent  = false
        AND cb.client_email  <> ''`

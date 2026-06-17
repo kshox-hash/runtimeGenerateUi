@@ -19,8 +19,10 @@ import {
   createPaymentRecord,
   updatePaymentWithPreference,
   getPlatformFeePct,
+  confirmFreeBooking,
 } from "./calendar-public.repository";
 import { sendBookingPaymentLinkEmail } from "./booking/services/bookingPaymentLinkEmailService";
+import { sendBookingPaidEmail } from "./booking/services/bookingPaidEmailService";
 
 export const calendarPublicController = {
 
@@ -139,8 +141,11 @@ export const calendarPublicController = {
         providerId,
       });
 
-      // Crear preferencia de pago inmediatamente y mandar email con link
+      // Crear preferencia de pago o confirmar gratis
       let checkoutUrl: string | null = null;
+      const bookingDateLabel = new Date(bookingDate).toLocaleDateString("es-CL", {
+        weekday: "long", day: "numeric", month: "long",
+      });
       try {
         const accessToken = await getMpAccessToken(profile.user_id);
         const amount = Number(booking.payment_amount || 0);
@@ -163,21 +168,28 @@ export const calendarPublicController = {
           if (preference.checkoutUrl) {
             await updatePaymentWithPreference(payment.id, preference.checkoutUrl, preference.preferenceId ?? "");
             checkoutUrl = preference.checkoutUrl;
-            const bookingDateStr2 = new Date(bookingDate).toLocaleDateString("es-CL", {
-              weekday: "long", day: "numeric", month: "long",
-            });
             sendBookingPaymentLinkEmail({
               to: customerEmail,
               customerName,
               businessName: profile.business_name,
-              bookingDate: bookingDateStr2,
+              bookingDate: bookingDateLabel,
               bookingTime: startTime,
               checkoutUrl,
             }).catch((err) => console.error("[calendar] Error enviando email de pago:", err));
           }
+        } else {
+          // Reserva gratuita — confirmar inmediatamente y notificar al cliente
+          await confirmFreeBooking(booking.id);
+          sendBookingPaidEmail({
+            to: customerEmail,
+            customerName,
+            businessName: profile.business_name,
+            bookingDate: bookingDateLabel,
+            bookingTime: startTime,
+          }).catch((err) => console.error("[calendar] Error enviando email de confirmación:", err));
         }
       } catch (err) {
-        console.error("[calendar] Error creando preferencia de pago:", err);
+        console.error("[calendar] Error en flujo post-reserva:", err);
       }
 
       statsService.increment(profile.user_id, "booking_created").catch(() => {});
