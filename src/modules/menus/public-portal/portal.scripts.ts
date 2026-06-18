@@ -412,6 +412,28 @@ function loadCalendar(){
 function renderAllCals(){
   renderCalWidget('calHome');
   renderCalWidget('calReservas');
+  updateProfileNextSlot();
+}
+
+function updateProfileNextSlot(){
+  var section=document.getElementById('prAvailSection');
+  var slot=document.getElementById('prNextSlot');
+  if(!section||!slot) return;
+  var today=new Date();
+  var todayStr=today.getFullYear()+'-'+pad2(today.getMonth()+1)+'-'+pad2(today.getDate());
+  var dates=Object.keys(calSlots).sort();
+  var next=null;
+  for(var i=0;i<dates.length;i++){
+    if(dates[i]>=todayStr&&calSlots[dates[i]]&&calSlots[dates[i]].length>0){next=dates[i];break;}
+  }
+  section.style.display='block';
+  var calIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+  if(next){
+    var cnt=calSlots[next].length;
+    slot.innerHTML='<div class="pr-avail-pill">'+calIco+escH(fmtDateLabel(next))+'<span style="font-weight:400;font-size:11px;opacity:.8">'+cnt+' horario'+(cnt!==1?'s':'')+'</span></div>';
+  } else {
+    slot.innerHTML='<div class="pr-avail-none">Sin turnos disponibles por ahora</div>';
+  }
 }
 
 function renderCalWidget(id){

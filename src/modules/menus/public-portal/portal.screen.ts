@@ -123,7 +123,7 @@ ${safeColor ? `:root{--primary:${safeColor};--primary-dim:${safeColor}1A;--prima
     <div class="pr-name">${s.name}</div>
     ${s.desc ? `<div class="pr-role">${s.desc}</div>` : ""}
     <div id="prRating" class="pr-rating" style="display:none"></div>
-    <div class="pr-meta" style="gap:7px;margin-bottom:10px">
+    <div class="pr-online-row">
       <span class="pr-online-chip">En línea</span>
     </div>
     <div class="pr-actions">
@@ -131,6 +131,10 @@ ${safeColor ? `:root{--primary:${safeColor};--primary-dim:${safeColor}1A;--prima
       ${s.phone ? `<a class="pr-action-btn" href="tel:${s.phone}" title="Llamar">${S_PHONE}</a>` : ""}
       ${s.ig ? `<a class="pr-action-btn" href="${s.ig}" target="_blank" rel="noopener" title="Instagram">${S_IG}</a>` : ""}
     </div>
+  </div>
+  <div class="pr-avail-section" id="prAvailSection" style="display:none">
+    <div class="pr-avail-section-title">Próxima disponibilidad</div>
+    <div id="prNextSlot"></div>
   </div>
   ${infoRows ? `<div class="pr-section"><div class="pr-section-title">Información detallada</div>${infoRows}</div>` : ""}
   ${waHref ? `<div class="pr-footer"><a class="btn-wa" href="${waHref}" target="_blank" rel="noopener">${S_WA} Escribir por WhatsApp</a></div>` : ""}

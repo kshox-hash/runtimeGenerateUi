@@ -139,37 +139,31 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     z-index:200;overflow-y:auto
   }
   .pr-top{
-    padding:22px 20px 0;border-bottom:1px solid var(--border);padding-bottom:20px
+    padding:22px 20px 20px;
+    background:linear-gradient(160deg,var(--primary-dim) 0%,transparent 55%);
+    border-bottom:1px solid var(--border-inner)
   }
   .pr-back{
     display:inline-flex;align-items:center;gap:6px;
-    font-size:12px;font-weight:600;color:var(--soft);margin-bottom:18px;
+    font-size:11.5px;font-weight:600;color:var(--soft);margin-bottom:20px;
     background:none;border:none;cursor:default;font-family:inherit
   }
-  .pr-back svg{width:14px;height:14px;stroke-width:2.2}
+  .pr-back svg{width:13px;height:13px;stroke-width:2.2}
   .pr-avatar{
-    width:72px;height:72px;border-radius:50%;margin-bottom:12px;
-    background:var(--primary-dim);border:3px solid var(--primary-glow);
+    width:80px;height:80px;border-radius:50%;margin-bottom:14px;
+    background:var(--primary);
+    box-shadow:0 4px 20px var(--primary-glow);
     display:flex;align-items:center;justify-content:center;
-    font-size:24px;font-weight:800;color:var(--primary);user-select:none;letter-spacing:-.03em
+    font-size:26px;font-weight:800;color:#fff;user-select:none;letter-spacing:-.03em
   }
-  .pr-name{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.04em;margin-bottom:3px}
-  .pr-role{font-size:12.5px;color:var(--soft);margin-bottom:10px;line-height:1.4}
-  .pr-actions{display:flex;gap:7px;margin-bottom:12px}
-  .pr-action-btn{
-    width:34px;height:34px;border-radius:10px;border:1.5px solid var(--border);
-    background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
-    color:var(--soft);transition:background .15s,border-color .15s;font-family:inherit
+  .pr-name{font-size:17px;font-weight:800;color:var(--text);letter-spacing:-.05em;margin-bottom:4px;line-height:1.2}
+  .pr-role{font-size:12.5px;color:var(--soft);margin-bottom:10px;line-height:1.45}
+  .pr-rating{
+    display:flex;align-items:center;gap:5px;margin-bottom:10px;
+    font-size:12.5px;color:var(--amber);font-weight:600
   }
-  .pr-action-btn:hover{background:var(--primary-dim);border-color:var(--primary-glow);color:var(--primary)}
-  .pr-action-btn svg{width:15px;height:15px;stroke-width:1.75}
-  .pr-meta{display:flex;align-items:center;gap:10px}
-  .pr-meta-chip{
-    display:inline-flex;align-items:center;gap:5px;
-    font-size:11px;font-weight:600;color:var(--soft);
-    background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:4px 9px
-  }
-  .pr-meta-chip svg{width:12px;height:12px;opacity:.7}
+  .pr-rating-count{font-size:11.5px;color:var(--soft);font-weight:400}
+  .pr-online-row{display:flex;align-items:center;gap:8px;margin-bottom:14px}
   .pr-online-chip{
     display:inline-flex;align-items:center;gap:5px;
     font-size:11px;font-weight:700;color:var(--green);
@@ -177,6 +171,39 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     border-radius:8px;padding:4px 9px
   }
   .pr-online-chip::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2.5s infinite}
+  .pr-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .pr-action-btn{
+    width:38px;height:38px;border-radius:12px;border:1.5px solid var(--border);
+    background:var(--panel);cursor:pointer;display:flex;align-items:center;justify-content:center;
+    color:var(--soft);transition:background .15s,border-color .15s,color .15s;
+    text-decoration:none;flex-shrink:0
+  }
+  .pr-action-btn svg{width:16px;height:16px;stroke-width:1.7}
+  .pr-action-btn[title="WhatsApp"]{color:#22c55e;border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.07)}
+  .pr-action-btn[title="WhatsApp"]:hover{background:rgba(34,197,94,.16);border-color:#22c55e}
+  .pr-action-btn[title="Instagram"]{color:#ec4899;border-color:rgba(236,72,153,.3);background:rgba(236,72,153,.07)}
+  .pr-action-btn[title="Instagram"]:hover{background:rgba(236,72,153,.16);border-color:#ec4899}
+  .pr-action-btn[title="Llamar"]{color:#3b82f6;border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.07)}
+  .pr-action-btn[title="Llamar"]:hover{background:rgba(59,130,246,.16);border-color:#3b82f6}
+  .pr-meta{display:flex;align-items:center;gap:10px}
+  .pr-meta-chip{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:11px;font-weight:600;color:var(--soft);
+    background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:4px 9px
+  }
+  /* Next slot pill */
+  .pr-avail-section{padding:14px 20px;border-bottom:1px solid var(--border-inner)}
+  .pr-avail-section-title{font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+  .pr-avail-pill{
+    display:inline-flex;align-items:center;gap:7px;
+    background:var(--green-dim);color:var(--green);
+    border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:8px 12px;
+    font-size:12.5px;font-weight:700;
+  }
+  .pr-avail-pill svg{width:13px;height:13px;stroke:var(--green);flex-shrink:0}
+  .pr-avail-none{
+    font-size:12px;color:var(--dim);background:var(--bg);border-radius:8px;padding:8px 10px;border:1px solid var(--border)
+  }
 
   .pr-section{padding:18px 20px}
   .pr-section-title{font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px}
@@ -185,15 +212,16 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   }
   .pr-row:last-child{margin-bottom:0}
   .pr-row-icon{
-    width:30px;height:30px;border-radius:8px;background:var(--bg);flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;margin-top:1px
+    width:32px;height:32px;border-radius:9px;background:var(--bg);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;margin-top:1px;
+    border:1px solid var(--border)
   }
   .pr-row-icon svg{width:13px;height:13px;color:var(--soft)}
   .pr-row-body{flex:1;min-width:0}
-  .pr-row-lbl{font-size:10px;font-weight:600;color:var(--dim);letter-spacing:.04em;margin-bottom:2px;text-transform:uppercase}
+  .pr-row-lbl{font-size:10px;font-weight:700;color:var(--dim);letter-spacing:.05em;margin-bottom:2px;text-transform:uppercase}
   .pr-row-val{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;word-break:break-word}
   .pr-row-badge{
-    display:inline-block;margin-top:3px;
+    display:inline-block;margin-top:4px;
     font-size:9.5px;font-weight:700;color:var(--green);
     background:var(--green-dim);border:1px solid rgba(34,197,94,.2);
     border-radius:6px;padding:1px 7px;letter-spacing:.04em
@@ -203,7 +231,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   .btn-wa{
     display:flex;align-items:center;justify-content:center;gap:8px;
     background:#25D366;color:#fff;font-family:inherit;font-size:13px;font-weight:700;
-    border:none;border-radius:10px;padding:11px 16px;cursor:pointer;
+    border:none;border-radius:12px;padding:12px 16px;cursor:pointer;
     transition:opacity .15s;text-decoration:none;width:100%
   }
   .btn-wa:hover{opacity:.88}
