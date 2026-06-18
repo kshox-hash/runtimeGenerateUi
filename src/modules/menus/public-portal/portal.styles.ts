@@ -39,7 +39,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 
 /* ── LAYOUT — MOBILE ─────────────────────────────────────────────────── */
 .icon-rail{display:none}
-.profile-rail{display:none}
 .content-nav{display:none}
 
 .mobile-hdr{
@@ -64,10 +63,17 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .mhdr-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2.5s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-.content-wrap{
+/* Mobile: portal-main fills the screen (profile-rail hidden, content-wrap full width) */
+.portal-main{
   position:fixed;top:var(--hdr);left:0;right:0;
   bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px));
-  overflow:hidden;background:var(--bg)
+  display:block;overflow:hidden;background:var(--bg)
+}
+.portal-main .profile-rail{display:none}
+.content-wrap{
+  position:absolute;inset:0;
+  overflow:hidden;background:var(--bg);
+  border-radius:0;border:none;box-shadow:none
 }
 .panel{
   position:absolute;inset:0;overflow-y:auto;
@@ -131,117 +137,116 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   }
   .ir-spacer{flex:1}
 
-  /* PROFILE RAIL */
+  /* ── PORTAL GRID (card layout) ──────────────────────────────────────── */
+  .portal-main{
+    position:fixed;
+    top:0;left:var(--rail-w);right:0;bottom:0;
+    display:grid;
+    grid-template-columns:var(--prof-w) 1fr;
+    gap:14px;padding:14px;
+    background:var(--bg);overflow:hidden
+  }
+
+  /* PROFILE CARD */
   .profile-rail{
     display:flex;flex-direction:column;
-    position:fixed;top:0;left:var(--rail-w);bottom:0;width:var(--prof-w);
-    background:var(--panel);border-right:1px solid var(--border);
-    z-index:200;overflow-y:auto
+    background:var(--panel);border-radius:16px;
+    border:1px solid var(--border);box-shadow:var(--shadow-s);
+    overflow-y:auto;overflow-x:hidden;
+    height:100%
   }
   .pr-top{
-    padding:22px 20px 20px;
-    background:linear-gradient(160deg,var(--primary-dim) 0%,transparent 55%);
+    padding:20px 18px 16px;
     border-bottom:1px solid var(--border-inner)
   }
   .pr-back{
-    display:inline-flex;align-items:center;gap:6px;
-    font-size:11.5px;font-weight:600;color:var(--soft);margin-bottom:20px;
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:11px;font-weight:600;color:var(--dim);margin-bottom:16px;
     background:none;border:none;cursor:default;font-family:inherit
   }
-  .pr-back svg{width:13px;height:13px;stroke-width:2.2}
+  .pr-back svg{width:12px;height:12px;stroke-width:2.4}
+  /* Avatar: solid brand color, NO shadow */
   .pr-avatar{
-    width:80px;height:80px;border-radius:50%;margin-bottom:14px;
+    width:68px;height:68px;border-radius:50%;margin-bottom:12px;
     background:var(--primary);
-    box-shadow:0 4px 20px var(--primary-glow);
     display:flex;align-items:center;justify-content:center;
-    font-size:26px;font-weight:800;color:#fff;user-select:none;letter-spacing:-.03em
+    font-size:22px;font-weight:800;color:#fff;user-select:none;letter-spacing:-.03em
   }
-  .pr-name{font-size:17px;font-weight:800;color:var(--text);letter-spacing:-.05em;margin-bottom:4px;line-height:1.2}
-  .pr-role{font-size:12.5px;color:var(--soft);margin-bottom:10px;line-height:1.45}
+  .pr-name{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.04em;margin-bottom:3px}
+  .pr-role{font-size:12px;color:var(--soft);margin-bottom:8px;line-height:1.4}
   .pr-rating{
-    display:flex;align-items:center;gap:5px;margin-bottom:10px;
-    font-size:12.5px;color:var(--amber);font-weight:600
+    display:flex;align-items:center;gap:5px;margin-bottom:8px;
+    font-size:12px;color:var(--amber);font-weight:600
   }
-  .pr-rating-count{font-size:11.5px;color:var(--soft);font-weight:400}
-  .pr-online-row{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+  .pr-rating-count{font-size:11px;color:var(--soft);font-weight:400}
+  .pr-online-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
   .pr-online-chip{
     display:inline-flex;align-items:center;gap:5px;
-    font-size:11px;font-weight:700;color:var(--green);
+    font-size:10.5px;font-weight:700;color:var(--green);
     background:var(--green-dim);border:1px solid rgba(34,197,94,.2);
-    border-radius:8px;padding:4px 9px
+    border-radius:7px;padding:3px 8px
   }
   .pr-online-chip::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2.5s infinite}
-  .pr-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .pr-actions{display:flex;gap:7px;flex-wrap:wrap}
   .pr-action-btn{
-    width:38px;height:38px;border-radius:12px;border:1.5px solid var(--border);
-    background:var(--panel);cursor:pointer;display:flex;align-items:center;justify-content:center;
+    width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);
+    background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;
     color:var(--soft);transition:background .15s,border-color .15s,color .15s;
     text-decoration:none;flex-shrink:0
   }
-  .pr-action-btn svg{width:16px;height:16px;stroke-width:1.7}
+  .pr-action-btn svg{width:15px;height:15px;stroke-width:1.7}
   .pr-action-btn[title="WhatsApp"]{color:#22c55e;border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.07)}
-  .pr-action-btn[title="WhatsApp"]:hover{background:rgba(34,197,94,.16);border-color:#22c55e}
+  .pr-action-btn[title="WhatsApp"]:hover{background:rgba(34,197,94,.18);border-color:#22c55e}
   .pr-action-btn[title="Instagram"]{color:#ec4899;border-color:rgba(236,72,153,.3);background:rgba(236,72,153,.07)}
-  .pr-action-btn[title="Instagram"]:hover{background:rgba(236,72,153,.16);border-color:#ec4899}
+  .pr-action-btn[title="Instagram"]:hover{background:rgba(236,72,153,.18);border-color:#ec4899}
   .pr-action-btn[title="Llamar"]{color:#3b82f6;border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.07)}
-  .pr-action-btn[title="Llamar"]:hover{background:rgba(59,130,246,.16);border-color:#3b82f6}
-  .pr-meta{display:flex;align-items:center;gap:10px}
-  .pr-meta-chip{
-    display:inline-flex;align-items:center;gap:5px;
-    font-size:11px;font-weight:600;color:var(--soft);
-    background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:4px 9px
-  }
-  /* Next slot pill */
-  .pr-avail-section{padding:14px 20px;border-bottom:1px solid var(--border-inner)}
-  .pr-avail-section-title{font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+  .pr-action-btn[title="Llamar"]:hover{background:rgba(59,130,246,.18);border-color:#3b82f6}
+  /* Next slot */
+  .pr-avail-section{padding:12px 18px;border-bottom:1px solid var(--border-inner)}
+  .pr-avail-section-title{font-size:10.5px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px}
   .pr-avail-pill{
-    display:inline-flex;align-items:center;gap:7px;
+    display:inline-flex;align-items:center;gap:6px;
     background:var(--green-dim);color:var(--green);
-    border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:8px 12px;
-    font-size:12.5px;font-weight:700;
+    border:1px solid rgba(34,197,94,.22);border-radius:9px;padding:7px 11px;
+    font-size:12px;font-weight:700;
   }
-  .pr-avail-pill svg{width:13px;height:13px;stroke:var(--green);flex-shrink:0}
-  .pr-avail-none{
-    font-size:12px;color:var(--dim);background:var(--bg);border-radius:8px;padding:8px 10px;border:1px solid var(--border)
-  }
-
-  .pr-section{padding:18px 20px}
-  .pr-section-title{font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px}
-  .pr-row{
-    display:flex;align-items:flex-start;gap:12px;margin-bottom:14px
-  }
+  .pr-avail-pill svg{width:12px;height:12px;stroke:var(--green);flex-shrink:0}
+  .pr-avail-none{font-size:11.5px;color:var(--dim);background:var(--bg);border-radius:7px;padding:7px 10px;border:1px solid var(--border)}
+  .pr-section{padding:14px 18px}
+  .pr-section-title{font-size:10.5px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
+  .pr-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
   .pr-row:last-child{margin-bottom:0}
   .pr-row-icon{
-    width:32px;height:32px;border-radius:9px;background:var(--bg);flex-shrink:0;
+    width:28px;height:28px;border-radius:8px;background:var(--bg);flex-shrink:0;
     display:flex;align-items:center;justify-content:center;margin-top:1px;
     border:1px solid var(--border)
   }
-  .pr-row-icon svg{width:13px;height:13px;color:var(--soft)}
+  .pr-row-icon svg{width:12px;height:12px;color:var(--soft)}
   .pr-row-body{flex:1;min-width:0}
-  .pr-row-lbl{font-size:10px;font-weight:700;color:var(--dim);letter-spacing:.05em;margin-bottom:2px;text-transform:uppercase}
-  .pr-row-val{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;word-break:break-word}
+  .pr-row-lbl{font-size:9.5px;font-weight:700;color:var(--dim);letter-spacing:.05em;margin-bottom:2px;text-transform:uppercase}
+  .pr-row-val{font-size:12.5px;font-weight:500;color:var(--text);line-height:1.4;word-break:break-word}
   .pr-row-badge{
-    display:inline-block;margin-top:4px;
-    font-size:9.5px;font-weight:700;color:var(--green);
+    display:inline-block;margin-top:3px;
+    font-size:9px;font-weight:700;color:var(--green);
     background:var(--green-dim);border:1px solid rgba(34,197,94,.2);
-    border-radius:6px;padding:1px 7px;letter-spacing:.04em
+    border-radius:5px;padding:1px 6px;letter-spacing:.04em
   }
-
-  .pr-footer{padding:16px 20px 24px;margin-top:auto}
+  .pr-footer{padding:14px 18px 20px;margin-top:auto}
   .btn-wa{
     display:flex;align-items:center;justify-content:center;gap:8px;
     background:#25D366;color:#fff;font-family:inherit;font-size:13px;font-weight:700;
-    border:none;border-radius:12px;padding:12px 16px;cursor:pointer;
+    border:none;border-radius:11px;padding:11px 16px;cursor:pointer;
     transition:opacity .15s;text-decoration:none;width:100%
   }
   .btn-wa:hover{opacity:.88}
-  .btn-wa svg{width:16px;height:16px}
+  .btn-wa svg{width:15px;height:15px}
 
-  /* CONTENT AREA */
+  /* CONTENT CARD */
   .content-wrap{
-    position:fixed;
-    top:0;left:calc(var(--rail-w) + var(--prof-w));right:0;bottom:0;
-    overflow:hidden;background:var(--bg)
+    background:var(--panel);border-radius:16px;
+    border:1px solid var(--border);box-shadow:var(--shadow-s);
+    overflow:hidden;display:flex;flex-direction:column;
+    position:relative;height:100%
   }
   .content-nav{
     display:flex;align-items:center;gap:4px;

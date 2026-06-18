@@ -115,7 +115,8 @@ ${safeColor ? `:root{--primary:${safeColor};--primary-dim:${safeColor}1A;--prima
   <button class="ir-btn" data-tab="resenas" type="button">${S_STAR}</button>
 </nav>
 
-<!-- PROFILE RAIL -->
+<div class="portal-main">
+<!-- PROFILE CARD -->
 <aside class="profile-rail">
   <div class="pr-top">
     <div class="pr-back">${S_BACK} Mi Perfil</div>
@@ -140,14 +141,7 @@ ${safeColor ? `:root{--primary:${safeColor};--primary-dim:${safeColor}1A;--prima
   ${waHref ? `<div class="pr-footer"><a class="btn-wa" href="${waHref}" target="_blank" rel="noopener">${S_WA} Escribir por WhatsApp</a></div>` : ""}
 </aside>
 
-<!-- MOBILE HEADER -->
-<header class="mobile-hdr">
-  <div class="mhdr-av">${initials}</div>
-  <div class="mhdr-name">${s.name}</div>
-  <span class="mhdr-badge">En línea</span>
-</header>
-
-<!-- CONTENT AREA -->
+<!-- CONTENT CARD -->
 <main class="content-wrap">
   <nav class="content-nav">
     <button class="cn-tab active" data-tab="chat" type="button">${S_HOME} Inicio</button>
@@ -165,6 +159,14 @@ ${safeColor ? `:root{--primary:${safeColor};--primary-dim:${safeColor}1A;--prima
   ${serviciosTabHtml({ slug: s.slug, productCount })}
   ${resenasTabHtml()}
 </main>
+</div>
+
+<!-- MOBILE HEADER -->
+<header class="mobile-hdr">
+  <div class="mhdr-av">${initials}</div>
+  <div class="mhdr-name">${s.name}</div>
+  <span class="mhdr-badge">En línea</span>
+</header>
 
 <!-- MOBILE BOTTOM NAV -->
 <nav class="bottom-nav">
