@@ -63,18 +63,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .mhdr-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2.5s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* Mobile: portal-main fills the screen (profile-rail hidden, content-wrap full width) */
-.portal-main{
+.content-wrap{
   position:fixed;top:var(--hdr);left:0;right:0;
   bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px));
-  display:block;overflow:hidden;background:var(--bg)
+  overflow:hidden;background:var(--bg)
 }
-.portal-main .profile-rail{display:none}
-.content-wrap{
-  position:absolute;inset:0;
-  overflow:hidden;background:var(--bg);
-  border-radius:0;border:none;box-shadow:none
-}
+.portal-main{display:contents}
 .panel{
   position:absolute;inset:0;overflow-y:auto;
   -webkit-overflow-scrolling:touch;
@@ -137,23 +131,16 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   }
   .ir-spacer{flex:1}
 
-  /* ── PORTAL GRID (card layout) ──────────────────────────────────────── */
-  .portal-main{
-    position:fixed;
-    top:0;left:var(--rail-w);right:0;bottom:0;
-    display:grid;
-    grid-template-columns:var(--prof-w) 1fr;
-    gap:14px;padding:14px;
-    background:var(--bg);overflow:hidden
-  }
+  .portal-main{display:contents}
 
-  /* PROFILE CARD */
+  /* PROFILE CARD — fixed left strip, looks like a card with margin */
   .profile-rail{
     display:flex;flex-direction:column;
+    position:fixed;top:12px;left:calc(var(--rail-w) + 12px);bottom:12px;
+    width:calc(var(--prof-w) - 4px);
     background:var(--panel);border-radius:16px;
     border:1px solid var(--border);box-shadow:var(--shadow-s);
-    overflow-y:auto;overflow-x:hidden;
-    height:100%
+    z-index:200;overflow-y:auto;overflow-x:hidden
   }
   .pr-top{
     padding:20px 18px 16px;
@@ -241,12 +228,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   .btn-wa:hover{opacity:.88}
   .btn-wa svg{width:15px;height:15px}
 
-  /* CONTENT CARD */
+  /* CONTENT AREA — fills the space to the right of the profile card */
   .content-wrap{
-    background:var(--panel);border-radius:16px;
-    border:1px solid var(--border);box-shadow:var(--shadow-s);
-    overflow:hidden;display:flex;flex-direction:column;
-    position:relative;height:100%
+    position:fixed;
+    top:0;left:calc(var(--rail-w) + var(--prof-w));right:0;bottom:0;
+    overflow:hidden;background:var(--bg)
   }
   .content-nav{
     display:flex;align-items:center;gap:4px;
