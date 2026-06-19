@@ -34,37 +34,37 @@ export function chatTabHtml(d: ChatData): string {
 
     <!-- ROW 1 — Stats -->
     <div class="hm-stats">
-      <div class="hm-stat">
-        <div class="hm-stat-icon" style="background:rgba(79,127,232,.12);color:#4F7FE8">${S_SVC}</div>
+      <div class="hm-stat" style="background:rgba(59,118,237,.07)">
+        <div class="hm-stat-icon" style="background:rgba(59,118,237,.15);color:#3B76ED">${S_SVC}</div>
         <div class="hm-stat-body">
           <div class="hm-stat-lbl">Servicios</div>
           <div class="hm-stat-val" id="hmStatSvcs">—</div>
         </div>
-        <svg class="hm-stat-spark" style="color:#4F7FE8" viewBox="0 0 56 24" width="56" height="24" fill="none"><polyline points="0,20 8,14 16,17 24,9 32,12 40,5 48,8 56,4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg class="hm-stat-spark" style="color:#3B76ED" viewBox="0 0 56 24" width="56" height="24" fill="none"><polyline points="0,20 8,14 16,17 24,9 32,12 40,5 48,8 56,4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <div class="hm-stat">
-        <div class="hm-stat-icon" style="background:rgba(245,158,11,.12);color:#F59E0B">${S_STAR}</div>
+      <div class="hm-stat" style="background:rgba(212,163,0,.07)">
+        <div class="hm-stat-icon" style="background:rgba(212,163,0,.15);color:#C9A000">${S_STAR}</div>
         <div class="hm-stat-body">
           <div class="hm-stat-lbl">Calificación</div>
           <div class="hm-stat-val" id="hmStatRating">—</div>
         </div>
-        <svg class="hm-stat-spark" style="color:#F59E0B" viewBox="0 0 56 24" width="56" height="24" fill="none"><polyline points="0,16 8,18 16,12 24,14 32,8 40,11 48,6 56,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg class="hm-stat-spark" style="color:#C9A000" viewBox="0 0 56 24" width="56" height="24" fill="none"><polyline points="0,16 8,18 16,12 24,14 32,8 40,11 48,6 56,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <div class="hm-stat">
-        <div class="hm-stat-icon" style="background:rgba(34,197,94,.12);color:#22c55e">${S_CAL}</div>
+      <div class="hm-stat" style="background:rgba(59,118,237,.07)">
+        <div class="hm-stat-icon" style="background:rgba(59,118,237,.15);color:#3B76ED">${S_CAL}</div>
         <div class="hm-stat-body">
           <div class="hm-stat-lbl">Próximo turno</div>
           <div class="hm-stat-val" id="hmStatNext">—</div>
         </div>
-        <svg class="hm-stat-spark" style="color:#22c55e" viewBox="0 0 56 24" width="56" height="24" fill="none"><polyline points="0,22 8,16 16,19 24,10 32,13 40,7 48,10 56,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg class="hm-stat-spark" style="color:#3B76ED" viewBox="0 0 56 24" width="56" height="24" fill="none"><polyline points="0,22 8,16 16,19 24,10 32,13 40,7 48,10 56,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <div class="hm-stat">
-        <div class="hm-stat-icon" style="background:rgba(168,85,247,.12);color:#a855f7">${S_CLOCK}</div>
+      <div class="hm-stat" style="background:rgba(212,163,0,.07)">
+        <div class="hm-stat-icon" style="background:rgba(212,163,0,.15);color:#C9A000">${S_CLOCK}</div>
         <div class="hm-stat-body">
           <div class="hm-stat-lbl">Reseñas</div>
           <div class="hm-stat-val" id="hmStatReviews">—</div>
         </div>
-        <svg class="hm-stat-spark" style="color:#a855f7" viewBox="0 0 56 24" width="56" height="24" fill="none"><polyline points="0,18 8,14 16,10 24,12 32,6 40,8 48,4 56,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg class="hm-stat-spark" style="color:#C9A000" viewBox="0 0 56 24" width="56" height="24" fill="none"><polyline points="0,18 8,14 16,10 24,12 32,6 40,8 48,4 56,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
     </div>
 
