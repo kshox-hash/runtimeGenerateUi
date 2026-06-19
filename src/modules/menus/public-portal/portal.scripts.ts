@@ -111,7 +111,8 @@ function renderUserChip(user){
 
 function signOut(){
   portalGoogleUser=null;
-  try{localStorage.removeItem(PGU_KEY);}catch(e){}
+  portalToken=null;
+  try{localStorage.removeItem(PGU_KEY);localStorage.removeItem(PGT_KEY);}catch(e){}
   if(window.google && window.google.accounts) window.google.accounts.id.disableAutoSelect();
   var chip=document.getElementById('irUserChip');
   if(chip) chip.style.display='none';
@@ -1137,13 +1138,15 @@ function submitReview(){
   // intentar restaurar sesión desde localStorage
   try{
     var stored=localStorage.getItem(PGU_KEY);
-    if(stored){
+    var storedToken=localStorage.getItem(PGT_KEY);
+    if(stored && storedToken){
       var parsed=JSON.parse(stored);
       if(parsed && parsed.email){
         portalGoogleUser={name:parsed.name||'',email:parsed.email,picture:parsed.picture||'',credential:null};
+        portalToken=storedToken;
         hideGate();
         renderUserChip(portalGoogleUser);
-        // inicializar GIS en background para renovar credential silenciosamente
+        // renovar credential en background (token JWT caduca en 7d; GIS lo puede refrescar silenciosamente)
         function tryInitSilent(){
           if(window.google && window.google.accounts){
             window.google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleSignIn,auto_select:true});
