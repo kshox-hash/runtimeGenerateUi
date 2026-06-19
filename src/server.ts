@@ -66,8 +66,8 @@ app.use(
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
         "script-src":  ["'self'", "'unsafe-inline'", "https://accounts.google.com"],
         "frame-src":   ["https://accounts.google.com"],
-        "connect-src": ["'self'", "https://accounts.google.com"],
-        "img-src":     ["'self'", "data:", "https://lh3.googleusercontent.com"],
+        "connect-src": ["'self'", "https://accounts.google.com", "https://accounts.googleapis.com", "https://oauth2.googleapis.com"],
+        "img-src":     ["'self'", "data:", "https://lh3.googleusercontent.com", "https://*.googleusercontent.com"],
       },
     },
   })
