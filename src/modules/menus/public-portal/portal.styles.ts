@@ -936,19 +936,19 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 
 /* ── DESKTOP ── */
 @media(min-width:800px){
-  .hm-panel{display:grid!important;overflow:hidden!important;grid-template-rows:auto auto 1fr;padding:0;gap:0}
+  .hm-panel{display:grid!important;overflow:hidden!important;grid-template-rows:auto auto auto;padding:0;gap:0}
   .hm-row-greeting{padding:20px 20px 0}
   .hm-stats{grid-template-columns:repeat(4,1fr);padding:12px 20px;gap:10px}
-  .hm-main{flex-direction:row;padding:0 20px 20px;gap:14px;overflow:hidden;min-height:0}
+  .hm-main{flex-direction:row;padding:0 20px 20px;gap:14px;overflow:hidden;height:460px}
 
   /* 6 — Calendario: columna izquierda */
-  .hm-card-left{flex:12;min-height:0;display:flex;flex-direction:column;overflow:hidden;align-self:flex-start;min-height:420px}
-  .hm-card-left .hm-cal-inner{flex:0 0 auto;overflow:hidden}
+  .hm-card-left{flex:12;display:flex;flex-direction:column;overflow:hidden}
+  .hm-card-left .hm-cal-inner{flex:1;min-height:0;overflow:hidden}
   .hm-card-left .hm-card-hdr{flex-shrink:0}
-  .hm-card-left .hm-cal-footer{flex-shrink:0;margin-top:auto}
+  .hm-card-left .hm-cal-footer{flex-shrink:0}
 
   /* 7 — Columna derecha */
-  .hm-right-col{flex:8;min-height:420px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+  .hm-right-col{flex:8;display:flex;flex-direction:column;gap:12px;overflow:hidden}
   .hm-right-col .hm-card{flex:1;min-height:0;overflow:hidden}
 }
 `;
