@@ -507,8 +507,6 @@ function renderHomeGrid(id,svcs){
   el.innerHTML=html;
 }
 
-// Tag palettes: [bg, text]
-var TAG_PALETTES=[['#DBEAFE','#1D4ED8'],['#FEF3C7','#92400E'],['#D1FAE5','#065F46'],['#EDE9FE','#5B21B6'],['#FFE4E6','#9F1239'],['#E0F2FE','#075985']];
 function renderSvcCards(id,svcs){
   var el=document.getElementById(id);if(!el) return;
   if(!svcs.length){
@@ -517,24 +515,24 @@ function renderSvcCards(id,svcs){
   }
   var html='';
   svcs.forEach(function(s,i){
-    var tp=TAG_PALETTES[i%TAG_PALETTES.length];
+    var bg=CARD_PALETTES[i%CARD_PALETTES.length];
     var price=s.price!=null?fmtPrice(Number(s.price)):'Consultar';
     var dur=s.duration_minutes?s.duration_minutes+' min':'';
     var provHtml='';
     if(providersCache.length>0){
       provHtml='<div class="svc-card-provs">';
       providersCache.slice(0,3).forEach(function(p,pi){
-        var pc=TAG_PALETTES[pi%TAG_PALETTES.length];
+        var pc=p.color&&/^#[0-9a-fA-F]{6}$/.test(p.color)?p.color:CARD_PALETTES[pi%CARD_PALETTES.length];
         var ini=(p.avatar_initials||(p.name||'?').trim().charAt(0)).toUpperCase();
-        provHtml+='<div class="svc-card-prov" style="background:'+pc[0]+';color:'+pc[1]+'">'+escH(ini)+'</div>';
+        provHtml+='<div class="svc-card-prov" style="background:'+pc+';color:rgba(0,0,0,.6)">'+escH(ini)+'</div>';
       });
       provHtml+='</div>';
     }
-    html+='<div class="svc-proj-card" data-svc-card="'+i+'">'
+    html+='<div class="svc-proj-card" style="background:'+bg+'" data-svc-card="'+i+'">'
       +'<div class="svc-proj-top"><span class="svc-proj-price-lbl">'+escH(price)+'</span></div>'
       +'<div class="svc-proj-name">'+escH(s.name)+'</div>'
       +'<div class="svc-proj-tags">'
-      +(dur?'<span class="svc-tag" style="background:'+tp[0]+';color:'+tp[1]+'">'+escH(dur)+'</span>':'')
+      +(dur?'<span class="svc-tag">'+escH(dur)+'</span>':'')
       +'</div>'
       +'<div class="svc-proj-foot">'+provHtml+'</div>'
       +'</div>';
