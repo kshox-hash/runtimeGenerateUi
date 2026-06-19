@@ -378,7 +378,7 @@ document.addEventListener('click',function(e){
 });
 
 // ── services ──────────────────────────────────────────────────────────────────
-var CARD_PALETTES=['#FBBDC7','#93C5FD','#FDE68A','#6EE7B7','#C4B5FD','#FCA5A5'];
+var CARD_PALETTES=['#DBEAFE','#BAE6FD','#C7D2FE','#CFFAFE','#BFD7FF','#D1E8FF'];
 var CARD_GRADIENTS=[
   'linear-gradient(135deg,#6366F1,#818CF8)',
   'linear-gradient(135deg,#EC4899,#F472B6)',
