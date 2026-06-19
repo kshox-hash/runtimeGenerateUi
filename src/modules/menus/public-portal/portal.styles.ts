@@ -916,9 +916,13 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 
 /* ---- Calendar: strip chrome, fill remaining left column ---- */
 .hm-cal-inner{
-  flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;
+  flex:1;min-height:0;overflow:hidden;
   border:none!important;border-radius:0!important;
   box-shadow:none!important;padding:10px 14px!important;margin:0!important
+}
+/* Celda fija de 38px — evita que aspect-ratio:1 agrande las celdas en col ancha */
+.hm-cal-inner .cal-cell{
+  aspect-ratio:unset!important;height:38px
 }
 
 /* ---- Card footer (cotizar + escribir reseña) ---- */
