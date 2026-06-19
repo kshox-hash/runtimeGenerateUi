@@ -7,7 +7,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 
 /* ── TOKENS ──────────────────────────────────────────────────────────── */
 :root{
-  --bg:#DDE4EF;
+  --bg:#EAF0F8;
   --panel:#FFFFFF;
   --rail:#FFFFFF;
   --rail-icon:#6B7280;
@@ -877,21 +877,21 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .hm-action-wa svg{stroke:#fff}
 
 /* 3 — Stats: ícono circular 48px, label arriba, número 26px, sparkline derecha */
-.hm-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:14px 20px}
+.hm-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:16px 20px 12px}
 .hm-stat{border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px}
 .hm-stat-icon{width:48px;height:48px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .hm-stat-icon svg{width:22px;height:22px;stroke-width:2}
 .hm-stat-body{flex:1;min-width:0}
-.hm-stat-lbl{font-size:11px;color:var(--dim);font-weight:500;margin-bottom:3px}
-.hm-stat-val{font-size:26px;font-weight:800;color:var(--text);letter-spacing:-.05em;line-height:1}
-.hm-stat-spark{flex-shrink:0;opacity:.75}
+.hm-stat-lbl{font-size:12px;color:var(--soft);font-weight:500;margin-bottom:3px}
+.hm-stat-val{font-size:26px;font-weight:800;color:var(--text);letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
+.hm-stat-spark{flex-shrink:0}
 
 /* 4 — Área principal */
 .hm-main{display:flex;flex-direction:column;gap:12px;padding:0 20px 20px}
 
 /* 5 — Tarjeta genérica */
-.hm-card{background:#fff;border:1px solid var(--border);border-radius:18px;display:flex;flex-direction:column;overflow:hidden}
-.hm-card-hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;flex-shrink:0}
+.hm-card{background:#fff;border-radius:18px;display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--shadow-s)}
+.hm-card-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;flex-shrink:0;border-bottom:1px solid var(--border-inner)}
 .hm-card-title{font-size:13.5px;font-weight:700;color:var(--text)}
 
 /* Listas dentro de cards */
@@ -901,11 +901,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 /* ── SERVICE PROJECT CARDS (home tab) ──────────────────────────────────── */
 .svc-proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 14px 14px}
 .svc-proj-card{
-  border-radius:16px;padding:13px;cursor:pointer;
-  display:flex;flex-direction:column;gap:7px;
-  transition:transform .18s,opacity .15s;-webkit-tap-highlight-color:transparent
+  border-radius:18px;padding:13px;cursor:pointer;
+  display:flex;flex-direction:column;gap:7px;overflow:hidden;
+  transition:transform .2s,box-shadow .2s;-webkit-tap-highlight-color:transparent
 }
-.svc-proj-card:hover{transform:translateY(-2px);opacity:.92}
+.svc-proj-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(15,23,42,.13)}
 .svc-proj-card:active{transform:scale(.97)}
 .svc-proj-top{display:flex;align-items:center;justify-content:space-between}
 .svc-proj-price-lbl{font-size:11.5px;font-weight:700;color:rgba(0,0,0,.5);font-variant-numeric:tabular-nums}
@@ -935,7 +935,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 /* ── DESKTOP ── */
 @media(min-width:800px){
   .hm-panel{display:grid!important;overflow:hidden!important;grid-template-rows:auto 1fr;padding:0;gap:0}
-  .hm-stats{grid-template-columns:repeat(4,1fr);padding:14px 20px 10px;gap:10px}
+  .hm-stats{grid-template-columns:repeat(4,1fr);padding:16px 20px 12px;gap:12px}
   .hm-main{flex-direction:row;padding:0 20px 20px;gap:14px;overflow:hidden;min-height:0}
 
   /* 6 — Calendario: columna izquierda */
