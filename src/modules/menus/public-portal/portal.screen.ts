@@ -109,7 +109,6 @@ ${safeColor ? `:root{--primary:${safeColor};--primary-dim:${safeColor}1A;--prima
 
 <!-- ICON RAIL -->
 <nav class="icon-rail">
-  <div class="ir-av">${initials}</div>
   <button class="ir-btn active" data-tab="chat" type="button">${S_HOME}<span class="ir-lbl">Inicio</span></button>
   <button class="ir-btn" data-tab="reservas" type="button">${S_CAL}<span class="ir-lbl">Reservas</span></button>
   <button class="ir-btn" data-tab="nosotros" type="button">${S_PROD}<span class="ir-lbl">Productos</span></button>

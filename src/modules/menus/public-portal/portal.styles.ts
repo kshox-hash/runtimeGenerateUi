@@ -110,12 +110,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     position:fixed;top:0;left:0;bottom:0;width:var(--rail-w);
     background:var(--rail);z-index:300;padding:18px 0 12px;gap:2px
   }
-  .ir-av{
-    width:36px;height:36px;border-radius:11px;margin-bottom:14px;flex-shrink:0;
-    background:rgba(255,255,255,.10);
-    display:flex;align-items:center;justify-content:center;
-    font-size:11px;font-weight:800;color:#fff;user-select:none;letter-spacing:-.02em
-  }
   .ir-btn{
     width:54px;padding:8px 0;border-radius:13px;border:none;cursor:pointer;
     background:none;display:flex;flex-direction:column;align-items:center;gap:4px;
@@ -720,7 +714,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 
 /* ── IR USER CHIP (icon rail bottom) ─────────────────────────────────── */
 .ir-user-chip{
-  margin-top:auto;padding:10px 8px 14px;
+  display:flex;margin-top:auto;padding:10px 8px 14px;
   flex-direction:column;align-items:center;gap:5px;
   border-top:1px solid var(--border);width:100%;
 }
