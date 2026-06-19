@@ -631,7 +631,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 
 /* ── CALENDAR WIDGET ─────────────────────────────────────────────────── */
 .cal-widget{
-  background:var(--panel);border-radius:24px;border:1px solid var(--border);
+  background:#F4F7FC;border-radius:24px;border:1px solid var(--border);
   padding:22px 20px;
 }
 .cal-hdr{
@@ -645,37 +645,35 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   display:flex;align-items:center;justify-content:center;
   transition:background .15s;-webkit-tap-highlight-color:transparent
 }
-.cal-nav-btn:hover{background:var(--primary-dim);border-color:var(--primary-glow)}
+.cal-nav-btn:hover{background:var(--nav-act-bg);border-color:rgba(79,135,245,.25)}
 .cal-nav-btn svg{width:13px;height:13px;stroke:var(--soft);stroke-width:2.2;stroke-linecap:round}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .cal-day-name{
-  font-size:9.5px;font-weight:700;color:var(--dim);
-  text-align:center;padding:3px 0;letter-spacing:.06em;text-transform:uppercase
+  font-size:9px;font-weight:700;color:var(--dim);
+  text-align:center;padding:4px 0 6px;letter-spacing:.06em;text-transform:uppercase
 }
 .cal-cell{
   aspect-ratio:1;display:flex;align-items:center;justify-content:center;
-  border-radius:9px;font-size:12px;font-weight:500;color:var(--text);
-  position:relative;cursor:default;transition:background .15s
+  border-radius:9px;font-size:12px;font-weight:500;color:var(--soft);
+  position:relative;cursor:default;transition:background .15s,transform .12s;
+  background:rgba(15,23,42,.05)
 }
-.cal-cell.cal-empty{pointer-events:none}
-.cal-cell.cal-past{color:var(--dim);pointer-events:none}
-.cal-cell.cal-today{
-  background:var(--primary);color:#fff;font-weight:700;
-}
-
+.cal-cell.cal-empty{pointer-events:none;background:transparent}
+.cal-cell.cal-past{color:var(--dim);pointer-events:none;background:rgba(15,23,42,.03)}
+.cal-cell.cal-today{background:var(--nav-act);color:#fff;font-weight:700}
 .cal-cell.cal-avail{
-  cursor:pointer;font-weight:600;color:var(--text);background:var(--green-dim);
-  border:1.5px solid rgba(34,197,94,.25)
+  cursor:pointer;font-weight:700;color:#166534;
+  background:rgba(34,197,94,.18);border:1.5px solid rgba(34,197,94,.3)
 }
-.cal-cell.cal-avail:hover{background:rgba(34,197,94,.22);transform:scale(1.08)}
+.cal-cell.cal-avail:hover{background:rgba(34,197,94,.3);transform:scale(1.1)}
 .cal-cell.cal-avail::after{
   content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
-  width:4px;height:4px;border-radius:50%;background:var(--green)
+  width:4px;height:4px;border-radius:50%;background:#16a34a
 }
-.cal-cell.cal-taken{background:var(--bg);color:var(--dim);font-weight:400}
+.cal-cell.cal-taken{background:rgba(239,68,68,.07);color:var(--dim);font-weight:400}
 .cal-cell.cal-taken::after{
   content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
-  width:4px;height:4px;border-radius:50%;background:var(--red);opacity:.5
+  width:4px;height:4px;border-radius:50%;background:var(--red);opacity:.4
 }
 .cal-legend{
   display:flex;align-items:center;gap:14px;margin-top:12px;padding-top:10px;
@@ -920,7 +918,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .svc-proj-price{font-size:14px;font-weight:800;color:rgba(0,0,0,.65);font-variant-numeric:tabular-nums}
 
 /* Calendario: sin chrome, celdas altura fija 36px */
-.hm-cal-inner{border:none!important;border-radius:0!important;box-shadow:none!important;padding:10px 16px!important;margin:0!important}
+.hm-cal-inner{background:#F4F7FC!important;border:none!important;border-radius:0!important;box-shadow:none!important;padding:10px 16px!important;margin:0!important}
 .hm-cal-inner .cal-cell{aspect-ratio:unset!important;height:36px}
 
 /* 8 — Pie de tarjeta */
