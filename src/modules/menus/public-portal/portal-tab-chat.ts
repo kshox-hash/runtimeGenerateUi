@@ -34,7 +34,7 @@ export function chatTabHtml(d: ChatData): string {
 
     <!-- ROW 1 — Stats -->
     <div class="hm-stats">
-      <div class="hm-stat" style="background:#EBF2FF;border-color:#C3D7FA">
+      <div class="hm-stat" style="background:#F4F8FF">
         <div class="hm-stat-icon" style="background:#C3D7FA;color:#2B62D9">${S_SVC}</div>
         <div class="hm-stat-body">
           <div class="hm-stat-lbl">Servicios</div>
@@ -42,7 +42,7 @@ export function chatTabHtml(d: ChatData): string {
         </div>
         <svg class="hm-stat-spark" style="color:#2B62D9" viewBox="0 0 56 24" width="56" height="24" fill="none"><polyline points="0,20 8,14 16,17 24,9 32,12 40,5 48,8 56,4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <div class="hm-stat" style="background:#FFF8DC;border-color:#F0D070">
+      <div class="hm-stat" style="background:#FFFDF0">
         <div class="hm-stat-icon" style="background:#F0D070;color:#9A7200">${S_STAR}</div>
         <div class="hm-stat-body">
           <div class="hm-stat-lbl">Calificación</div>
@@ -50,7 +50,7 @@ export function chatTabHtml(d: ChatData): string {
         </div>
         <svg class="hm-stat-spark" style="color:#9A7200" viewBox="0 0 56 24" width="56" height="24" fill="none"><polyline points="0,16 8,18 16,12 24,14 32,8 40,11 48,6 56,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <div class="hm-stat" style="background:#EBF2FF;border-color:#C3D7FA">
+      <div class="hm-stat" style="background:#F4F8FF">
         <div class="hm-stat-icon" style="background:#C3D7FA;color:#2B62D9">${S_CAL}</div>
         <div class="hm-stat-body">
           <div class="hm-stat-lbl">Próximo turno</div>
@@ -58,7 +58,7 @@ export function chatTabHtml(d: ChatData): string {
         </div>
         <svg class="hm-stat-spark" style="color:#2B62D9" viewBox="0 0 56 24" width="56" height="24" fill="none"><polyline points="0,22 8,16 16,19 24,10 32,13 40,7 48,10 56,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <div class="hm-stat" style="background:#FFF8DC;border-color:#F0D070">
+      <div class="hm-stat" style="background:#FFFDF0">
         <div class="hm-stat-icon" style="background:#F0D070;color:#9A7200">${S_CLOCK}</div>
         <div class="hm-stat-body">
           <div class="hm-stat-lbl">Reseñas</div>

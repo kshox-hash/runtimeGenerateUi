@@ -878,7 +878,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 
 /* 3 — Stats: ícono circular 48px, label arriba, número 26px, sparkline derecha */
 .hm-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:14px 20px}
-.hm-stat{border:1.5px solid transparent;border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px}
+.hm-stat{border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px}
 .hm-stat-icon{width:48px;height:48px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .hm-stat-icon svg{width:22px;height:22px;stroke-width:2}
 .hm-stat-body{flex:1;min-width:0}
