@@ -106,6 +106,7 @@ app.get("/health", (_req, res) => {
 
 // ─── Rutas ────────────────────────────────────────────────────────────────────
 app.use("/generated-pdfs", express.static(GENERATED_PDFS_DIR));
+app.use("/assets", express.static("assets"));
 app.use(passport.initialize());
 app.use(mpWebhookRouter);
 app.use(mpConnectRouter);

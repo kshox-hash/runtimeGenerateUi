@@ -82,78 +82,7 @@ export function chatTabHtml(d: ChatData): string {
           <div class="cal-loading"><div class="spinner"></div>Cargando…</div>
         </div>
         <div class="hm-cal-footer">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 90" preserveAspectRatio="xMidYMax slice">
-            <defs>
-              <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#EFF6FF"/>
-                <stop offset="100%" stop-color="#BFDBFE"/>
-              </linearGradient>
-            </defs>
-            <rect width="500" height="90" fill="url(#skyG)"/>
-            <!-- moon -->
-            <circle cx="458" cy="16" r="9" fill="#FEF9C3" opacity=".9"/>
-            <circle cx="463" cy="12" r="7" fill="#DBEAFE"/>
-            <!-- stars -->
-            <circle cx="30" cy="10" r="1.2" fill="#FCD34D" opacity=".8"/>
-            <circle cx="90" cy="7" r="1" fill="#FCD34D" opacity=".7"/>
-            <circle cx="180" cy="13" r="1.2" fill="#FCD34D" opacity=".7"/>
-            <circle cx="310" cy="9" r="1" fill="#FCD34D" opacity=".7"/>
-            <!-- clouds -->
-            <ellipse cx="105" cy="20" rx="18" ry="7" fill="white" opacity=".55"/>
-            <ellipse cx="122" cy="16" rx="13" ry="6" fill="white" opacity=".55"/>
-            <ellipse cx="370" cy="18" rx="14" ry="6" fill="white" opacity=".45"/>
-            <ellipse cx="383" cy="14" rx="10" ry="5" fill="white" opacity=".45"/>
-            <!-- far buildings #BFDBFE -->
-            <rect x="0"   y="52" width="14" height="42" fill="#BFDBFE"/>
-            <rect x="17"  y="45" width="11" height="49" fill="#BFDBFE"/>
-            <rect x="31"  y="50" width="17" height="44" fill="#BFDBFE"/>
-            <rect x="460" y="48" width="14" height="46" fill="#BFDBFE"/>
-            <rect x="477" y="44" width="12" height="50" fill="#BFDBFE"/>
-            <rect x="490" y="51" width="12" height="43" fill="#BFDBFE"/>
-            <!-- mid buildings #93C5FD -->
-            <rect x="52"  y="40" width="18" height="54" fill="#93C5FD"/>
-            <rect x="74"  y="33" width="15" height="61" fill="#93C5FD"/>
-            <rect x="92"  y="43" width="22" height="51" fill="#93C5FD"/>
-            <rect x="305" y="36" width="17" height="58" fill="#93C5FD"/>
-            <rect x="326" y="41" width="20" height="53" fill="#93C5FD"/>
-            <rect x="350" y="34" width="15" height="60" fill="#93C5FD"/>
-            <rect x="369" y="42" width="18" height="52" fill="#93C5FD"/>
-            <!-- near buildings #60A5FA -->
-            <rect x="120" y="36" width="20" height="58" fill="#60A5FA"/>
-            <rect x="144" y="26" width="24" height="68" fill="#60A5FA"/>
-            <rect x="172" y="33" width="18" height="61" fill="#60A5FA"/>
-            <rect x="260" y="31" width="22" height="63" fill="#60A5FA"/>
-            <rect x="286" y="36" width="15" height="58" fill="#60A5FA"/>
-            <!-- trees -->
-            <polygon points="226,90 237,68 248,90" fill="#1D4ED8"/>
-            <polygon points="240,90 253,63 266,90" fill="#1E40AF"/>
-            <polygon points="393,90 402,72 411,90" fill="#1D4ED8"/>
-            <!-- foreground buildings #2563EB -->
-            <rect x="0"   y="63" width="28" height="30" fill="#2563EB"/>
-            <rect x="31"  y="58" width="24" height="35" fill="#3B82F6"/>
-            <rect x="420" y="60" width="26" height="33" fill="#2563EB"/>
-            <rect x="450" y="67" width="50" height="26" fill="#3B82F6"/>
-            <!-- windows -->
-            <rect x="8"   y="68" width="4" height="4" rx="1" fill="white" opacity=".5"/>
-            <rect x="16"  y="68" width="4" height="4" rx="1" fill="white" opacity=".5"/>
-            <rect x="8"   y="76" width="4" height="4" rx="1" fill="white" opacity=".5"/>
-            <rect x="147" y="32" width="4" height="4" rx="1" fill="white" opacity=".4"/>
-            <rect x="155" y="32" width="4" height="4" rx="1" fill="white" opacity=".4"/>
-            <rect x="147" y="41" width="4" height="4" rx="1" fill="white" opacity=".4"/>
-            <rect x="263" y="37" width="4" height="4" rx="1" fill="white" opacity=".4"/>
-            <rect x="271" y="37" width="4" height="4" rx="1" fill="white" opacity=".4"/>
-            <rect x="309" y="42" width="4" height="4" rx="1" fill="white" opacity=".4"/>
-            <rect x="317" y="42" width="4" height="4" rx="1" fill="white" opacity=".4"/>
-            <rect x="428" y="66" width="4" height="4" rx="1" fill="white" opacity=".5"/>
-            <rect x="436" y="66" width="4" height="4" rx="1" fill="white" opacity=".5"/>
-            <!-- location pin -->
-            <path d="M250 44 C244 44 239 49 239 55 C239 63 250 74 250 74 C250 74 261 63 261 55 C261 49 256 44 250 44Z" fill="#FBBF24"/>
-            <circle cx="250" cy="55" r="4" fill="white"/>
-            <!-- dotted path -->
-            <line x1="195" y1="82" x2="304" y2="82" stroke="white" stroke-width="1.5" stroke-dasharray="4 5" opacity=".5"/>
-            <!-- ground -->
-            <rect y="83" width="500" height="7" fill="#1D4ED8"/>
-          </svg>
+          <img src="/assets/cardbottom.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"/>
         </div>
       </div>` : `<div id="calHome" style="display:none"></div>`}
 
