@@ -10,7 +10,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   --bg:#F6F8F7;
   --panel:#FFFFFF;
   --rail:#FFFFFF;
-  --rail-icon:#7C8FA6;
+  --rail-icon:#6B7280;
   --rail-icon-act:var(--primary);
   --border:#E3E8EF;
   --border-inner:#F2F5F9;
@@ -108,13 +108,13 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   .icon-rail{
     display:flex;flex-direction:column;
     position:fixed;top:0;left:0;bottom:0;width:var(--rail-w);
-    background:var(--rail);border-right:1px solid var(--border);
+    background:var(--rail);box-shadow:2px 0 8px rgba(0,0,0,.06);
     z-index:300;padding:0;
   }
   /* Brand */
   .ir-brand{
     display:flex;align-items:center;gap:11px;
-    padding:22px 18px 20px;border-bottom:1px solid var(--border)
+    padding:22px 18px 20px
   }
   .ir-brand-av{
     width:36px;height:36px;border-radius:11px;flex-shrink:0;
