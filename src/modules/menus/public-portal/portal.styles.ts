@@ -831,5 +831,65 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   padding:3px 9px;cursor:pointer;font-family:inherit;font-weight:500;
   -webkit-tap-highlight-color:transparent;
 }
+
+/* ── HOME DASHBOARD ──────────────────────────────────────────────────── */
+.hm-greeting{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:12px;margin-bottom:20px
+}
+.hm-greet-hi{
+  font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.05em;line-height:1.1
+}
+.hm-greet-sub{
+  font-size:13px;color:var(--dim);font-weight:500;margin-top:4px
+}
+.hm-greet-actions{display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+.hm-action-btn{
+  display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:12px;
+  font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;
+  font-family:inherit;text-decoration:none;border:none;
+  -webkit-tap-highlight-color:transparent;transition:opacity .15s,transform .12s
+}
+.hm-action-btn:active{transform:scale(.97)}
+.hm-action-primary{background:var(--primary);color:#fff}
+.hm-action-primary svg{width:14px;height:14px;stroke:#fff;flex-shrink:0}
+.hm-action-wa{background:#22c55e;color:#fff}
+.hm-action-wa svg{width:14px;height:14px;stroke:#fff;flex-shrink:0}
+
+/* Stat row */
+.hm-stats{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:24px
+}
+@media(min-width:500px){.hm-stats{grid-template-columns:repeat(4,1fr)}}
+.hm-stat{
+  background:var(--panel);border:1px solid var(--border);border-radius:18px;
+  padding:14px 14px 16px;box-shadow:var(--shadow-s);
+  display:flex;flex-direction:column;gap:10px
+}
+.hm-stat-icon{
+  width:38px;height:38px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0
+}
+.hm-stat-icon svg{width:17px;height:17px;stroke-width:2}
+.hm-stat-val{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.05em;line-height:1}
+.hm-stat-lbl{font-size:10.5px;color:var(--dim);font-weight:500;margin-top:3px}
+
+/* Section headers */
+.hm-sec-hdr{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:12px
+}
+.hm-sec-title{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.04em}
+
+/* Cotizar button */
+.hm-cot-btn{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  width:100%;margin-top:12px;padding:13px;border-radius:14px;
+  background:var(--panel);border:1.5px solid var(--border);
+  font-size:14px;font-weight:600;color:var(--text);cursor:pointer;
+  font-family:inherit;transition:background .15s,border-color .15s;
+  -webkit-tap-highlight-color:transparent
+}
+.hm-cot-btn:hover{background:var(--primary-dim);border-color:var(--primary-glow);color:var(--primary)}
+.hm-cot-btn svg{width:16px;height:16px;stroke:currentColor;flex-shrink:0}
 `;
 }

@@ -413,6 +413,17 @@ function applyServices(svcs){
   renderSvcRows('mobileServiceList', svcs);
   var statEl=document.getElementById('prStatSvcs');
   if(statEl) statEl.textContent=String(svcs.length);
+  var hmSvcs=document.getElementById('hmStatSvcs');
+  if(hmSvcs) hmSvcs.textContent=String(svcs.length);
+}
+
+function updateHomeDashStats(){
+  // Next available slot
+  var today=new Date();
+  var todayStr=today.getFullYear()+'-'+pad2(today.getMonth()+1)+'-'+pad2(today.getDate());
+  var dates=Object.keys(calSlots).filter(function(d){return d>=todayStr&&calSlots[d]&&calSlots[d].length>0;}).sort();
+  var hmNext=document.getElementById('hmStatNext');
+  if(hmNext) hmNext.textContent=dates.length?fmtDateShort(dates[0]):'—';
 }
 
 function renderSvcGrid(id,svcs){
@@ -568,6 +579,7 @@ function renderAllCals(){
   renderCalWidget('calHome');
   renderReservasDash();
   updateProfileNextSlot();
+  updateHomeDashStats();
 }
 
 // ── Reservas Dashboard ────────────────────────────────────────────────────────
@@ -943,6 +955,14 @@ var INBOX_COLORS=['#5A67F2','#F97316','#22C55E','#EC4899','#14B8A6','#8B5CF6','#
 function renderHomeInbox(data){
   renderInboxCard('homeInbox',data);
   renderInboxCard('homeInboxMobile',data);
+  // update home dashboard stats
+  var summary=(data&&data.summary)||{};
+  var avg=parseFloat(summary.average||'0');
+  var total=parseInt(summary.total||'0',10);
+  var hmRating=document.getElementById('hmStatRating');
+  if(hmRating) hmRating.textContent=avg>0?avg.toFixed(1)+' ★':'—';
+  var hmRev=document.getElementById('hmStatReviews');
+  if(hmRev) hmRev.textContent=total>0?String(total):'0';
 }
 function renderInboxCard(id,data){
   var el=document.getElementById(id); if(!el) return;

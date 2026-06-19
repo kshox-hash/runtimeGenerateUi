@@ -174,7 +174,7 @@ ${portalUser ? `
     <span class="cn-status">En línea</span>
   </nav>
 
-  ${chatTabHtml({ name: s.name, slug: s.slug, desc: s.desc, welcome: s.welcome, enabledModules, phone: s.phone, ig: s.ig, wa: s.wa, hours: s.hours, locationLine, waHref, initials, productCount })}
+  ${chatTabHtml({ name: s.name, slug: s.slug, desc: s.desc, welcome: s.welcome, enabledModules, phone: s.phone, ig: s.ig, wa: s.wa, hours: s.hours, locationLine, waHref, initials, productCount, portalUser })}
   ${reservasTabHtml()}
   ${nosotrosTabHtml(products)}
   ${serviciosTabHtml({ slug: s.slug, productCount })}
