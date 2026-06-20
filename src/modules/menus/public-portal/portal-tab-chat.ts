@@ -55,6 +55,9 @@ export function chatTabHtml(d: ChatData): string {
       <!-- COLUMNA IZQUIERDA -->
       <div class="hm-left-col">
 
+        <!-- Bienvenida desktop (oculta en móvil) -->
+        <div class="hm-welcome-desk">Bienvenido a <span>${d.name}</span></div>
+
         <!-- Calendario -->
         ${hasBooking ? `
         <div class="hm-card hm-card-cal">

@@ -930,6 +930,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .hm-main{display:flex;flex-direction:column;gap:10px;padding:0 16px 20px}
 .hm-left-col{display:flex;flex-direction:column;gap:10px}
 .hm-right-col{display:flex;flex-direction:column;gap:10px}
+.hm-welcome-desk{display:none}
 
 /* ── CARDS ────────────────────────────────────────────────────────────── */
 .hm-card{
@@ -1064,9 +1065,15 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     grid-template-rows:1fr;
     padding:0;gap:0
   }
+  .hm-welcome-desk{
+    display:block;flex-shrink:0;
+    font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.04em;
+    padding:18px 0 2px
+  }
+  .hm-welcome-desk span{color:var(--nav-act)}
   .hm-main{
     flex-direction:row;
-    padding:16px 24px 20px;
+    padding:12px 24px 20px;
     gap:14px;overflow:hidden;min-height:0
   }
   .hm-left-col{

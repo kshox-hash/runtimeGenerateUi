@@ -199,7 +199,7 @@ ${safeColor ? `:root{--primary:${safeColor};--primary-dim:${safeColor}1A;--prima
 
 <!-- MOBILE HEADER -->
 <header class="mobile-hdr">
-  <div class="mhdr-name">${s.name}</div>
+  <div class="mhdr-name">Bienvenido a ${s.name}</div>
   <span class="mhdr-badge">En línea</span>
 ${portalUser ? `
   <div class="mhdr-user">
