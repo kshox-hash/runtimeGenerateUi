@@ -111,10 +111,7 @@ ${safeColor ? `:root{--primary:${safeColor};--primary-dim:${safeColor}1A;--prima
 <nav class="icon-rail">
   <!-- Brand -->
   <div class="ir-brand">
-    <div class="ir-brand-logo">
-      <img src="/assets/linkplace.png" alt="linkplace" height="26" style="display:block;max-width:148px;object-fit:contain">
-    </div>
-    <div class="ir-brand-biz">Negocio: <span>${s.name}</span></div>
+    <img src="/assets/linkplace.png" alt="linkplace" class="ir-brand-img">
   </div>
 
   <!-- Nav items -->

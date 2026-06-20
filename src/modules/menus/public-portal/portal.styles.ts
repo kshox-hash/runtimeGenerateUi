@@ -114,16 +114,13 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   }
   /* Brand */
   .ir-brand{
-    display:flex;flex-direction:column;gap:5px;
-    padding:20px 18px 16px;border-bottom:1px solid var(--border)
+    padding:16px 18px;border-bottom:1px solid var(--border);
+    display:flex;align-items:center
   }
-  .ir-brand-logo{display:flex;align-items:center}
-  .ir-brand-logo svg{display:block}
-  .ir-brand-biz{
-    font-size:11px;color:var(--dim);font-weight:400;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+  .ir-brand-img{
+    display:block;width:100%;height:auto;
+    max-height:48px;object-fit:contain;object-position:left center
   }
-  .ir-brand-biz span{color:var(--soft);font-weight:600}
   /* Nav list */
   .ir-nav{
     display:flex;flex-direction:column;gap:6px;padding:14px 10px;flex:1
