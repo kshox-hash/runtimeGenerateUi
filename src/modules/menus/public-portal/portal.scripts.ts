@@ -1253,6 +1253,10 @@ function renderHomeInbox(data){
   if(hmRatingBig) hmRatingBig.textContent=avg>0?avg.toFixed(1):'—';
   var hmRevBig=document.getElementById('hmStatReviewsBig');
   if(hmRevBig) hmRevBig.textContent=String(total);
+  var heroRating=document.getElementById('heroRating');
+  if(heroRating) heroRating.textContent=avg>0?avg.toFixed(1):'—';
+  var heroReviews=document.getElementById('heroReviews');
+  if(heroReviews) heroReviews.textContent=String(total);
   // si no hay reseñas, mostrar empty state compacto
   var reviewsPanel=document.getElementById('hmReviewsPanel');
   if(total===0 && reviewsPanel){

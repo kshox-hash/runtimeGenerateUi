@@ -949,6 +949,46 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .hm-right-col{display:flex;flex-direction:column;gap:14px}
 .hm-welcome-desk{display:none}
 
+/* ── HERO ─────────────────────────────────────────────────────────────── */
+.hm-hero{
+  flex-shrink:0;position:relative;overflow:hidden;
+  background:var(--primary);
+  padding:22px 20px 20px
+}
+.hm-hero::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,.08) 100%);
+  pointer-events:none
+}
+.hm-hero::after{
+  content:'';position:absolute;bottom:-40px;right:-30px;
+  width:160px;height:160px;border-radius:50%;
+  background:rgba(255,255,255,.06);pointer-events:none
+}
+.hm-hero-inner{
+  position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:space-between;gap:14px
+}
+.hm-hero-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0}
+.hm-hero-avatar{
+  width:52px;height:52px;border-radius:16px;flex-shrink:0;
+  background:rgba(255,255,255,.2);
+  border:2px solid rgba(255,255,255,.35);
+  color:#fff;font-size:18px;font-weight:800;letter-spacing:-.02em;
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(4px)
+}
+.hm-hero-text{min-width:0;flex:1}
+.hm-hero-greeting{font-size:11px;font-weight:600;color:rgba(255,255,255,.7);letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px}
+.hm-hero-name{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.04em;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hm-hero-desc{font-size:12px;color:rgba(255,255,255,.72);margin-top:4px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hm-hero-right{display:flex;align-items:center;gap:0;flex-shrink:0}
+.hm-hero-stat{display:flex;flex-direction:column;align-items:center;gap:2px;padding:0 14px}
+.hm-hero-stat-val{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.04em;line-height:1;display:flex;align-items:center;gap:3px}
+.hm-hero-star{color:#FCD34D;font-size:18px;line-height:1}
+.hm-hero-stat-lbl{font-size:10px;font-weight:600;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.05em}
+.hm-hero-stat-divider{width:1px;height:32px;background:rgba(255,255,255,.2)}
+
 /* ── CARDS ────────────────────────────────────────────────────────────── */
 .hm-card{
   background:#fff;border-radius:20px;
@@ -1274,15 +1314,13 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 @media(min-width:800px){
   .hm-panel{
     display:grid!important;overflow:hidden!important;
-    grid-template-rows:1fr;
+    grid-template-rows:auto 1fr;
     padding:0;gap:0
   }
-  .hm-welcome-desk{
-    display:block;flex-shrink:0;
-    font-size:19px;font-weight:800;color:var(--text);letter-spacing:-.04em;
-    padding:0 0 12px
-  }
-  .hm-welcome-desk span{color:var(--nav-act)}
+  .hm-welcome-desk{display:none}
+  .hm-hero{padding:28px 32px 26px}
+  .hm-hero-name{font-size:26px}
+  .hm-hero-avatar{width:60px;height:60px;font-size:22px;border-radius:18px}
   .hm-main{
     flex-direction:row;
     padding:24px 28px 24px 28px;

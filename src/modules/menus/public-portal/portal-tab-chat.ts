@@ -49,14 +49,38 @@ export function chatTabHtml(d: ChatData): string {
       <span id="hmStatReviews"></span>
     </div>
 
+    <!-- HERO -->
+    <div class="hm-hero">
+      <div class="hm-hero-inner">
+        <div class="hm-hero-left">
+          <div class="hm-hero-avatar">${d.initials}</div>
+          <div class="hm-hero-text">
+            <div class="hm-hero-greeting">Bienvenido a</div>
+            <div class="hm-hero-name">${d.name}</div>
+            ${d.desc ? `<div class="hm-hero-desc">${d.desc}</div>` : ""}
+          </div>
+        </div>
+        <div class="hm-hero-right">
+          <div class="hm-hero-stat">
+            <div class="hm-hero-stat-val">
+              <span class="hm-hero-star">★</span><span id="heroRating">—</span>
+            </div>
+            <div class="hm-hero-stat-lbl">Calificación</div>
+          </div>
+          <div class="hm-hero-stat-divider"></div>
+          <div class="hm-hero-stat">
+            <div class="hm-hero-stat-val" id="heroReviews">0</div>
+            <div class="hm-hero-stat-lbl">Reseñas</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- MAIN -->
     <div class="hm-main">
 
       <!-- COLUMNA IZQUIERDA — servicios (angosta) -->
       <div class="hm-left-col">
-
-        <!-- Bienvenida (solo desktop) -->
-        <div class="hm-welcome-desk">Bienvenido a <span>${d.name}</span></div>
 
         <!-- Servicios recientes -->
         <div class="hm-card hm-card-svc">
