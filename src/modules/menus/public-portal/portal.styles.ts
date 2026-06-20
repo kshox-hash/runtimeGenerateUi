@@ -683,7 +683,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
   width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.7)
 }
-.cal-cell.cal-taken{background:#F3F4F6;color:#9CA3AF;font-weight:400}
+.cal-cell.cal-taken{background:#CBD5E1;color:#64748B;font-weight:500}
 .cal-cell.cal-taken::after{display:none}
 .cal-legend{
   display:flex;align-items:center;gap:14px;margin-top:12px;padding-top:10px;
@@ -943,7 +943,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .hm-stat-spark{flex-shrink:0;opacity:.85}
 
 /* ── LAYOUT ───────────────────────────────────────────────────────────── */
-.hm-panel{display:flex;flex-direction:column;overflow-y:auto;background-color:#F5F7FA;background-image:url("data:image/svg+xml,%3Csvg width='140' height='140' viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='12' y='18' width='28' height='26' rx='4' fill='none' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Cline x1='12' y1='26' x2='40' y2='26' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Cline x1='20' y1='14' x2='20' y2='20' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Cline x1='32' y1='14' x2='32' y2='20' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Ccircle cx='104' cy='90' r='14' fill='none' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Cline x1='104' y1='82' x2='104' y2='90' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Cline x1='104' y1='90' x2='110' y2='94' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Ccircle cx='75' cy='42' r='3' fill='%234F87F5' opacity='.1'/%3E%3Ccircle cx='30' cy='105' r='2' fill='%234F87F5' opacity='.1'/%3E%3Ccircle cx='118' cy='22' r='2' fill='%234F87F5' opacity='.1'/%3E%3C/svg%3E");background-size:140px 140px}
+.hm-panel{display:flex;flex-direction:column;overflow-y:auto;background:#fff}
 .hm-main{display:flex;flex-direction:column;gap:14px;padding:20px 16px 36px}
 .hm-left-col{display:flex;flex-direction:column;gap:14px}
 .hm-right-col{display:flex;flex-direction:column;gap:14px}
@@ -970,38 +970,42 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 /* ── CARD ACCENT COLORS ──────────────────────────────────────────────── */
 /* Calendario — azul */
 .hm-card-cal{
-  border:1px solid rgba(37,99,235,.22);border-top:3px solid #2563EB;
-  background:linear-gradient(160deg,#EFF6FF 0%,#fafcff 75%)
+  border:1px solid rgba(37,99,235,.28);border-top:3px solid #2563EB;
+  background:linear-gradient(160deg,#DBEAFE 0%,#EFF6FF 100%)
 }
-.hm-card-cal .hm-card-hdr{background:transparent;border-bottom-color:rgba(37,99,235,.12)}
+.hm-card-cal .hm-card-hdr{background:transparent;border-bottom-color:rgba(37,99,235,.15)}
+.hm-card-cal .hm-card-title{color:#1D4ED8}
 /* Servicios — violeta */
 .hm-card-svc{
-  border:1px solid rgba(124,58,237,.22);border-top:3px solid #7C3AED;
-  background:linear-gradient(160deg,#F5F3FF 0%,#faf9ff 75%)
+  border:1px solid rgba(124,58,237,.28);border-top:3px solid #7C3AED;
+  background:linear-gradient(160deg,#EDE9FE 0%,#F5F3FF 100%)
 }
-.hm-card-svc .hm-card-hdr{background:transparent;border-bottom-color:rgba(124,58,237,.12)}
+.hm-card-svc .hm-card-hdr{background:transparent;border-bottom-color:rgba(124,58,237,.15)}
+.hm-card-svc .hm-card-title{color:#6D28D9}
 .hm-card-svc .sec-link{color:#7C3AED}
 .hm-card-svc .sec-link:hover{color:#6D28D9}
 /* Opiniones — ámbar */
 .hm-card-reviews{
-  border:1px solid rgba(217,119,6,.22);border-top:3px solid #D97706;
-  background:linear-gradient(160deg,#FFFBEB 0%,#fffef8 75%)
+  border:1px solid rgba(217,119,6,.28);border-top:3px solid #D97706;
+  background:linear-gradient(160deg,#FEF3C7 0%,#FFFBEB 100%)
 }
-.hm-card-reviews .hm-card-hdr{background:transparent;border-bottom-color:rgba(217,119,6,.12)}
+.hm-card-reviews .hm-card-hdr{background:transparent;border-bottom-color:rgba(217,119,6,.15)}
+.hm-card-reviews .hm-card-title{color:#B45309}
 .hm-card-reviews .sec-link{color:#D97706}
 .hm-card-reviews .sec-link:hover{color:#B45309}
 .hm-card-reviews .rv-bar-fill{background:#D97706}
 /* Turnos disponibles — esmeralda */
 .hm-card-avail{
-  border:1px solid rgba(5,150,105,.22);border-top:3px solid #059669;
-  background:linear-gradient(160deg,#ECFDF5 0%,#f7fefb 75%)
+  border:1px solid rgba(5,150,105,.28);border-top:3px solid #059669;
+  background:linear-gradient(160deg,#D1FAE5 0%,#ECFDF5 100%)
 }
-.hm-card-avail .hm-card-hdr{background:transparent;border-bottom-color:rgba(5,150,105,.12)}
+.hm-card-avail .hm-card-hdr{background:transparent;border-bottom-color:rgba(5,150,105,.15)}
+.hm-card-avail .hm-card-title{color:#047857}
 .hm-card-avail .sec-link{color:#059669}
 .hm-card-avail .sec-link:hover{color:#047857}
-.hm-card-avail .hm-avail-chip{background:rgba(5,150,105,.10);color:#059669;border:1.5px solid rgba(5,150,105,.22)}
+.hm-card-avail .hm-avail-chip{background:rgba(5,150,105,.13);color:#047857;border:1.5px solid rgba(5,150,105,.28)}
 .hm-card-avail .hm-avail-chip:hover{background:#059669;color:#fff;border-color:#059669;box-shadow:0 3px 8px rgba(5,150,105,.32)}
-.hm-card-avail .hm-avail-row:hover{background:rgba(5,150,105,.06)}
+.hm-card-avail .hm-avail-row:hover{background:rgba(5,150,105,.08)}
 .hm-card-avail .hm-avail-more{color:#059669}
 
 /* ── SERVICIOS LISTA (home) ───────────────────────────────────────────── */
@@ -1148,7 +1152,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 /* ── CALENDAR WIDGET INSIDE HOME ──────────────────────────────────────── */
 .hm-cal-inner{
   flex:1;min-height:0;
-  background:var(--panel)!important;border:none!important;border-radius:0!important;
+  background:transparent!important;border:none!important;border-radius:0!important;
   box-shadow:none!important;padding:10px 14px!important;margin:0!important;
   display:flex!important;flex-direction:column!important
 }
