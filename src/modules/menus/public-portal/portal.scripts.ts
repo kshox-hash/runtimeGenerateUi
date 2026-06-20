@@ -374,8 +374,9 @@ document.addEventListener('click',function(e){
   if(t.closest('#closeQuote')){      closePanel('quotePanel');      return; }
   if(t.closest('#closeReview')){     closePanel('reviewPanel');     return; }
   if(t.closest('#closeDayDetail')){  closePanel('dayDetailPanel');  return; }
+  if(t.closest('#closeSvcDetail')){  closePanel('svcDetailPanel');  return; }
   if(t.closest('#openReviewBtn')){ openReviewPanel(); return; }
-  if(t.closest('#slideOverlay')){ closePanel('bookingPanel'); closePanel('quotePanel'); closePanel('reviewPanel'); closePanel('dayDetailPanel'); return; }
+  if(t.closest('#slideOverlay')){ closePanel('bookingPanel'); closePanel('quotePanel'); closePanel('reviewPanel'); closePanel('dayDetailPanel'); closePanel('svcDetailPanel'); return; }
 });
 
 // ── services ──────────────────────────────────────────────────────────────────
@@ -418,6 +419,63 @@ function applyServices(svcs){
   if(hmSvcs) hmSvcs.textContent=String(svcs.length);
 }
 
+function openSvcDetailPanel(svc,color){
+  var titleEl=document.getElementById('sdpTitle');
+  if(titleEl) titleEl.textContent=svc.name||'Servicio';
+  var hdr=document.getElementById('sdpHdr');
+  if(hdr) hdr.style.borderBottom='3px solid '+(color||'var(--primary)');
+  var body=document.getElementById('sdpBody');if(!body)return;
+
+  var price=svc.price!=null&&Number(svc.price)>0?fmtPrice(Number(svc.price)):'Consultar';
+  var dur=svc.duration_minutes?(svc.duration_minutes+' min'):'';
+  var cat=escH(svc.category||svc.type||'');
+
+  var html='<div class="sdp-hero" style="border-left:4px solid '+(color||'var(--primary)')+';">'
+    +'<div class="sdp-hero-name">'+escH(svc.name||'Servicio')+'</div>'
+    +'<div class="sdp-hero-badges">'
+    +(cat?'<span class="sdp-badge sdp-badge-cat">'+cat+'</span>':'')
+    +(dur?'<span class="sdp-badge sdp-badge-dur">⏱ '+dur+'</span>':'')
+    +'</div>'
+    +'<div class="sdp-hero-price">'+price+'</div>'
+    +'</div>';
+
+  if(svc.description){
+    html+='<div class="ddp-section">'
+      +'<div class="ddp-section-lbl">Descripción</div>'
+      +'<p class="sdp-desc">'+escH(svc.description)+'</p>'
+      +'</div>';
+  }
+
+  if(providersCache&&providersCache.length>0){
+    html+='<div class="ddp-section">'
+      +'<div class="ddp-section-lbl">Atiende</div>'
+      +'<div class="ddp-people">';
+    providersCache.forEach(function(p){
+      var initials=((p.name||'?').trim().split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2)).toUpperCase();
+      html+='<div class="ddp-person">'
+        +'<div class="ddp-avatar">'
+        +(p.picture||p.avatar?'<img src="'+(p.picture||p.avatar)+'" alt="">':initials)
+        +'</div>'
+        +'<span class="ddp-person-name">'+(p.name||'Profesional')+'</span>'
+        +'</div>';
+    });
+    html+='</div></div>';
+  }
+
+  html+='<div class="ddp-cta">'
+    +'<button class="btn-primary ddp-book-btn" id="sdpBookBtn">Reservar este servicio</button>'
+    +'</div>';
+
+  body.innerHTML=html;
+  var bookBtn=body.querySelector('#sdpBookBtn');
+  if(bookBtn) bookBtn.addEventListener('click',function(){
+    bk.svc=svc;bk.date=null;bk.time=null;bk.provider=null;
+    closePanel('svcDetailPanel');
+    showTab('reservas');
+  });
+  openPanel('svcDetailPanel');
+}
+
 function renderSvcHomeList(id,svcs){
   var el=document.getElementById(id);if(!el) return;
   if(!svcs.length){
@@ -443,8 +501,16 @@ function renderSvcHomeList(id,svcs){
       +'</div>';
   });
   el.innerHTML=html;
+  var isTouch=window.matchMedia('(hover:none)').matches;
   el.querySelectorAll('.hm-svc-row').forEach(function(row){
-    row.addEventListener('click',function(){ showTab('reservas'); });
+    var idx=parseInt(row.getAttribute('data-hm-svc')||'0',10);
+    var svc=svcs[idx];
+    var color=SVC_DOTS[idx%SVC_DOTS.length];
+    row.addEventListener('click',function(){ openSvcDetailPanel(svc,color); });
+    if(!isTouch){
+      row.addEventListener('mouseenter',function(){ showSvcTip(row,svc,color); });
+      row.addEventListener('mouseleave',hideSvcTip);
+    }
   });
 }
 
@@ -985,6 +1051,52 @@ function showCalTip(cell,date){
     openBookingFromDay(dayBtn.getAttribute('data-tip-day'));
     hideCalTip();
   });
+}
+
+// ── Service tooltip (desktop hover) ──────────────────────────────────────────
+var _svcTipEl=null;var _svcTipTimer=null;
+function getSvcTipEl(){
+  if(!_svcTipEl){
+    _svcTipEl=document.createElement('div');
+    _svcTipEl.className='cal-tip';
+    document.body.appendChild(_svcTipEl);
+    _svcTipEl.addEventListener('mouseenter',function(){clearTimeout(_svcTipTimer);});
+    _svcTipEl.addEventListener('mouseleave',hideSvcTip);
+  }
+  return _svcTipEl;
+}
+function hideSvcTip(){
+  _svcTipTimer=setTimeout(function(){
+    var t=getSvcTipEl();t.classList.remove('ct-visible');
+  },150);
+}
+function showSvcTip(row,svc,color){
+  clearTimeout(_svcTipTimer);
+  var tip=getSvcTipEl();
+  var price=svc.price!=null&&Number(svc.price)>0?fmtPrice(Number(svc.price)):'Consultar';
+  var dur=svc.duration_minutes?(svc.duration_minutes+' min'):'';
+  var cat=escH(svc.category||svc.type||'Servicio');
+  var html='<div class="cal-tip-date" style="border-left:3px solid '+color+';padding-left:12px">'+escH(svc.name||'Servicio')+'</div>'
+    +'<div class="cal-tip-divider"></div>'
+    +'<div class="cal-tip-slots" style="padding-top:10px">'
+    +(dur?'<span class="cal-tip-slot" style="background:#F5F3FF;color:#7C3AED;border:none">⏱ '+dur+'</span>':'')
+    +'<span class="cal-tip-slot" style="background:#ECFDF5;color:#059669;border:none">'+price+'</span>'
+    +(cat?'<span class="cal-tip-more">'+cat+'</span>':'')
+    +'</div>'
+    +(svc.description?'<div class="cal-tip-divider"></div><div class="cal-tip-empty" style="font-style:normal;color:var(--soft)">'+escH(svc.description.slice(0,80))+(svc.description.length>80?'…':'')+'</div>':'')
+    +'<div class="cal-tip-divider"></div>'
+    +'<button class="cal-tip-btn">Ver detalle →</button>';
+  tip.innerHTML=html;
+  var rect=row.getBoundingClientRect();
+  var TW=230;
+  var left=rect.right+10;
+  var top=rect.top;
+  if(left+TW>window.innerWidth-8) left=rect.left-TW-10;
+  if(top+200>window.innerHeight-8) top=window.innerHeight-210;
+  tip.style.left=left+'px';tip.style.top=top+'px';
+  tip.classList.add('ct-visible');
+  var btn=tip.querySelector('.cal-tip-btn');
+  if(btn) btn.addEventListener('click',function(){hideSvcTip();openSvcDetailPanel(svc,color);});
 }
 
 function openDayDetailPanel(date){

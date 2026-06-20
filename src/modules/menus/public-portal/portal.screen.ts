@@ -267,6 +267,16 @@ ${portalUser ? `
   <div class="sp-body" id="ddpBody"></div>
 </div>
 
+<div class="slide-panel" id="svcDetailPanel">
+  <div class="sp-hdr" id="sdpHdr">
+    <span class="sp-title" id="sdpTitle">Servicio</span>
+    <button class="sp-close" id="closeSvcDetail" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="sp-body" id="sdpBody"></div>
+</div>
+
 <script>${portalScripts(publicSlug, businessName, userId, enabledModules, products, { phone: s.phone, address: s.address, city: s.city, description: s.desc, welcomeMessage: welcomeMessage ?? null, businessHours: s.hours, instagramUrl: s.ig, whatsappNumber: s.wa }, initials)}</script>
 </body>
 </html>`;

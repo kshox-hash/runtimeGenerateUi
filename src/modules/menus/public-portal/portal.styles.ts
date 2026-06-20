@@ -1305,6 +1305,19 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .ddp-cta{padding:16px 20px 20px}
 .ddp-book-btn{width:100%;padding:14px;font-size:15px;font-weight:800;letter-spacing:-.02em;border-radius:14px}
 
+/* ── SERVICE DETAIL PANEL ────────────────────────────────────────────── */
+.sdp-hero{
+  padding:20px 20px 16px;
+  border-bottom:1px solid var(--border-inner)
+}
+.sdp-hero-name{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.04em;margin-bottom:10px}
+.sdp-hero-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.sdp-badge{padding:4px 12px;border-radius:99px;font-size:11.5px;font-weight:700}
+.sdp-badge-cat{background:#EDE9FE;color:#6D28D9}
+.sdp-badge-dur{background:#ECFDF5;color:#047857}
+.sdp-hero-price{font-size:30px;font-weight:800;color:var(--primary);letter-spacing:-.05em}
+.sdp-desc{font-size:13.5px;color:var(--soft);line-height:1.6;margin:0;padding-bottom:6px}
+
 /* keepcompat */
 .hm-card-foot{padding:0 16px 14px;flex-shrink:0}
 .hm-foot-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:9px;border-radius:11px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--bg);color:var(--soft);transition:background .15s,color .15s}
