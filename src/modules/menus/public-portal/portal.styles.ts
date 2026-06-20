@@ -926,7 +926,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .hm-stat-spark{flex-shrink:0;opacity:.85}
 
 /* ── LAYOUT ───────────────────────────────────────────────────────────── */
-.hm-panel{display:flex;flex-direction:column;overflow-y:auto;background-color:#EBF0F8;background-image:linear-gradient(rgba(99,130,190,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(99,130,190,.12) 1px,transparent 1px);background-size:28px 28px}
+.hm-panel{display:flex;flex-direction:column;overflow-y:auto;background-color:#ECF1F8;background-image:url("data:image/svg+xml,%3Csvg width='140' height='140' viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='12' y='18' width='28' height='26' rx='4' fill='none' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Cline x1='12' y1='26' x2='40' y2='26' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Cline x1='20' y1='14' x2='20' y2='20' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Cline x1='32' y1='14' x2='32' y2='20' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Ccircle cx='104' cy='90' r='14' fill='none' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Cline x1='104' y1='82' x2='104' y2='90' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Cline x1='104' y1='90' x2='110' y2='94' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Ccircle cx='75' cy='42' r='3' fill='%234F87F5' opacity='.1'/%3E%3Ccircle cx='30' cy='105' r='2' fill='%234F87F5' opacity='.1'/%3E%3Ccircle cx='118' cy='22' r='2' fill='%234F87F5' opacity='.1'/%3E%3C/svg%3E");background-size:140px 140px}
 .hm-main{display:flex;flex-direction:column;gap:10px;padding:0 16px 20px}
 .hm-left-col{display:flex;flex-direction:column;gap:10px}
 .hm-right-col{display:flex;flex-direction:column;gap:10px}
@@ -1068,12 +1068,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   .hm-welcome-desk{
     display:block;flex-shrink:0;
     font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.04em;
-    padding:18px 0 2px
+    padding:0 0 10px
   }
   .hm-welcome-desk span{color:var(--nav-act)}
   .hm-main{
     flex-direction:row;
-    padding:12px 28px 20px 28px;
+    padding:28px 28px 20px 28px;
     gap:16px;overflow:hidden;min-height:0
   }
   .hm-left-col{
