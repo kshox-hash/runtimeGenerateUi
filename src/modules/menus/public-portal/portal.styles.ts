@@ -2,7 +2,8 @@ export function portalStyles(): string {
   return `
 /* ── RESET ───────────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;background:#fff}
+html,body{height:100%;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;background:#fff;scrollbar-width:none;overflow-x:hidden}
+html::-webkit-scrollbar,body::-webkit-scrollbar{display:none}
 body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);overscroll-behavior:none}
 *::-webkit-scrollbar{width:4px;height:4px}
 *::-webkit-scrollbar-track{background:transparent}
@@ -550,12 +551,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
   position:fixed;top:0;right:0;bottom:0;
   width:min(100vw,460px);
   background:var(--panel);border-left:1px solid var(--border);
-  z-index:600;transform:translateX(100%);
+  z-index:600;transform:translateX(calc(100% + 2px));
   transition:transform .32s cubic-bezier(.22,1,.36,1);
   display:flex;flex-direction:column;overflow:hidden;
-  box-shadow:-4px 0 40px rgba(15,23,42,.12)
+  box-shadow:none
 }
-.slide-panel.open{transform:translateX(0)}
+.slide-panel.open{transform:translateX(0);box-shadow:-4px 0 40px rgba(15,23,42,.12)}
 .slide-overlay{
   position:fixed;inset:0;background:rgba(15,20,50,.38);z-index:599;
   opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)
