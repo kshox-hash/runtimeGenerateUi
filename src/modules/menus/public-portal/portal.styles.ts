@@ -927,9 +927,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 
 /* ── LAYOUT ───────────────────────────────────────────────────────────── */
 .hm-panel{display:flex;flex-direction:column;overflow-y:auto;background-color:#ECF1F8;background-image:url("data:image/svg+xml,%3Csvg width='140' height='140' viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='12' y='18' width='28' height='26' rx='4' fill='none' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Cline x1='12' y1='26' x2='40' y2='26' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Cline x1='20' y1='14' x2='20' y2='20' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Cline x1='32' y1='14' x2='32' y2='20' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Ccircle cx='104' cy='90' r='14' fill='none' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Cline x1='104' y1='82' x2='104' y2='90' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Cline x1='104' y1='90' x2='110' y2='94' stroke='%234F87F5' stroke-width='1.4' opacity='.13'/%3E%3Ccircle cx='75' cy='42' r='3' fill='%234F87F5' opacity='.1'/%3E%3Ccircle cx='30' cy='105' r='2' fill='%234F87F5' opacity='.1'/%3E%3Ccircle cx='118' cy='22' r='2' fill='%234F87F5' opacity='.1'/%3E%3C/svg%3E");background-size:140px 140px}
-.hm-main{display:flex;flex-direction:column;gap:10px;padding:0 16px 20px}
-.hm-left-col{display:flex;flex-direction:column;gap:10px}
-.hm-right-col{display:flex;flex-direction:column;gap:10px}
+.hm-main{display:flex;flex-direction:column;gap:12px;padding:18px 16px 28px}
+.hm-left-col{display:flex;flex-direction:column;gap:12px}
+.hm-right-col{display:flex;flex-direction:column;gap:12px}
 .hm-welcome-desk{display:none}
 
 /* ── CARDS ────────────────────────────────────────────────────────────── */
