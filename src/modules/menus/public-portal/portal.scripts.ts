@@ -639,8 +639,9 @@ function loadCalendar(){
         });
       }
       renderAllCals();
+      renderUpcomingSlots();
     })
-    .catch(function(){calLoaded=true;renderAllCals();});
+    .catch(function(){calLoaded=true;renderAllCals();renderUpcomingSlots();});
 }
 
 function renderAllCals(){
@@ -1264,18 +1265,62 @@ function submitReview(){
 // ── init ─────────────────────────────────────────────────────────────────────
 function initUpcoming(){
   var el=document.getElementById('hmUpcoming');if(!el) return;
-  el.innerHTML='<div class="hm-empty-row">'
-    +'<div class="hm-empty-icon" style="background:#EEF4FF;color:var(--primary)">'
-    +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>'
-    +'</div>'
-    +'<div class="hm-empty-body">'
-    +'<div class="hm-empty-title">Sin próximas reservas</div>'
-    +'<div class="hm-empty-sub">Cuando reserves un turno aparecerá aquí</div>'
-    +'</div>'
-    +'<button class="hm-empty-action" type="button" data-action="reservas">Ver agenda</button>'
-    +'</div>';
-  el.querySelectorAll('[data-action="reservas"]').forEach(function(btn){
-    btn.addEventListener('click',function(){ showTab('reservas'); });
+  el.innerHTML='<div style="padding:14px 16px;display:flex;align-items:center;gap:8px;color:var(--dim);font-size:12.5px">'
+    +'<div class="spinner"></div>Cargando disponibilidad…</div>';
+}
+
+function renderUpcomingSlots(){
+  var el=document.getElementById('hmUpcoming');if(!el) return;
+  var DAY_NAMES=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  var MON_NAMES=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  var today=new Date();
+  today.setHours(0,0,0,0);
+  var upcoming=[];
+  for(var i=0;i<60&&upcoming.length<5;i++){
+    var d=new Date(today);d.setDate(d.getDate()+i);
+    var ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    if(calSlots[ds]&&calSlots[ds].length>0) upcoming.push({date:ds,times:calSlots[ds],d:d});
+  }
+  if(upcoming.length===0){
+    el.innerHTML='<div class="hm-empty-row">'
+      +'<div class="hm-empty-icon" style="background:#EEF4FF;color:var(--primary)">'
+      +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>'
+      +'</div>'
+      +'<div class="hm-empty-body">'
+      +'<div class="hm-empty-title">Sin disponibilidad próxima</div>'
+      +'<div class="hm-empty-sub">No hay turnos disponibles en los próximos días</div>'
+      +'</div>'
+      +'</div>';
+    return;
+  }
+  var html='';
+  upcoming.forEach(function(u){
+    var lbl=DAY_NAMES[u.d.getDay()]+' '+u.d.getDate()+' '+MON_NAMES[u.d.getMonth()];
+    var show=u.times.slice(0,3);
+    var extra=u.times.length-show.length;
+    html+='<div class="hm-avail-row" data-date="'+u.date+'">'
+      +'<div class="hm-avail-date">'+lbl+'</div>'
+      +'<div class="hm-avail-chips">';
+    show.forEach(function(t){
+      html+='<button class="hm-avail-chip" data-date="'+u.date+'" data-time="'+t+'">'+t+'</button>';
+    });
+    if(extra>0) html+='<span class="hm-avail-more">+'+extra+'</span>';
+    html+='</div></div>';
+  });
+  el.innerHTML=html;
+  el.querySelectorAll('.hm-avail-chip').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var date=btn.getAttribute('data-date');
+      var time=btn.getAttribute('data-time');
+      if(date&&time) openBookingFromSlot(date,time);
+    });
+  });
+  el.querySelectorAll('.hm-avail-row').forEach(function(row){
+    row.addEventListener('click',function(){
+      var date=row.getAttribute('data-date');
+      if(date) openBookingFromDay(date);
+    });
   });
 }
 

@@ -73,11 +73,14 @@ export function chatTabHtml(d: ChatData): string {
           </div>
         </div>` : `<div id="calHome" style="display:none"></div>`}
 
-        <!-- Próximas reservas -->
+        <!-- Disponibilidad próxima -->
         <div class="hm-card">
           <div class="hm-card-hdr">
-            <div class="hm-card-title">Próximas reservas</div>
-            ${hasBooking ? `<button class="sec-link" type="button" data-action="reservas">Ver todas →</button>` : ""}
+            <div class="hm-card-title-row">
+              <span class="hm-card-title-icon" style="color:#16A34A">${S_CAL}</span>
+              <span class="hm-card-title">Disponibilidad</span>
+            </div>
+            ${hasBooking ? `<button class="sec-link" type="button" data-action="reservas">Ver agenda →</button>` : ""}
           </div>
           <div id="hmUpcoming" class="hm-upcoming-list">
             <div class="inbox-empty" style="padding:18px 16px;text-align:center">

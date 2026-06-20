@@ -1017,8 +1017,36 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 }
 .hm-empty-action:hover{background:var(--primary);color:#fff;transform:translateY(-1px)}
 
-/* ── PRÓXIMAS RESERVAS ────────────────────────────────────────────────── */
+/* ── DISPONIBILIDAD HOME ──────────────────────────────────────────────── */
 .hm-upcoming-list{}
+.hm-avail-row{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 16px;border-bottom:1px solid var(--border-inner);
+  cursor:pointer;transition:background .15s;
+  -webkit-tap-highlight-color:transparent
+}
+.hm-avail-row:last-child{border-bottom:none}
+.hm-avail-row:hover{background:#EEF4FF}
+.hm-avail-date{
+  font-size:12px;font-weight:700;color:var(--text);
+  width:76px;flex-shrink:0;letter-spacing:-.01em
+}
+.hm-avail-chips{display:flex;flex-wrap:wrap;gap:5px;flex:1;min-width:0}
+.hm-avail-chip{
+  padding:4px 10px;border-radius:8px;
+  background:#EEF4FF;color:var(--primary);
+  font-size:11.5px;font-weight:600;
+  border:1px solid rgba(37,99,235,.18);
+  cursor:pointer;font-family:inherit;
+  transition:background .15s,transform .1s,box-shadow .15s;
+  -webkit-tap-highlight-color:transparent
+}
+.hm-avail-chip:hover{background:var(--primary);color:#fff;transform:translateY(-1px);box-shadow:0 3px 8px rgba(37,99,235,.3)}
+.hm-avail-chip:active{transform:scale(.94)}
+.hm-avail-more{
+  font-size:11px;color:var(--dim);padding:4px 6px;
+  font-weight:500;white-space:nowrap;flex-shrink:0
+}
 .hm-upc-row{
   display:flex;align-items:center;gap:10px;
   padding:10px 16px;border-bottom:1px solid var(--border-inner);
