@@ -56,7 +56,7 @@ export function chatTabHtml(d: ChatData): string {
       <div class="hm-left-col">
 
         <!-- TÍTULO -->
-        <div class="hm-title-block">
+        <div class="hm-card hm-card-brand hm-title-block">
           <div class="hm-title-name">${d.name}</div>
           <div class="hm-title-sub">${d.desc ?? "Reservá tu turno de forma rápida y sencilla"}</div>
           <div class="hm-title-stats">

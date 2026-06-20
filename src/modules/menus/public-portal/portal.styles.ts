@@ -1018,17 +1018,27 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 /* ── TITLE BLOCK ──────────────────────────────────────────────────────── */
 .hm-title-block{
   flex-shrink:0;
-  padding:4px 0 2px
+  padding:16px 18px 14px
 }
+.hm-card-brand{
+  border:1px solid var(--primary-glow);
+  border-top:3px solid var(--primary);
+  background:linear-gradient(160deg,var(--primary-dim) 0%,#F8FAFF 100%)
+}
+.hm-card-brand .hm-title-name{color:var(--primary)}
 .hm-title-name{
-  font-size:24px;font-weight:900;color:var(--text);
+  font-size:22px;font-weight:900;
   letter-spacing:-.05em;line-height:1.1;margin-bottom:5px
 }
 .hm-title-sub{
-  font-size:13px;color:var(--dim);line-height:1.5;margin-bottom:8px;
+  font-size:13px;color:var(--dim);line-height:1.5;margin-bottom:10px;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
 }
-.hm-title-stats{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--soft)}
+.hm-title-stats{
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:600;color:var(--soft);
+  padding-top:8px;border-top:1px solid var(--primary-glow)
+}
 .hm-title-stat{display:flex;align-items:center;gap:3px}
 .hm-title-sep{color:var(--dim)}
 
@@ -1096,11 +1106,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 .hm-svc-row{
   display:flex;align-items:center;gap:11px;
   padding:10px 16px;cursor:pointer;
-  border-bottom:1px solid var(--border-inner);
+  border-bottom:1px solid rgba(124,58,237,.18);
   transition:background .12s;-webkit-tap-highlight-color:transparent
 }
 .hm-svc-row:last-child{border-bottom:none}
-.hm-svc-row:hover{background:var(--border-inner)}
+.hm-svc-row:hover{background:rgba(124,58,237,.07)}
 .hm-svc-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .hm-svc-row-body{flex:1;min-width:0}
 .hm-svc-row-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1108,7 +1118,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 .hm-svc-row-right{display:flex;align-items:center;gap:5px;flex-shrink:0}
 .hm-svc-row-price{font-size:12.5px;font-weight:700;color:var(--text);white-space:nowrap;font-variant-numeric:tabular-nums}
 .hm-svc-row-arr{width:14px;height:14px;stroke:var(--dim);flex-shrink:0}
-.hm-svc-cot-row{padding:10px 14px;border-top:1px solid var(--border-inner);flex-shrink:0}
+.hm-svc-cot-row{padding:10px 14px;border-top:1px solid rgba(124,58,237,.18);flex-shrink:0}
 .hm-svc-cot-btn{
   display:flex;align-items:center;justify-content:center;gap:7px;
   width:100%;padding:9px 14px;border-radius:12px;cursor:pointer;
@@ -1145,12 +1155,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 .hm-upcoming-list{}
 .hm-avail-row{
   display:flex;align-items:center;gap:10px;
-  padding:9px 16px;border-bottom:1px solid var(--border-inner);
+  padding:9px 16px;border-bottom:1px solid rgba(5,150,105,.2);
   cursor:pointer;transition:background .15s;
   -webkit-tap-highlight-color:transparent
 }
 .hm-avail-row:last-child{border-bottom:none}
-.hm-avail-row:hover{background:#EEF4FF}
+.hm-avail-row:hover{background:rgba(5,150,105,.07)}
 .hm-avail-date{
   font-size:12px;font-weight:700;color:var(--text);
   width:76px;flex-shrink:0;letter-spacing:-.01em
@@ -1374,8 +1384,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
     padding:0;gap:0
   }
   .hm-welcome-desk{display:none}
-  .hm-title-block{padding:0 0 16px}
-  .hm-title-name{font-size:30px}
+  .hm-card-brand{padding:20px 22px 18px}
+  .hm-card-brand .hm-title-name{font-size:30px}
   .hm-main{
     flex-direction:row;
     padding:24px 28px 24px 28px;
