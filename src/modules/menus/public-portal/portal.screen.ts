@@ -112,14 +112,7 @@ ${safeColor ? `:root{--primary:${safeColor};--primary-dim:${safeColor}1A;--prima
   <!-- Brand -->
   <div class="ir-brand">
     <div class="ir-brand-logo">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 148 26" width="148" height="26" aria-label="linkplace">
-        <!-- pin icon -->
-        <path d="M9 0C5.7 0 3 2.7 3 6C3 10.5 9 17 9 17C9 17 15 10.5 15 6C15 2.7 12.3 0 9 0ZM9 8.5C7.6 8.5 6.5 7.4 6.5 6C6.5 4.6 7.6 3.5 9 3.5C10.4 3.5 11.5 4.6 11.5 6C11.5 7.4 10.4 8.5 9 8.5Z" fill="#D97706"/>
-        <!-- "link" -->
-        <text x="20" y="19" font-family="system-ui,-apple-system,BlinkMacSystemFont,sans-serif" font-weight="800" font-size="19" fill="#2563EB" letter-spacing="-0.6">link</text>
-        <!-- "place" -->
-        <text x="62" y="19" font-family="system-ui,-apple-system,BlinkMacSystemFont,sans-serif" font-weight="800" font-size="19" fill="#D97706" letter-spacing="-0.6">place</text>
-      </svg>
+      <img src="/assets/linkplace.png" alt="linkplace" height="26" style="display:block;max-width:148px;object-fit:contain">
     </div>
     <div class="ir-brand-biz">Negocio: <span>${s.name}</span></div>
   </div>
