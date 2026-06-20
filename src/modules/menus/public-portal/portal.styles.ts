@@ -914,10 +914,17 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .svc-tag{font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:20px;background:rgba(0,0,0,.12);color:rgba(0,0,0,.6)}
 .svc-proj-foot{display:flex;align-items:center;margin-top:auto;padding-top:2px}
 
-/* Calendario: sin chrome, celdas compactas */
-.hm-cal-inner{background:#F4F7FC!important;border:none!important;border-radius:0!important;box-shadow:none!important;padding:8px 14px!important;margin:0!important}
-.hm-cal-inner .cal-cell{aspect-ratio:unset!important;height:28px;font-size:11px!important}
-.hm-cal-inner .cal-day-name{padding:2px 0 4px!important;font-size:8.5px!important}
+/* Calendario en home: llena todo el espacio disponible */
+.hm-cal-inner{
+  background:#F4F7FC!important;border:none!important;border-radius:0!important;
+  box-shadow:none!important;padding:12px 16px!important;margin:0!important;
+  display:flex!important;flex-direction:column!important;
+}
+.hm-cal-inner .cal-hdr{flex-shrink:0;margin-bottom:8px!important}
+.hm-cal-inner .cal-grid{flex:1;min-height:0;align-content:stretch!important;grid-auto-rows:1fr!important}
+.hm-cal-inner .cal-cell{aspect-ratio:unset!important;height:auto!important;min-height:28px;font-size:12px!important}
+.hm-cal-inner .cal-day-name{padding:2px 0 5px!important;font-size:8.5px!important}
+.hm-cal-inner .cal-legend{display:none!important}
 
 /* 8 — Pie de tarjeta */
 .hm-card-foot{padding:0 16px 14px;flex-shrink:0}
