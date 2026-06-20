@@ -114,12 +114,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   }
   /* Brand */
   .ir-brand{
-    padding:16px 18px;border-bottom:1px solid var(--border);
-    display:flex;align-items:center
+    padding:0;border-bottom:1px solid var(--border);
+    display:block;overflow:hidden
   }
   .ir-brand-img{
     display:block;width:100%;height:auto;
-    max-height:48px;object-fit:contain;object-position:left center
+    max-height:72px;object-fit:cover
   }
   /* Nav list */
   .ir-nav{
