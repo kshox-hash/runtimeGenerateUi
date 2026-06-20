@@ -1228,6 +1228,43 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .hm-cal-inner .cal-day-name{padding:2px 0 5px!important;font-size:8.5px!important}
 .hm-cal-inner .cal-legend{display:none!important}
 
+/* ── DAY DETAIL PANEL ────────────────────────────────────────────────── */
+.ddp-section{padding:16px 20px 4px;border-bottom:1px solid var(--border-inner)}
+.ddp-section:last-child{border-bottom:none}
+.ddp-section-lbl{font-size:10.5px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.ddp-slots{display:flex;flex-wrap:wrap;gap:8px}
+.ddp-slot{
+  padding:10px 18px;border-radius:12px;border:none;font-family:inherit;
+  background:linear-gradient(135deg,#EEF4FF,#E0EAFF);
+  border:1.5px solid rgba(37,99,235,.18);
+  color:var(--primary);font-size:16px;font-weight:800;
+  cursor:pointer;letter-spacing:-.02em;
+  transition:all .2s cubic-bezier(.34,1.56,.64,1)
+}
+.ddp-slot:hover,.ddp-slot:active{
+  background:var(--primary);color:#fff;
+  border-color:var(--primary);transform:scale(1.04);
+  box-shadow:0 6px 18px rgba(37,99,235,.35)
+}
+.ddp-empty-note{font-size:13px;color:var(--dim);margin:0;padding-bottom:8px}
+.ddp-svc-list{display:flex;flex-direction:column;gap:8px;padding-bottom:6px}
+.ddp-svc-row{display:flex;align-items:center;gap:10px}
+.ddp-svc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ddp-svc-name{font-size:13.5px;color:var(--text);font-weight:500;flex:1}
+.ddp-svc-price{font-size:13px;font-weight:700;color:var(--primary)}
+.ddp-people{display:flex;flex-direction:column;gap:10px;padding-bottom:6px}
+.ddp-person{display:flex;align-items:center;gap:12px}
+.ddp-avatar{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  background:var(--primary-dim);color:var(--primary);
+  font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;border:2px solid rgba(37,99,235,.12)
+}
+.ddp-avatar img{width:100%;height:100%;object-fit:cover}
+.ddp-person-name{font-size:14px;font-weight:600;color:var(--text)}
+.ddp-cta{padding:16px 20px 20px}
+.ddp-book-btn{width:100%;padding:14px;font-size:15px;font-weight:800;letter-spacing:-.02em;border-radius:14px}
+
 /* keepcompat */
 .hm-card-foot{padding:0 16px 14px;flex-shrink:0}
 .hm-foot-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:9px;border-radius:11px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--bg);color:var(--soft);transition:background .15s,color .15s}

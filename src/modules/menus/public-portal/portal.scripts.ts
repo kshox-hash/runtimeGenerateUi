@@ -371,10 +371,11 @@ document.addEventListener('click',function(e){
     return;
   }
 
-  if(t.closest('#closeQuote')){   closePanel('quotePanel');   return; }
-  if(t.closest('#closeReview')){  closePanel('reviewPanel');  return; }
+  if(t.closest('#closeQuote')){      closePanel('quotePanel');      return; }
+  if(t.closest('#closeReview')){     closePanel('reviewPanel');     return; }
+  if(t.closest('#closeDayDetail')){  closePanel('dayDetailPanel');  return; }
   if(t.closest('#openReviewBtn')){ openReviewPanel(); return; }
-  if(t.closest('#slideOverlay')){ closePanel('bookingPanel'); closePanel('quotePanel'); closePanel('reviewPanel'); return; }
+  if(t.closest('#slideOverlay')){ closePanel('bookingPanel'); closePanel('quotePanel'); closePanel('reviewPanel'); closePanel('dayDetailPanel'); return; }
 });
 
 // ── services ──────────────────────────────────────────────────────────────────
@@ -873,14 +874,7 @@ function renderCalWidget(id){
       renderAllCals();
     });
   }
-  // Click on available day → booking flow
-  el.querySelectorAll('.cal-avail').forEach(function(cell){
-    cell.addEventListener('click',function(){
-      var dateStr=cell.getAttribute('data-cal-date');
-      if(dateStr) openBookingFromDay(dateStr);
-    });
-  });
-  // Tooltip on hover/tap for all non-past days
+  // Click / hover handled by setupCalTooltips (panel + tooltip)
   setupCalTooltips(el);
 }
 
@@ -993,12 +987,109 @@ function showCalTip(cell,date){
   });
 }
 
+function openDayDetailPanel(date){
+  var DAY=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  var MON=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  var d=new Date(date+'T12:00');
+  var today=new Date();today.setHours(0,0,0,0);
+  var isToday=new Date(date+'T00:00').getTime()===today.getTime();
+  var slots=calSlots[date]||[];
+  var hasSlots=slots.length>0;
+  var svcDotColors=['#6366F1','#2563EB','#059669','#D97706','#EC4899','#14B8A6'];
+  var dateLabel=(isToday?'Hoy — ':'')+DAY[d.getDay()]+' '+d.getDate()+' de '+MON[d.getMonth()];
+
+  var titleEl=document.getElementById('ddpTitle');
+  if(titleEl) titleEl.textContent=dateLabel;
+
+  var body=document.getElementById('ddpBody');if(!body)return;
+
+  var html='';
+
+  // Slots section
+  html+='<div class="ddp-section">'
+    +'<div class="ddp-section-lbl">'+( hasSlots?'Turnos disponibles':'Sin turnos este día')+'</div>';
+  if(hasSlots){
+    html+='<div class="ddp-slots">';
+    slots.forEach(function(t){
+      html+='<button class="ddp-slot" data-ddp-date="'+date+'" data-ddp-time="'+t+'">'+t+'</button>';
+    });
+    html+='</div>';
+  } else {
+    html+='<p class="ddp-empty-note">No hay horarios disponibles para este día.</p>';
+  }
+  html+='</div>';
+
+  // Services section
+  if(svcsCache&&svcsCache.length>0){
+    html+='<div class="ddp-section">'
+      +'<div class="ddp-section-lbl">Servicios</div>'
+      +'<div class="ddp-svc-list">';
+    svcsCache.slice(0,6).forEach(function(s,i){
+      var price=s.price!=null?'$'+Number(s.price).toLocaleString('es'):'';
+      html+='<div class="ddp-svc-row">'
+        +'<div class="ddp-svc-dot" style="background:'+svcDotColors[i%svcDotColors.length]+'"></div>'
+        +'<span class="ddp-svc-name">'+(s.name||s.title||'Servicio')+'</span>'
+        +(price?'<span class="ddp-svc-price">'+price+'</span>':'')
+        +'</div>';
+    });
+    html+='</div></div>';
+  }
+
+  // Providers section
+  if(providersCache&&providersCache.length>0){
+    html+='<div class="ddp-section">'
+      +'<div class="ddp-section-lbl">Atiende</div>'
+      +'<div class="ddp-people">';
+    providersCache.forEach(function(p){
+      var initials=((p.name||'?').trim().split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2)).toUpperCase();
+      html+='<div class="ddp-person">'
+        +'<div class="ddp-avatar">'
+        +(p.picture||p.avatar?'<img src="'+(p.picture||p.avatar)+'" alt="">':initials)
+        +'</div>'
+        +'<span class="ddp-person-name">'+(p.name||'Profesional')+'</span>'
+        +'</div>';
+    });
+    html+='</div></div>';
+  }
+
+  // CTA
+  if(hasSlots){
+    html+='<div class="ddp-cta">'
+      +'<button class="btn-primary ddp-book-btn" type="button" data-ddp-book="'+date+'">Reservar este día</button>'
+      +'</div>';
+  }
+
+  body.innerHTML=html;
+
+  body.querySelectorAll('[data-ddp-date]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      closePanel('dayDetailPanel');
+      openBookingFromSlot(btn.getAttribute('data-ddp-date'),btn.getAttribute('data-ddp-time'));
+    });
+  });
+  var bookBtn=body.querySelector('[data-ddp-book]');
+  if(bookBtn) bookBtn.addEventListener('click',function(){
+    closePanel('dayDetailPanel');
+    openBookingFromDay(bookBtn.getAttribute('data-ddp-book'));
+  });
+
+  openPanel('dayDetailPanel');
+}
+
 function setupCalTooltips(el){
+  var isTouch=window.matchMedia('(hover:none)').matches;
   el.querySelectorAll('.cal-cell[data-cal-date]').forEach(function(cell){
-    cell.addEventListener('mouseenter',function(){showCalTip(cell,cell.getAttribute('data-cal-date'));});
-    cell.addEventListener('mouseleave',hideCalTip);
+    var date=cell.getAttribute('data-cal-date');
+    // Desktop hover → tooltip
+    if(!isTouch){
+      cell.addEventListener('mouseenter',function(){showCalTip(cell,date);});
+      cell.addEventListener('mouseleave',hideCalTip);
+    }
+    // Click on ANY day → day detail panel (overrides the direct booking)
     cell.addEventListener('click',function(e){
-      if(!cell.classList.contains('cal-avail')) showCalTip(cell,cell.getAttribute('data-cal-date'));
+      e.stopPropagation();
+      hideCalTip();
+      openDayDetailPanel(date);
     });
   });
 }
