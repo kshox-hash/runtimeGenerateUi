@@ -2,8 +2,8 @@ export function portalStyles(): string {
   return `
 /* ── RESET ───────────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);overscroll-behavior:none}
+html,body{height:100%;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;background:#fff}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);overscroll-behavior:none}
 *::-webkit-scrollbar{width:4px;height:4px}
 *::-webkit-scrollbar-track{background:transparent}
 *::-webkit-scrollbar-thumb{background:rgba(15,23,42,.15);border-radius:99px}
@@ -943,7 +943,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .hm-stat-spark{flex-shrink:0;opacity:.85}
 
 /* ── LAYOUT ───────────────────────────────────────────────────────────── */
-.hm-panel{display:flex;flex-direction:column;overflow-y:auto;background:#fff}
+.hm-panel{display:flex;flex-direction:column;overflow-y:auto;background:#fff;scrollbar-width:none}
+.hm-panel::-webkit-scrollbar{display:none}
 .hm-main{display:flex;flex-direction:column;gap:14px;padding:20px 16px 36px}
 .hm-left-col{display:flex;flex-direction:column;gap:14px}
 .hm-right-col{display:flex;flex-direction:column;gap:14px}
