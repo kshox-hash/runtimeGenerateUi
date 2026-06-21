@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   getCalendarBookingsByUserId,
   getCalendarSettingsByUserId,
+  getPaymentsForExport,
   rescheduleBooking,
   saveCalendarSettings,
   updateBookingStatus,
@@ -125,6 +126,85 @@ export const calendarAdminController = {
         ok: false,
         message: error instanceof Error ? error.message : "No se pudo actualizar.",
       });
+    }
+  },
+
+  async exportPayments(req: Request, res: Response) {
+    try {
+      const userId     = String(req.params["userId"] || "").trim();
+      const authUserId = String(req.user?.userId ?? "").trim();
+      const year       = String(req.query["year"] || "").trim(); // formato YYYY
+
+      if (!userId) return res.status(400).json({ ok: false, message: "userId requerido." });
+      if (userId !== authUserId) return res.status(403).json({ ok: false, message: "Sin permisos." });
+
+      const rows = await getPaymentsForExport(userId, year || undefined);
+
+      const STATUS_LABEL: Record<string, string> = { paid: "Pagado", free: "Sin cobro" };
+
+      const escape = (v: string | number | null | undefined): string => {
+        const s = v == null ? "" : String(v);
+        return (s.includes(",") || s.includes('"') || s.includes("\n"))
+          ? `"${s.replace(/"/g, '""')}"` : s;
+      };
+
+      // ── Resumen ──────────────────────────────────────────────────────────
+      const totalAmount = rows.reduce((sum, r) => sum + (r.payment_amount ?? 0), 0);
+      const paidCount   = rows.filter(r => r.payment_status === "paid").length;
+      const freeCount   = rows.filter(r => r.payment_status === "free").length;
+
+      const periodoLabel = (year && /^\d{4}$/.test(year)) ? `Año ${year}` : "Todos los registros";
+
+      const firstDate = rows.length > 0 ? rows[0].booking_date : "—";
+      const lastDate  = rows.length > 0 ? rows[rows.length - 1].booking_date : "—";
+
+      const summary = [
+        `"REGISTRO DE PAGOS — ${periodoLabel}"`,
+        `"Período:","${firstDate} al ${lastDate}"`,
+        `"Total transacciones:","${rows.length}"`,
+        `"Transacciones pagadas:","${paidCount}"`,
+        `"Sin cobro:","${freeCount}"`,
+        `"Total recaudado:","$${totalAmount.toLocaleString('es-CL')}"`,
+        `""`,
+      ];
+
+      // ── Filas ────────────────────────────────────────────────────────────
+      const HEADERS = ["Fecha","Hora","Cliente","Email","Teléfono","Servicio","Profesional","Monto ($)","Estado","ID MercadoPago","Fecha de pago"];
+
+      const dataRows = rows.map(r => [
+        r.booking_date,
+        r.start_time,
+        r.client_name,
+        r.client_email,
+        r.client_phone,
+        r.service_name,
+        r.provider_name,
+        r.payment_amount != null ? r.payment_amount : "",
+        STATUS_LABEL[r.payment_status] ?? r.payment_status,
+        r.mp_payment_id ?? "",
+        r.paid_at ?? "",
+      ].map(escape).join(","));
+
+      // ── Fila total ───────────────────────────────────────────────────────
+      const totalRow = ["","","","","","","",`$${totalAmount.toLocaleString('es-CL')}`,`${rows.length} transacciones`,"",""].map(escape).join(",");
+
+      const lines = [
+        ...summary,
+        HEADERS.map(escape).join(","),
+        ...dataRows,
+        "",
+        totalRow,
+      ];
+
+      const fileYear = year || String(new Date().getFullYear());
+      const csv = "﻿" + lines.join("\r\n");
+
+      res.setHeader("Content-Type", "text/csv; charset=utf-8");
+      res.setHeader("Content-Disposition", `attachment; filename="pagos_${fileYear}.csv"`);
+      return res.send(csv);
+    } catch (error) {
+      console.error("Error exportando pagos:", error);
+      return res.status(500).json({ ok: false, message: "No se pudo generar el archivo." });
     }
   },
 };

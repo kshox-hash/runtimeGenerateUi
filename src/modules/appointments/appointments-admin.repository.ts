@@ -253,3 +253,51 @@ export async function updateBookingStatus(bookingId: string, status: string, use
   );
   return result.rows[0] ?? null;
 }
+
+export type PaymentExportRow = {
+  booking_date: string;
+  start_time: string;
+  client_name: string;
+  client_email: string;
+  client_phone: string;
+  service_name: string;
+  provider_name: string;
+  payment_amount: number | null;
+  payment_status: string;
+  mp_payment_id: string | null;
+  paid_at: string | null;
+};
+
+export async function getPaymentsForExport(userId: string, year?: string): Promise<PaymentExportRow[]> {
+  const params: (string | number)[] = [userId];
+  let yearClause = "";
+
+  if (year && /^\d{4}$/.test(year)) {
+    params.push(year);
+    yearClause = `AND TO_CHAR(cb.booking_date, 'YYYY') = $${params.length}`;
+  }
+
+  const result = await pool.query<PaymentExportRow>(
+    `SELECT
+       TO_CHAR(cb.booking_date, 'DD/MM/YYYY') AS booking_date,
+       TO_CHAR(cb.start_time,   'HH24:MI')    AS start_time,
+       COALESCE(cb.client_name,  '')           AS client_name,
+       COALESCE(cb.client_email, '')           AS client_email,
+       COALESCE(cb.client_phone, '')           AS client_phone,
+       COALESCE(cb.service_name, '')           AS service_name,
+       COALESCE(cp.name,         '')           AS provider_name,
+       cb.payment_amount,
+       COALESCE(cb.payment_status, '')         AS payment_status,
+       p.provider_payment_id                   AS mp_payment_id,
+       TO_CHAR(cb.paid_at, 'DD/MM/YYYY HH24:MI') AS paid_at
+     FROM calendar_bookings cb
+     LEFT JOIN calendar_providers cp ON cb.provider_id = cp.id
+     LEFT JOIN payments            p  ON p.booking_id  = cb.id AND p.provider = 'mercadopago'
+     WHERE cb.user_id = $1
+       AND cb.payment_status IN ('paid', 'free')
+       ${yearClause}
+     ORDER BY cb.booking_date ASC, cb.start_time ASC`,
+    params
+  );
+  return result.rows;
+}

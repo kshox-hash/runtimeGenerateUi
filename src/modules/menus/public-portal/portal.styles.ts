@@ -1021,11 +1021,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
   padding:16px 18px 14px
 }
 .hm-card-brand{
-  border:1px solid rgba(234,88,12,.28);
-  border-top:3px solid #EA580C;
-  background:linear-gradient(160deg,#FFEDD5 0%,#FFF7ED 100%)
+  border:1px solid #C8D9EC
 }
-.hm-card-brand .hm-title-name{color:#C2410C}
+.hm-card-brand .hm-title-name{color:var(--text)}
 .hm-title-name{
   font-size:22px;font-weight:900;
   letter-spacing:-.05em;line-height:1.1;margin-bottom:5px
@@ -1037,7 +1035,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 .hm-title-stats{
   display:flex;align-items:center;gap:6px;
   font-size:12px;font-weight:600;color:var(--soft);
-  padding-top:8px;border-top:1px solid rgba(234,88,12,.18)
+  padding-top:8px;border-top:1px solid #C8D9EC
 }
 .hm-title-stat{display:flex;align-items:center;gap:3px}
 .hm-title-sep{color:var(--dim)}
@@ -1060,46 +1058,45 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 .hm-card-title-icon{display:flex;align-items:center}
 .hm-card-title-icon svg{width:15px;height:15px;stroke-width:2}
 
-/* ── CARD ACCENT COLORS ──────────────────────────────────────────────── */
-/* Calendario — azul */
-.hm-card-cal{
-  border:1px solid rgba(37,99,235,.28);border-top:3px solid #2563EB;
-  background:linear-gradient(160deg,#DBEAFE 0%,#EFF6FF 100%)
-}
-.hm-card-cal .hm-card-hdr{background:transparent;border-bottom-color:rgba(37,99,235,.15)}
-.hm-card-cal .hm-card-title{color:#1D4ED8}
-/* Servicios — violeta */
+/* ── CARD TONES — gris celeste claro / oscuro ────────────────────────── */
+/* Tono A — más claro */
+.hm-card-cal,
 .hm-card-svc{
-  border:1px solid rgba(124,58,237,.28);border-top:3px solid #7C3AED;
-  background:linear-gradient(160deg,#EDE9FE 0%,#F5F3FF 100%)
+  background:#EEF4FB;border-color:#C8D9EC
 }
-.hm-card-svc .hm-card-hdr{background:transparent;border-bottom-color:rgba(124,58,237,.15)}
-.hm-card-svc .hm-card-title{color:#6D28D9}
-.hm-card-svc .sec-link{color:#7C3AED}
-.hm-card-svc .sec-link:hover{color:#6D28D9}
-/* Opiniones — ámbar */
-.hm-card-reviews{
-  border:1px solid rgba(217,119,6,.28);border-top:3px solid #D97706;
-  background:linear-gradient(160deg,#FEF3C7 0%,#FFFBEB 100%)
+/* Tono B — ligeramente más oscuro */
+.hm-card-reviews,
+.hm-card-avail,
+.hm-card-brand{
+  background:#E2EBF5;border-color:#C8D9EC
 }
-.hm-card-reviews .hm-card-hdr{background:transparent;border-bottom-color:rgba(217,119,6,.15)}
-.hm-card-reviews .hm-card-title{color:#B45309}
-.hm-card-reviews .sec-link{color:#D97706}
-.hm-card-reviews .sec-link:hover{color:#B45309}
-.hm-card-reviews .rv-bar-fill{background:#D97706}
-/* Turnos disponibles — esmeralda */
-.hm-card-avail{
-  border:1px solid rgba(5,150,105,.28);border-top:3px solid #059669;
-  background:linear-gradient(160deg,#D1FAE5 0%,#ECFDF5 100%)
-}
-.hm-card-avail .hm-card-hdr{background:transparent;border-bottom-color:rgba(5,150,105,.15)}
-.hm-card-avail .hm-card-title{color:#047857}
-.hm-card-avail .sec-link{color:#059669}
-.hm-card-avail .sec-link:hover{color:#047857}
-.hm-card-avail .hm-avail-chip{background:rgba(5,150,105,.13);color:#047857;border:1.5px solid rgba(5,150,105,.28)}
-.hm-card-avail .hm-avail-chip:hover{background:#059669;color:#fff;border-color:#059669;box-shadow:0 3px 8px rgba(5,150,105,.32)}
-.hm-card-avail .hm-avail-row:hover{background:rgba(5,150,105,.08)}
-.hm-card-avail .hm-avail-more{color:#059669}
+/* Dividers internos — mismo azul-gris */
+.hm-card-cal .hm-card-hdr,
+.hm-card-svc .hm-card-hdr,
+.hm-card-reviews .hm-card-hdr,
+.hm-card-avail .hm-card-hdr{border-bottom-color:#C8D9EC}
+/* Colores de texto — neutros */
+.hm-card-cal .hm-card-title,
+.hm-card-svc .hm-card-title,
+.hm-card-reviews .hm-card-title,
+.hm-card-avail .hm-card-title{color:var(--text)}
+/* Íconos — color primario solo en interactivos */
+.hm-card-cal .hm-card-title-icon svg,
+.hm-card-svc .hm-card-title-icon svg,
+.hm-card-reviews .hm-card-title-icon svg,
+.hm-card-avail .hm-card-title-icon svg{stroke:var(--soft)}
+/* Separadores de filas */
+.hm-svc-row{border-bottom-color:#C8D9EC}
+.hm-svc-row:hover{background:rgba(30,64,120,.06)}
+.hm-svc-cot-row{border-top-color:#C8D9EC}
+.hm-avail-row{border-bottom-color:#C8D9EC}
+.hm-avail-row:hover{background:rgba(30,64,120,.06)}
+/* Chips de horario */
+.hm-avail-chip{background:rgba(30,64,120,.09);color:var(--primary);border-color:rgba(30,64,120,.2)}
+.hm-avail-chip:hover{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 3px 8px rgba(30,64,120,.25)}
+.hm-avail-more{color:var(--primary)}
+/* Barra de reseñas */
+.rv-bar-fill{background:var(--primary)}
 
 /* ── SERVICIOS LISTA (home) ───────────────────────────────────────────── */
 .hm-svc-list-home{overflow-y:auto}
