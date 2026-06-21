@@ -12,7 +12,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 
 /* ── TOKENS ──────────────────────────────────────────────────────────── */
 :root{
-  --bg:#F5F7FA;
+  --bg:#F4F4F4;
   --panel:#FFFFFF;
   --rail:#FFFFFF;
   --rail-icon:#9CA3AF;
@@ -33,8 +33,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
   --red-dim:rgba(220,38,38,.10);
   --amber:#D97706;
   --amber-dim:rgba(217,119,6,.12);
-  --shadow-s:0 2px 8px rgba(15,23,42,.07),0 0 0 1px rgba(15,23,42,.03);
-  --shadow:0 8px 30px rgba(15,23,42,.08),0 2px 6px rgba(15,23,42,.04);
+  --shadow-s:0 1px 4px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.05);
+  --shadow:0 4px 16px rgba(0,0,0,.08),0 1px 4px rgba(0,0,0,.04);
   --shadow-l:0 20px 60px rgba(15,23,42,.12),0 4px 16px rgba(15,23,42,.05);
   --r:20px;
   --rs:12px;
@@ -587,9 +587,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 /* Stats row */
 .rdash-stats-row{
   display:flex;align-items:center;
-  background:#EEF4FB;border:1px solid #C8D9EC;
+  background:#fff;border:1px solid #E8E8E8;
   border-radius:14px;padding:14px 0;
-  margin-bottom:24px
+  margin-bottom:24px;box-shadow:var(--shadow-s)
 }
 .rds-item{
   flex:1;display:flex;flex-direction:column;
@@ -598,7 +598,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 .rds-val{font-size:18px;font-weight:800;color:var(--text);letter-spacing:-.05em;line-height:1}
 .rds-next{font-size:13px;font-weight:700}
 .rds-lbl{font-size:10px;color:var(--dim);font-weight:500;letter-spacing:.01em}
-.rds-divider{width:1px;height:32px;background:#C8D9EC;flex-shrink:0}
+.rds-divider{width:1px;height:32px;background:#EBEBEB;flex-shrink:0}
 
 /* Slots area */
 .slots-area{
@@ -1054,7 +1054,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
   padding:16px 18px 14px
 }
 .hm-card-brand{
-  border:1px solid #C8D9EC
+  border:1px solid #E8E8E8
 }
 .hm-card-brand .hm-title-name{color:var(--text)}
 .hm-title-name{
@@ -1068,7 +1068,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 .hm-title-stats{
   display:flex;align-items:center;gap:6px;
   font-size:12px;font-weight:600;color:var(--soft);
-  padding-top:8px;border-top:1px solid #C8D9EC
+  padding-top:8px;border-top:1px solid #F0F0F0
 }
 .hm-title-stat{display:flex;align-items:center;gap:3px}
 .hm-title-sep{color:var(--dim)}
@@ -1091,42 +1091,35 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 .hm-card-title-icon{display:flex;align-items:center}
 .hm-card-title-icon svg{width:15px;height:15px;stroke-width:2}
 
-/* ── CARD TONES — gris celeste claro / oscuro ────────────────────────── */
-/* Tono A — más claro */
+/* ── CARD TONES — blanco puro, diferenciadas por sombra ─────────────── */
 .hm-card-cal,
-.hm-card-svc{
-  background:#EEF4FB;border-color:#C8D9EC
-}
-/* Tono B — ligeramente más oscuro */
+.hm-card-svc,
 .hm-card-reviews,
 .hm-card-avail,
 .hm-card-brand{
-  background:#E2EBF5;border-color:#C8D9EC
+  background:#ffffff;border-color:#E8E8E8
 }
-/* Dividers internos — mismo azul-gris */
 .hm-card-cal .hm-card-hdr,
 .hm-card-svc .hm-card-hdr,
 .hm-card-reviews .hm-card-hdr,
-.hm-card-avail .hm-card-hdr{border-bottom-color:#C8D9EC}
-/* Colores de texto — neutros */
+.hm-card-avail .hm-card-hdr{border-bottom-color:#F0F0F0}
 .hm-card-cal .hm-card-title,
 .hm-card-svc .hm-card-title,
 .hm-card-reviews .hm-card-title,
 .hm-card-avail .hm-card-title{color:var(--text)}
-/* Íconos — color primario solo en interactivos */
 .hm-card-cal .hm-card-title-icon svg,
 .hm-card-svc .hm-card-title-icon svg,
 .hm-card-reviews .hm-card-title-icon svg,
-.hm-card-avail .hm-card-title-icon svg{stroke:var(--soft)}
+.hm-card-avail .hm-card-title-icon svg{stroke:var(--dim)}
 /* Separadores de filas */
-.hm-svc-row{border-bottom-color:#C8D9EC}
-.hm-svc-row:hover{background:rgba(30,64,120,.06)}
-.hm-svc-cot-row{border-top-color:#C8D9EC}
-.hm-avail-row{border-bottom-color:#C8D9EC}
-.hm-avail-row:hover{background:rgba(30,64,120,.06)}
+.hm-svc-row{border-bottom-color:#F0F0F0}
+.hm-svc-row:hover{background:#F7F7F7}
+.hm-svc-cot-row{border-top-color:#F0F0F0}
+.hm-avail-row{border-bottom-color:#F0F0F0}
+.hm-avail-row:hover{background:#F7F7F7}
 /* Chips de horario */
-.hm-avail-chip{background:rgba(30,64,120,.09);color:var(--primary);border-color:rgba(30,64,120,.2)}
-.hm-avail-chip:hover{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 3px 8px rgba(30,64,120,.25)}
+.hm-avail-chip{background:#F3F4F6;color:var(--primary);border-color:#E5E7EB}
+.hm-avail-chip:hover{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 3px 8px rgba(37,99,235,.25)}
 .hm-avail-more{color:var(--primary)}
 /* Barra de reseñas */
 .rv-bar-fill{background:var(--primary)}
