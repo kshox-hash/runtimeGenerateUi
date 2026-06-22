@@ -577,8 +577,7 @@ function renderSvcGrid(id,svcs){
     var dur=s.duration_minutes?s.duration_minutes+' min':'';
     var firstPhoto=Array.isArray(s.photos)&&s.photos.length>0?s.photos[0]:null;
     var leftHtml=firstPhoto
-      ?'<img class="svc-grid-img" src="'+escH(firstPhoto)+'" alt="" loading="lazy" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'\'">'
-       +'<div class="svc-grid-dot" style="background:'+escH(color)+';display:none"></div>'
+      ?'<img class="svc-grid-img" src="'+escH(firstPhoto)+'" alt="" loading="lazy">'
       :'<div class="svc-grid-dot" style="background:'+escH(color)+'"></div>';
     html+='<div class="svc-grid-item" data-bk-svc="'+i+'">'
       +leftHtml
