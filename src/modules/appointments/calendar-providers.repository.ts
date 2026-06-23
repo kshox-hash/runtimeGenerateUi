@@ -2,6 +2,11 @@ import DB from "../../db/db_configuration";
 
 const pool = DB.getPool();
 
+const PROVIDER_PALETTE = [
+  "#63ACF1", "#10B981", "#F59E0B", "#EF4444",
+  "#8B5CF6", "#EC4899", "#2DD4BF", "#F97316",
+];
+
 function toInitials(name: string): string {
   return name
     .split(/\s+/)
@@ -20,24 +25,41 @@ export async function getProvidersByUserId(userId: string) {
      ORDER BY created_at ASC`,
     [userId]
   );
-  return result.rows;
+  const rows = result.rows;
+
+  // Auto-fix: if any two providers share the same color, re-assign palette by position
+  const hasDuplicates =
+    rows.length > 1 && new Set(rows.map((r) => r.color)).size < rows.length;
+
+  if (hasDuplicates) {
+    for (let i = 0; i < rows.length; i++) {
+      const newColor = PROVIDER_PALETTE[i % PROVIDER_PALETTE.length];
+      rows[i] = { ...rows[i], color: newColor };
+      pool
+        .query(`UPDATE calendar_providers SET color = $1 WHERE id = $2`, [newColor, rows[i].id])
+        .catch(() => {});
+    }
+  }
+
+  return rows;
 }
 
 export async function createProvider(input: {
   userId: string;
   name: string;
-  color?: string;
 }) {
+  const countResult = await pool.query(
+    `SELECT COUNT(*)::int AS count FROM calendar_providers WHERE user_id = $1`,
+    [input.userId]
+  );
+  const count = Number(countResult.rows[0]?.count ?? 0);
+  const color = PROVIDER_PALETTE[count % PROVIDER_PALETTE.length];
+
   const result = await pool.query(
     `INSERT INTO calendar_providers (user_id, name, color, avatar_initials)
      VALUES ($1, $2, $3, $4)
      RETURNING id::text, user_id::text, name, color, avatar_initials, is_active`,
-    [
-      input.userId,
-      input.name.trim(),
-      input.color || "#63ACF1",
-      toInitials(input.name),
-    ]
+    [input.userId, input.name.trim(), color, toInitials(input.name)]
   );
   return result.rows[0];
 }
@@ -45,20 +67,17 @@ export async function createProvider(input: {
 export async function updateProvider(input: {
   id: string;
   name: string;
-  color?: string;
   isActive?: boolean;
   userId: string;
 }) {
   const result = await pool.query(
     `UPDATE calendar_providers
-     SET name = $2, color = $3, avatar_initials = $4,
-         is_active = $5, updated_at = NOW()
-     WHERE id = $1 AND user_id = $6
+     SET name = $2, avatar_initials = $3, is_active = $4, updated_at = NOW()
+     WHERE id = $1 AND user_id = $5
      RETURNING id::text, user_id::text, name, color, avatar_initials, is_active`,
     [
       input.id,
       input.name.trim(),
-      input.color || "#63ACF1",
       toInitials(input.name),
       input.isActive !== false,
       input.userId,

@@ -29,14 +29,13 @@ export type ClientStats = {
 export async function getRevenueStats(userId: string): Promise<RevenueStats> {
   const pool = DB.getPool();
 
-  const [summaryRes, trendRes] = await Promise.all([
+  const [summaryRes, trendRes, bookingCountRes] = await Promise.all([
     pool.query(
       `SELECT
          COALESCE(SUM(amount) FILTER (WHERE paid_at >= DATE_TRUNC('month', NOW())), 0)            AS this_month,
          COALESCE(SUM(amount) FILTER (WHERE paid_at >= DATE_TRUNC('month', NOW() - INTERVAL '1 month')
                                         AND paid_at <  DATE_TRUNC('month', NOW())), 0)            AS last_month,
-         COALESCE(ROUND(AVG(amount)), 0)                                                          AS avg_ticket,
-         COALESCE(COUNT(*) FILTER (WHERE paid_at >= DATE_TRUNC('month', NOW())), 0)               AS count_this_month
+         COALESCE(ROUND(AVG(amount)), 0)                                                          AS avg_ticket
        FROM payments
        WHERE user_id = $1 AND status = 'paid'`,
       [userId]
@@ -52,6 +51,14 @@ export async function getRevenueStats(userId: string): Promise<RevenueStats> {
        ORDER BY DATE_TRUNC('month', paid_at)`,
       [userId]
     ),
+    pool.query(
+      `SELECT COUNT(*)::int AS count
+       FROM calendar_bookings
+       WHERE user_id = $1
+         AND booking_date >= DATE_TRUNC('month', NOW())
+         AND status != 'cancelled'`,
+      [userId]
+    ),
   ]);
 
   const row = summaryRes.rows[0];
@@ -59,7 +66,7 @@ export async function getRevenueStats(userId: string): Promise<RevenueStats> {
     this_month:       Number(row.this_month),
     last_month:       Number(row.last_month),
     avg_ticket:       Number(row.avg_ticket),
-    count_this_month: Number(row.count_this_month),
+    count_this_month: Number(bookingCountRes.rows[0]?.count ?? 0),
     monthly_trend:    trendRes.rows.map((r) => ({ month: r.month, total: Number(r.total) })),
   };
 }
