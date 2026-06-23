@@ -68,12 +68,12 @@ export async function getConversionStats(userId: string): Promise<ConversionStat
   const pool = DB.getPool();
   const result = await pool.query(
     `SELECT
-       COUNT(*)                                       AS total,
-       COUNT(*) FILTER (WHERE payment_status = 'paid') AS paid,
+       COUNT(*)                                                                      AS total,
+       COUNT(*) FILTER (WHERE payment_status IN ('paid', 'free'))                   AS paid,
        ROUND(
-         100.0 * COUNT(*) FILTER (WHERE payment_status = 'paid')
+         100.0 * COUNT(*) FILTER (WHERE payment_status IN ('paid', 'free'))
                / NULLIF(COUNT(*), 0), 1
-       )                                              AS rate
+       )                                                                             AS rate
      FROM calendar_bookings
      WHERE user_id = $1
        AND created_at >= DATE_TRUNC('month', NOW())`,
@@ -96,7 +96,7 @@ export async function getBusiestSlots(userId: string): Promise<BusiestSlot[]> {
        COUNT(*)                           AS count
      FROM calendar_bookings
      WHERE user_id = $1
-       AND payment_status = 'paid'
+       AND payment_status IN ('paid', 'free')
        AND booking_date >= NOW() - INTERVAL '3 months'
      GROUP BY EXTRACT(DOW FROM booking_date), TO_CHAR(booking_date, 'Day')
      ORDER BY count DESC`,
@@ -115,7 +115,7 @@ export async function getClientStats(userId: string): Promise<ClientStats> {
     `WITH client_counts AS (
        SELECT client_email, COUNT(*) AS bookings
        FROM calendar_bookings
-       WHERE user_id = $1 AND payment_status = 'paid' AND client_email <> ''
+       WHERE user_id = $1 AND payment_status IN ('paid', 'free') AND client_email <> ''
        GROUP BY client_email
      )
      SELECT

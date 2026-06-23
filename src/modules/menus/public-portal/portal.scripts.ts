@@ -114,6 +114,7 @@ function setBkHeader(title,showBack){
 
 // Entry: click on a calendar day (time unknown)
 function openBookingFromDay(dateStr){
+  hideCalTip();
   bk.date=dateStr; bk.time=null; bk.provider=null;
   openPanel('bookingPanel');
   if(bk.svc){
@@ -127,6 +128,7 @@ function openBookingFromDay(dateStr){
 
 // Entry: click on a time slot chip (day + time known)
 function openBookingFromSlot(dateStr,time){
+  hideCalTip();
   bk.date=dateStr; bk.time=time; bk.provider=null;
   openPanel('bookingPanel');
   if(bk.svc){
@@ -378,6 +380,7 @@ document.addEventListener('click',function(e){
     var idx=parseInt(svcItem.getAttribute('data-bk-svc-i')||'0',10);
     bk.svc=svcsCache[idx]||null;
     if(providersCache.length>0) renderBkProviderStep();
+    else if(bk.time) renderBkFormStep();
     else renderBkTimeStep();
     return;
   }
@@ -385,13 +388,15 @@ document.addEventListener('click',function(e){
   if(provItem){
     var pidx=parseInt(provItem.getAttribute('data-bk-prov-i')||'0',10);
     bk.provider=providersCache[pidx]||null;
-    renderBkTimeStep();
+    if(bk.time) renderBkFormStep();
+    else renderBkTimeStep();
     return;
   }
   var provAny=t.closest('[data-bk-prov-any]');
   if(provAny){
     bk.provider=null;
-    renderBkTimeStep();
+    if(bk.time) renderBkFormStep();
+    else renderBkTimeStep();
     return;
   }
   var timeChip=t.closest('[data-bk-time]');
