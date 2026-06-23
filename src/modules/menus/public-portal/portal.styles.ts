@@ -660,7 +660,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 .slide-panel.open{transform:translateX(0);box-shadow:-4px 0 40px rgba(15,23,42,.12)}
 .slide-overlay{
   position:fixed;inset:0;background:rgba(15,20,50,.38);z-index:599;
-  opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)
+  opacity:0;pointer-events:none;transition:opacity .25s
 }
 .slide-overlay.open{opacity:1;pointer-events:auto}
 .sp-hdr{
@@ -1248,12 +1248,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
   background:#fff;border:1px solid var(--border);
   border-radius:18px;
   box-shadow:0 16px 48px rgba(15,23,42,.18),0 4px 12px rgba(15,23,42,.08);
-  width:230px;pointer-events:auto;
+  width:230px;pointer-events:none;
   opacity:0;transform:scale(.93) translateY(-6px);
   transition:opacity .18s cubic-bezier(.34,1.56,.64,1),transform .18s cubic-bezier(.34,1.56,.64,1);
   overflow:hidden
 }
-.cal-tip.ct-visible{opacity:1;transform:scale(1) translateY(0)}
+.cal-tip.ct-visible{opacity:1;transform:scale(1) translateY(0);pointer-events:auto}
 .cal-tip-date{
   font-size:12.5px;font-weight:800;color:var(--text);
   padding:12px 15px 9px;letter-spacing:-.02em;
