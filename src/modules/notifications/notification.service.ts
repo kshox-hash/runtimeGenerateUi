@@ -34,15 +34,18 @@ export class NotificationService {
     bookingId: string;
     customerName: string;
     startText?: string;
+    serviceName?: string | null;
   }): Promise<NotificationItem> {
+    const serviceStr = params.serviceName ? ` · ${params.serviceName}` : "";
+    const message = params.startText
+      ? `${params.customerName} reservó${serviceStr} para ${params.startText}.`
+      : `${params.customerName} reservó una hora${serviceStr}.`;
     return this.create({
       userId: params.userId,
       type: "booking",
       priority: "normal",
       title: "Nueva reserva",
-      message: params.startText
-        ? `${params.customerName} reservó una hora para ${params.startText}.`
-        : `${params.customerName} reservó una hora.`,
+      message,
       entityId: params.bookingId,
       entityType: "booking",
       action: "open_booking",

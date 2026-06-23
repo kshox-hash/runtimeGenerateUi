@@ -121,6 +121,7 @@ export async function processApprovedPayment(
     bookingId,
     customerName: booking.client_name || "Cliente",
     startText: `el ${bookingDateStr} a las ${bookingTimeStr}`,
+    serviceName: booking.service_name,
   }).catch(() => {});
 
   if (booking.client_email) {

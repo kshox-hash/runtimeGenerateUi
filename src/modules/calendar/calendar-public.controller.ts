@@ -182,6 +182,7 @@ export const calendarPublicController = {
             bookingId: booking.id,
             customerName,
             startText: `${bookingDateLabel} a las ${startTime}`,
+            serviceName,
           }).catch(() => {});
           sendBookingPaidEmail({
             to: customerEmail,

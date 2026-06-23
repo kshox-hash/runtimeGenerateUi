@@ -8,6 +8,7 @@ export type ConfirmedBooking = {
   client_phone: string;
   booking_date: Date;
   start_time: string;
+  service_name: string | null;
 };
 
 export async function markPaymentAsPaid(
@@ -35,7 +36,7 @@ export async function confirmBooking(
     `UPDATE calendar_bookings
      SET payment_status = 'paid', paid_at = NOW(), status = 'confirmed'
      WHERE id = $1
-     RETURNING id, user_id, client_name, client_email, client_phone, booking_date, start_time`,
+     RETURNING id, user_id, client_name, client_email, client_phone, booking_date, start_time, service_name`,
     [bookingId]
   );
   return result.rows[0] ?? null;
