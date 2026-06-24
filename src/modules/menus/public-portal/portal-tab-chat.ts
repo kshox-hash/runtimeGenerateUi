@@ -82,10 +82,6 @@ export function chatTabHtml(d: ChatData): string {
                 <div class="spinner" style="margin:0 auto 8px"></div>Cargando…
               </div>
             </div>
-            ${hasCotizar ? `
-            <div class="hm-svc-cot-row">
-              <button class="hm-svc-cot-btn" type="button" data-action="cotizar">${S_COT} Pedir cotización</button>
-            </div>` : ""}
           </div>
 
           <div class="hm-card hm-card-reviews">
@@ -116,13 +112,6 @@ export function chatTabHtml(d: ChatData): string {
 
         </div><!-- /hm-svc-rv-wrap -->
 
-        <!-- CTA Azul -->
-        <div class="hm-cta-card">
-          <div class="hm-cta-body">
-            <div class="hm-cta-title">Organiza tus servicios y crece tu negocio</div>
-            ${hasBooking ? `<button class="hm-cta-btn" type="button" data-action="reservas">Crear nueva reserva</button>` : ""}
-          </div>
-        </div>
 
       </div>
 
