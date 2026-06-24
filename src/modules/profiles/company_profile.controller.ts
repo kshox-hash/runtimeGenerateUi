@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
+import cloudinary from "../../config/cloudinary.config";
 import { companyProfileService } from "./company_profile.service";
+import { companyProfileRepository } from "./company_profile_repository";
 
 type GetByUserIdParams = {
   userId: string;
@@ -162,6 +164,39 @@ export const companyProfileController = {
             ? error.message
             : "Error guardando perfil de empresa",
       });
+    }
+  },
+
+  async uploadCoverImage(req: Request, res: Response): Promise<Response> {
+    try {
+      const userId = String(req.user?.userId ?? "").trim();
+      if (!userId) return res.status(401).json({ ok: false, message: "Usuario no autenticado" });
+
+      const file = (req as any).file as Express.Multer.File | undefined;
+      if (!file) return res.status(400).json({ ok: false, message: "No se recibió ninguna imagen." });
+
+      const uploadResult = await new Promise<{ secure_url: string }>((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: `cover-images/${userId}`,
+            transformation: [
+              { width: 1600, height: 600, crop: "limit" },
+              { quality: "auto:low", fetch_format: "auto" },
+            ],
+          },
+          (err, result) => {
+            if (err || !result) return reject(err ?? new Error("Upload failed"));
+            resolve(result);
+          },
+        );
+        stream.end(file.buffer);
+      });
+
+      await companyProfileRepository.updateCoverImage(userId, uploadResult.secure_url);
+      return res.json({ ok: true, url: uploadResult.secure_url });
+    } catch (err) {
+      console.error("[company-profile] uploadCoverImage:", err);
+      return res.status(500).json({ ok: false, message: "No se pudo subir la imagen." });
     }
   },
 

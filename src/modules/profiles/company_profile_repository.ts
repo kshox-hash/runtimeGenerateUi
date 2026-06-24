@@ -159,8 +159,17 @@ const upsert = async (
   return result.rows[0];
 };
 
+const updateCoverImage = async (userId: string, url: string): Promise<void> => {
+  const pool = DB.getPool();
+  await pool.query(
+    `UPDATE business_profiles SET cover_image = $1, updated_at = NOW() WHERE user_id = $2`,
+    [url, userId],
+  );
+};
+
 export const companyProfileRepository = {
   getByUserId,
   getByPublicSlug,
   upsert,
+  updateCoverImage,
 };
