@@ -1537,7 +1537,7 @@ function renderStars(avg){
   if(full<0) full=0;
   var empty=5-full;
   var html='';
-  for(var i=0;i<full;i++) html+='<span style="color:#F59E0B">★</span>';
+  for(var i=0;i<full;i++) html+='<span style="color:#FACC15">★</span>';
   for(var i=0;i<empty;i++) html+='<span style="color:var(--dim)">★</span>';
   return html;
 }
@@ -1592,7 +1592,7 @@ function renderHomeInbox(data){
   var reviewsPanel=document.getElementById('hmReviewsPanel');
   if(total===0 && reviewsPanel){
     reviewsPanel.innerHTML='<div class="hm-empty-row">'
-      +'<div class="hm-empty-icon" style="background:rgba(245,158,11,.1);color:#D97706">'
+      +'<div class="hm-empty-icon" style="background:rgba(250,204,21,.1);color:#FACC15">'
       +'<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
       +'</div>'
       +'<div class="hm-empty-body">'
@@ -1640,7 +1640,7 @@ function renderInboxCard(id,data,maxItems){
   var avgBar=avg?'<div style="display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--border-inner)">'
     +'<span style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.04em">'+avg.toFixed(1)+'</span>'
     +'<div>'
-    +'<div style="font-size:12px;color:#F59E0B;letter-spacing:1px">'+renderStars(avg)+'</div>'
+    +'<div style="font-size:12px;color:#FACC15;letter-spacing:1px">'+renderStars(avg)+'</div>'
     +'<div style="font-size:10.5px;color:var(--dim);margin-top:1px">'+total+' reseña'+(total!==1?'s':'')+'</div>'
     +'</div>'
     +'</div>':'';
@@ -1648,7 +1648,7 @@ function renderInboxCard(id,data,maxItems){
     var name=r.google_name||r.client_name||'Cliente';
     var initLetter=(name.trim().charAt(0)||'?').toUpperCase();
     var color=INBOX_COLORS[i%INBOX_COLORS.length];
-    var stars='';for(var s=1;s<=5;s++) stars+='<span style="color:'+(s<=(r.rating||0)?'#F59E0B':'var(--dim)')+'">★</span>';
+    var stars='';for(var s=1;s<=5;s++) stars+='<span style="color:'+(s<=(r.rating||0)?'#FACC15':'var(--dim)')+'">★</span>';
     var date='';
     if(r.created_at){try{date=new Date(r.created_at).toLocaleDateString('es-CL',{day:'numeric',month:'short'});}catch(e){}}
     var avHtml=r.google_avatar_url
@@ -1684,7 +1684,7 @@ function updateProfileRating(data){
 
 function buildRvCard(r){
   var stars='';
-  for(var i=1;i<=5;i++) stars+='<span style="color:'+(i<=(r.rating||0)?'#F59E0B':'var(--dim)')+'">★</span>';
+  for(var i=1;i<=5;i++) stars+='<span style="color:'+(i<=(r.rating||0)?'#FACC15':'var(--dim)')+'">★</span>';
   var date='';
   if(r.created_at){try{date=new Date(r.created_at).toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'});}catch(e){}}
   var displayName=r.google_name||r.client_name||'Cliente';
@@ -1786,7 +1786,7 @@ function renderReviewForm(err){
   var starsHtml=[1,2,3,4,5].map(function(n){
     return '<button class="rv-star-btn" type="button" data-rv-star="'+n
       +'" style="font-size:34px;background:none;border:none;cursor:pointer;padding:0 2px;color:'
-      +(n<=rvRating?'#F59E0B':'#D1D5DB')+'">★</button>';
+      +(n<=rvRating?'#FACC15':'#D1D5DB')+'">★</button>';
   }).join('');
   body.innerHTML='<div style="padding:24px 20px">'
     +'<div style="font-size:13px;font-weight:600;color:var(--soft);margin-bottom:14px">¿Cómo calificarías tu experiencia?</div>'

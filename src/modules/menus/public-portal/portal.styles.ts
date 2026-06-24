@@ -31,8 +31,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
   --green-dim:rgba(22,163,74,.10);
   --red:#DC2626;
   --red-dim:rgba(220,38,38,.10);
-  --amber:#D97706;
-  --amber-dim:rgba(217,119,6,.12);
+  --amber:#FACC15;
+  --amber-dim:rgba(250,204,21,.12);
   --shadow-s:0 2px 8px rgba(0,0,0,.07);
   --shadow:0 4px 20px rgba(0,0,0,.10);
   --shadow-l:0 12px 40px rgba(0,0,0,.14);
@@ -1275,7 +1275,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 .rv-bar-row{display:flex;align-items:center;gap:7px}
 .rv-bar-star{font-size:10.5px;color:var(--dim);width:18px;flex-shrink:0;text-align:right}
 .rv-bar-track{flex:1;height:6px;border-radius:3px;background:#F0F4F8;overflow:hidden}
-.rv-bar-fill{height:100%;border-radius:3px;background:#F59E0B;transition:width .4s ease}
+.rv-bar-fill{height:100%;border-radius:3px;background:#FACC15;transition:width .4s ease}
 .rv-bar-count{font-size:10.5px;color:var(--dim);width:20px;flex-shrink:0;font-variant-numeric:tabular-nums}
 
 /* ── CALENDAR TOOLTIP ────────────────────────────────────────────────── */
