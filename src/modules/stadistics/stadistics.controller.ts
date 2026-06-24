@@ -130,10 +130,12 @@ export const statisticsController = {
   async getPublicReviews(req: Request, res: Response): Promise<Response> {
     try {
       const userId = String(req.params["userId"]);
+      console.log("[getPublicReviews] userId:", userId, "type:", typeof userId);
       const [summary, recent] = await Promise.all([
         reviewsService.getSummary(userId),
         reviewsService.getAll(userId, 1, 10),
       ]);
+      console.log("[getPublicReviews] summary.total:", summary.total, "reviews count:", recent.data.length);
       return res.json({ ok: true, summary, reviews: recent.data });
     } catch (error: any) {
       return res.status(500).json({ ok: false, message: error?.message || "Error interno" });

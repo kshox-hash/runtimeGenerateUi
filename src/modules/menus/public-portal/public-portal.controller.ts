@@ -181,6 +181,7 @@ export const publicPortalController = {
 
       const portalUser = (req as any).portalUser as { name?: string; email?: string; picture?: string } | undefined;
 
+      console.log("[submitReview] slug.user_id:", slug.user_id, "type:", typeof slug.user_id);
       await reviewsRepo.create(
         slug.user_id, r,
         comment?.trim() || null,
