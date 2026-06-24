@@ -1659,6 +1659,8 @@ function submitReview(){
   .then(function(r){return r.json();})
   .then(function(d){
     if(d.ok){
+      reviewsLoaded=false;
+      ensureReviews();
       var body=document.getElementById('reviewPanelBody'); if(!body) return;
       body.innerHTML='<div class="bk-success">'
         +'<div class="bk-success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>'
@@ -1669,8 +1671,6 @@ function submitReview(){
       var done=document.getElementById('rvDone');
       if(done) done.addEventListener('click',function(){
         closePanel('reviewPanel');
-        reviewsLoaded=false;
-        ensureReviews();
       });
     } else {
       renderReviewForm(d.message||'Error al enviar. Intentá de nuevo.');
