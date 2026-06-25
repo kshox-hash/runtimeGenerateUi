@@ -2,6 +2,7 @@ export function portalStyles(): string {
   return `
 /* ── RESET ───────────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+button{border:none;background:none;cursor:pointer;font-family:inherit;padding:0;-webkit-appearance:none;appearance:none}
 html,body{height:100%;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;background:#fff;scrollbar-width:none;overflow-x:hidden}
 html::-webkit-scrollbar,body::-webkit-scrollbar{display:none}
 body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);overscroll-behavior:none}
