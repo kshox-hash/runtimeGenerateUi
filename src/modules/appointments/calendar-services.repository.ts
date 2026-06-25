@@ -61,6 +61,21 @@ export async function getActiveServicesByUserId(userId: string): Promise<Calenda
   return result.rows;
 }
 
+export async function getActiveServicesPaginated(
+  userId: string,
+  limit: number,
+  offset: number
+): Promise<{ rows: CalendarService[]; total: number }> {
+  const pool = DB.getPool();
+  const sel = `SELECT id::text, user_id::text, name, description, COALESCE(unit,'unidad') AS unit, price, duration_minutes, color, is_active, sort_order, COALESCE(photos, '{}') AS photos
+     FROM calendar_services WHERE user_id = $1 AND is_active = TRUE ORDER BY sort_order ASC, name ASC`;
+  const [data, count] = await Promise.all([
+    pool.query(sel + ` LIMIT $2 OFFSET $3`, [userId, limit, offset]),
+    pool.query(`SELECT COUNT(*)::int AS total FROM calendar_services WHERE user_id = $1 AND is_active = TRUE`, [userId]),
+  ]);
+  return { rows: data.rows, total: Number(count.rows[0].total) };
+}
+
 export async function getServiceById(id: string, userId: string): Promise<CalendarService | null> {
   const pool = DB.getPool();
   const result = await pool.query(

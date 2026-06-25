@@ -1,38 +1,34 @@
-type ProductData = { id: string|number; name: string; price: number; description?: string|null; color?: string|null; photos?: string[] };
-
 export function portalScripts(
   slug: string,
   bizName: string,
   userId: number,
   _modules: unknown[],
-  products: ProductData[],
+  productsRenderedCount: number,
+  productCount: number,
   _bizInfo: unknown,
   initials: string,
 ): string {
-  const safeProducts = products.map(p => ({
-    id:          String(p.id),
-    name:        p.name,
-    price:       Number(p.price || 0),
-    description: p.description || "",
-    color:       p.color || "#63ACF1",
-    photos:      Array.isArray(p.photos) ? p.photos : [],
-  }));
-
   const safeBizName   = bizName.replace(/`/g, "'");
   const safeInitials  = initials.replace(/`/g, "'");
 
   return `
 var SLUG=${JSON.stringify(slug)};
 var USER_ID=${JSON.stringify(userId)};
-var PRODUCTS=${JSON.stringify(safeProducts)};
 var BIZ_NAME=${JSON.stringify(safeBizName)};
 var BIZ_INITIALS=${JSON.stringify(safeInitials)};
 var TABS=['chat','reservas','nosotros','cotizar','resenas'];
 var svcsLoaded=false;
 var svcsCache=[];
+var svcsTotal=0;
 var QCart={};
 var reviewsLoaded=false;
 var rvPage=1;
+var prdOffset=${productsRenderedCount};
+var prdTotal=${productCount};
+var qpProds=[];
+var qpOffset=0;
+var qpTotalProds=0;
+var qpLoadingProds=false;
 var rvTotal=0;
 
 // ── helpers ───────────────────────────────────────────────────────────────────
@@ -532,9 +528,8 @@ document.addEventListener('click',function(e){
 
   var prdCard=t.closest('[data-prod-id]');
   if(prdCard){
-    var pid=prdCard.getAttribute('data-prod-id');
-    var prod=PRODUCTS.filter(function(p){return String(p.id)===pid;})[0];
-    if(prod) openProdDetailPanel(prod);
+    var jsonStr=prdCard.getAttribute('data-prod-json');
+    if(jsonStr){try{var prod=JSON.parse(jsonStr);if(prod&&prod.id)openProdDetailPanel(prod);}catch(e){}}
     return;
   }
 });
@@ -551,32 +546,34 @@ var CARD_GRADIENTS=[
 ];
 
 function ensureServices(){
-  if(svcsLoaded){applyServices(svcsCache);return;}
+  if(svcsLoaded){applyServices(svcsCache,svcsTotal);return;}
   loadServices();
 }
 
 function loadServices(){
-  fetch('/api/public/'+SLUG+'/booking-services')
+  fetch('/api/public/'+SLUG+'/booking-services?limit=50')
     .then(function(r){return r.json();})
     .then(function(d){
       var list=Array.isArray(d)?d:Array.isArray(d.services)?d.services:[];
-      svcsLoaded=true;svcsCache=list;
-      applyServices(list);
+      var total=d.total||list.length;
+      svcsLoaded=true;svcsCache=list;svcsTotal=total;
+      applyServices(list,total);
     })
     .catch(function(){
-      svcsLoaded=true;svcsCache=[];
-      applyServices([]);
+      svcsLoaded=true;svcsCache=[];svcsTotal=0;
+      applyServices([],0);
     });
 }
 
-function applyServices(svcs){
+function applyServices(svcs,total){
   renderSvcHomeList('homeServiceGrid', svcs.slice(0,5));
   renderSvcGrid('svcGrid', svcs);
   renderSvcRows('mobileServiceList', svcs);
+  var count=total||svcs.length;
   var statEl=document.getElementById('prStatSvcs');
-  if(statEl) statEl.textContent=String(svcs.length);
+  if(statEl) statEl.textContent=String(count);
   var hmSvcs=document.getElementById('hmStatSvcs');
-  if(hmSvcs) hmSvcs.textContent=String(svcs.length);
+  if(hmSvcs) hmSvcs.textContent=String(count);
 }
 
 function openProdDetailPanel(prod){
@@ -909,24 +906,48 @@ function filterPrd(q){
   if(empty) empty.style.display=visible===0?'':'none';
 }
 
-// ── products (home, runs on init independently) ────────────────────────────────
-function renderHomeProducts(){
-  var el=document.getElementById('homeProductList');if(!el) return;
-  if(!PRODUCTS.length){
-    el.innerHTML='<div class="prod-empty">Sin productos disponibles aún.</div>';return;
-  }
-  var html='<div class="prod-card-hdr" style="font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.07em">Productos</div>';
-  PRODUCTS.slice(0,6).forEach(function(p){
-    html+='<div class="prod-item">'
-      +'<div class="prod-item-left">'
-      +'<div class="prod-item-name">'+escH(p.name)+'</div>'
-      +(p.description?'<div class="prod-item-desc">'+escH(p.description)+'</div>':'')
-      +'</div>'
-      +'<div class="prod-item-price">'+fmtPrice(p.price)+'</div>'
-      +'</div>';
-  });
-  el.innerHTML=html;
+// ── nosotros: lazy load more products ─────────────────────────────────────────
+function buildNosotrosPrdCard(p){
+  var name=escH(p.name||'');
+  var desc=p.description?escH(p.description):'';
+  var price=Number(p.price||0)===0?'Consultar':'$'+Number(p.price||0).toLocaleString('es-CL');
+  var color=escH(p.color||'#63ACF1');
+  var firstPhoto=Array.isArray(p.photos)&&p.photos.length>0?p.photos[0]:null;
+  var jsonStr=escH(JSON.stringify({id:String(p.id),name:p.name||'',price:Number(p.price||0),description:p.description||null,color:p.color||'#63ACF1',photos:Array.isArray(p.photos)?p.photos:[]}));
+  var thumb=firstPhoto
+    ?'<img class="prd-thumb" src="'+escH(firstPhoto)+'" alt="" loading="lazy">'
+    :'<div class="prd-thumb prd-thumb-dot" style="background:'+color+'"></div>';
+  return '<div class="prd-card" data-name="'+name.toLowerCase()+'" data-prod-id="'+escH(String(p.id))+'" data-prod-json="'+jsonStr+'">'
+    +thumb+'<div class="prd-info"><div class="prd-name">'+name+'</div>'+(desc?'<div class="prd-desc">'+desc+'</div>':'')+'</div>'
+    +'<div class="prd-price">'+price+'</div></div>';
 }
+function loadMorePrd(){
+  if(prdOffset>=prdTotal) return;
+  var btn=document.getElementById('prdLoadMoreBtn');
+  if(btn){btn.textContent='Cargando...';btn.disabled=true;}
+  fetch('/api/public/'+SLUG+'/booking-services?limit=20&offset='+prdOffset)
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var list=Array.isArray(d.services)?d.services:[];
+      prdTotal=d.total||prdTotal;
+      prdOffset+=list.length;
+      var listEl=document.getElementById('prd-list');
+      if(listEl){
+        list.forEach(function(p){
+          var div=document.createElement('div');
+          div.innerHTML=buildNosotrosPrdCard(p);
+          if(div.firstElementChild) listEl.appendChild(div.firstElementChild);
+        });
+      }
+      var wrap=document.getElementById('prdLoadMoreWrap');
+      if(prdOffset>=prdTotal){if(wrap)wrap.style.display='none';}
+      else if(btn){btn.textContent='Cargar más';btn.disabled=false;}
+    })
+    .catch(function(){
+      if(btn){btn.textContent='Cargar más';btn.disabled=false;}
+    });
+}
+
 
 // ── Calendar widget ───────────────────────────────────────────────────────────
 var calSlots={};      // { 'YYYY-MM-DD': ['09:00',...] }
@@ -1449,33 +1470,61 @@ function setupCalTooltips(el){
 function pad2(n){return n<10?'0'+n:String(n);}
 
 // ── Quote tab ─────────────────────────────────────────────────────────────────
-function renderQPStep1(){
-  QCart={};
+function loadQPProducts(reset){
+  if(qpLoadingProds) return;
+  if(reset){qpProds=[];qpOffset=0;qpTotalProds=0;}
+  if(!reset&&qpProds.length>=qpTotalProds&&qpTotalProds>0) return;
+  qpLoadingProds=true;
+  var body=document.getElementById('cotizarBody');
+  if(reset&&body) body.innerHTML='<div style="text-align:center;color:var(--dim);padding:40px 20px;font-size:14px">Cargando...</div>';
+  fetch('/api/public/'+SLUG+'/booking-services?limit=20&offset='+qpOffset)
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var list=Array.isArray(d.services)?d.services:(Array.isArray(d)?d:[]);
+      qpProds=qpProds.concat(list);
+      qpOffset+=list.length;
+      qpTotalProds=d.total||qpProds.length;
+      qpLoadingProds=false;
+      renderQPCards();
+    })
+    .catch(function(){
+      qpLoadingProds=false;
+      var b=document.getElementById('cotizarBody');
+      if(b) b.innerHTML='<div style="text-align:center;color:var(--dim);padding:40px 20px;font-size:14px">Error cargando productos.</div>';
+    });
+}
+function renderQPCards(){
   var body=document.getElementById('cotizarBody');if(!body)return;
-  if(!PRODUCTS.length){
+  if(!qpProds.length&&!qpLoadingProds){
     body.innerHTML='<div style="text-align:center;color:var(--dim);padding:48px 20px;font-size:14px">No hay productos disponibles.</div>';return;
   }
-  var cards=PRODUCTS.map(function(p){
+  var cards=qpProds.map(function(p){
+    var pid=String(p.id);
     return '<div class="qp-prod-card">'
       +'<div class="qp-prod-info">'
       +'<div class="qp-prod-name">'+escH(p.name)+'</div>'
       +(p.description?'<div class="qp-prod-desc">'+escH(p.description)+'</div>':'')
       +'<div class="qp-prod-price">'+fmtPrice(p.price)+'</div>'
       +'</div>'
-      +'<div class="qp-qty" data-id="'+escH(String(p.id))+'">'
+      +'<div class="qp-qty" data-id="'+escH(pid)+'">'
       +'<button class="qp-qty-btn" data-op="minus" type="button">−</button>'
-      +'<span class="qp-qty-num">0</span>'
+      +'<span class="qp-qty-num">'+(QCart[pid]||0)+'</span>'
       +'<button class="qp-qty-btn" data-op="plus" type="button">+</button>'
       +'</div></div>';
   }).join('');
+  var loadMore=qpProds.length<qpTotalProds
+    ?'<div style="padding:12px;text-align:center"><button class="btn-outline" id="qpLoadMoreBtn" type="button">Cargar más</button></div>'
+    :'';
   body.innerHTML='<div style="padding:16px 20px">'
     +'<p style="font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px">Selecciona productos</p>'
     +'<div>'+cards+'</div>'
+    +loadMore
     +'<div id="qpBar" style="display:none;margin-top:14px;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;align-items:center;justify-content:space-between">'
     +'<span id="qpBarInfo" style="font-size:13px;color:var(--soft)"></span>'
     +'<span id="qpBarTot" style="font-size:13px;font-weight:700;color:var(--primary)"></span></div>'
     +'<button class="btn-primary" id="qpContBtn" type="button" style="width:100%;margin-top:14px">Continuar →</button>'
     +'</div>';
+  qpRefreshBar();
   body.querySelectorAll('.qp-qty').forEach(function(qc){
     var pid=qc.getAttribute('data-id');
     var numEl=qc.querySelector('.qp-qty-num');
@@ -1490,21 +1539,31 @@ function renderQPStep1(){
   });
   var contBtn=document.getElementById('qpContBtn');
   if(contBtn) contBtn.addEventListener('click',function(){
-    if(!PRODUCTS.some(function(p){return (QCart[p.id]||0)>0;})){alert('Selecciona al menos un producto.');return;}
+    if(!qpProds.some(function(p){return (QCart[String(p.id)]||0)>0;})){alert('Selecciona al menos un producto.');return;}
     renderQPStep2();
   });
+  var lmBtn=document.getElementById('qpLoadMoreBtn');
+  if(lmBtn) lmBtn.addEventListener('click',function(){
+    lmBtn.textContent='Cargando...';lmBtn.disabled=true;
+    loadQPProducts(false);
+  });
+}
+function renderQPStep1(){
+  QCart={};
+  if(qpProds.length>0){renderQPCards();}
+  else{loadQPProducts(true);}
 }
 function qpRefreshBar(){
   var bar=document.getElementById('qpBar'),info=document.getElementById('qpBarInfo'),tot=document.getElementById('qpBarTot');
   if(!bar)return;
-  var c=0,t=0;PRODUCTS.forEach(function(p){var q=QCart[p.id]||0;c+=q;t+=p.price*q;});
+  var c=0,t=0;qpProds.forEach(function(p){var q=QCart[String(p.id)]||0;c+=q;t+=p.price*q;});
   if(c>0){bar.style.display='flex';info.textContent=c+(c!==1?' productos':' producto');tot.textContent=fmtPrice(t);}
   else bar.style.display='none';
 }
 function renderQPStep2(){
   var body=document.getElementById('cotizarBody');if(!body)return;
   var rows='',total=0;
-  PRODUCTS.forEach(function(p){var q=QCart[p.id]||0;if(!q)return;var sub=p.price*q;total+=sub;
+  qpProds.forEach(function(p){var q=QCart[String(p.id)]||0;if(!q)return;var sub=p.price*q;total+=sub;
     rows+='<div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border-inner);font-size:13.5px">'
     +'<span style="color:var(--soft)">'+escH(p.name)+' \xd7'+q+'</span><span style="font-weight:600">'+fmtPrice(sub)+'</span></div>';
   });
@@ -1529,7 +1588,7 @@ function renderQPStep2(){
     var email=document.getElementById('qpEmail').value.trim();
     if(!name||!phone){errEl.textContent='Nombre y teléfono son obligatorios.';errEl.style.display='block';return;}
     errEl.style.display='none';sendBtn.disabled=true;sendBtn.textContent='Enviando...';
-    var items=PRODUCTS.filter(function(p){return (QCart[p.id]||0)>0;}).map(function(p){return {productId:p.id,quantity:QCart[p.id]};});
+    var items=qpProds.filter(function(p){return (QCart[String(p.id)]||0)>0;}).map(function(p){return {productId:String(p.id),quantity:QCart[String(p.id)]};});
     fetch('/shop/'+SLUG+'/quotes/submit',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({customer:{name:name,phone:phone,email:email||'',message:''},items:items})})
     .then(function(r){return r.json();})

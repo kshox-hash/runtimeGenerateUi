@@ -24,7 +24,16 @@ function buildProductCard(product: Product): string {
     ? `<img class="prd-thumb" src="${escapeHtml(firstPhoto)}" alt="" loading="lazy">`
     : `<div class="prd-thumb prd-thumb-dot" style="background:${color}"></div>`;
 
-  return `<div class="prd-card" data-name="${name.toLowerCase()}" data-prod-id="${escapeHtml(String(product.id))}">
+  const prodJson = escapeHtml(JSON.stringify({
+    id:          String(product.id),
+    name:        product.name,
+    price:       Number(product.price || 0),
+    description: product.description || null,
+    color:       product.color || "#63ACF1",
+    photos:      Array.isArray(product.photos) ? product.photos : [],
+  }));
+
+  return `<div class="prd-card" data-name="${name.toLowerCase()}" data-prod-id="${escapeHtml(String(product.id))}" data-prod-json="${prodJson}">
   ${thumb}
   <div class="prd-info">
     <div class="prd-name">${name}</div>
@@ -34,15 +43,16 @@ function buildProductCard(product: Product): string {
 </div>`;
 }
 
-export function nosotrosTabHtml(products: Product[]): string {
+export function nosotrosTabHtml(products: Product[], total: number): string {
   const hasProducts = products && products.length > 0;
+  const hasMore = total > products.length;
 
   return `<div id="panel-nosotros" class="panel">
   <div class="pscroll">
     <div class="sec-hdr">
       <div>
         <div class="sec-title">Productos &amp; Servicios</div>
-        <div class="sec-sub">${hasProducts ? `${products.length} disponible${products.length !== 1 ? "s" : ""}` : "Sin productos aún"}</div>
+        <div class="sec-sub">${hasProducts ? `${total} disponible${total !== 1 ? "s" : ""}` : "Sin productos aún"}</div>
       </div>
     </div>
     ${hasProducts ? `
@@ -52,6 +62,7 @@ export function nosotrosTabHtml(products: Product[]): string {
     </div>
     <div id="prd-list" class="prd-list">${products.map(p => buildProductCard(p)).join("")}</div>
     <div id="prd-empty-search" class="prd-no-results" style="display:none">Sin resultados para tu búsqueda.</div>
+    ${hasMore ? `<div id="prdLoadMoreWrap" style="padding:16px;text-align:center"><button class="btn-outline" id="prdLoadMoreBtn" onclick="loadMorePrd()">Cargar más</button></div>` : ""}
     ` : `<div class="prod-empty">Sin productos publicados aún.<br/><span style="font-size:12px">Agrega tus productos desde el panel de administración.</span></div>`}
   </div>
 </div>`;

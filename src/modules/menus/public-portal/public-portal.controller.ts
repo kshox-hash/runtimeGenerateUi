@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { getSlugByValueService } from "../../slug/slug.service";
 import { quoteHtml } from "../../quotes/quote-html";
-import { getActiveServicesByUserId } from "../../appointments/calendar-services.repository";
+import { getActiveServicesByUserId, getActiveServicesPaginated } from "../../appointments/calendar-services.repository";
 import { companyProfileRepository } from "../../profiles/company_profile_repository";
 import { findEnabledModulesByUserId } from "../user-modules.repository";
 import { renderPortalHtml } from "./portal.screen";
@@ -123,17 +123,19 @@ export const publicPortalController = {
         return res.status(404).send("Negocio no encontrado");
       }
 
-      const [products, profile, enabledModules] = await Promise.all([
-        getActiveServicesByUserId(slug.user_id),
+      const [productsResult, profile, enabledModules] = await Promise.all([
+        getActiveServicesPaginated(slug.user_id, 20, 0),
         companyProfileRepository.getByUserId(slug.user_id),
         findEnabledModulesByUserId(slug.user_id),
       ]);
+
+      const products = productsResult.rows;
 
       const html = renderPortalHtml({
         businessName:   slug.business_name ?? publicSlug,
         publicSlug,
         userId:         slug.user_id,
-        productCount:   products.length,
+        productCount:   productsResult.total,
         phone:          profile?.phone           ?? null,
         address:        profile?.address         ?? null,
         city:           profile?.city            ?? null,

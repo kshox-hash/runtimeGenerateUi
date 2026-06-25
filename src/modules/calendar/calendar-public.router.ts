@@ -4,7 +4,7 @@ import { confirmBookingByToken } from "./booking/services/bookingConfirmation.se
 import { renderBookingConfirmationSuccessHtml } from "./booking/views/bookingConfirmationSuccessHtml";
 import { renderBookingConfirmationErrorHtml } from "./booking/views/bookingConfirmationErrorHtml";
 import { getSlugByValueService } from "../slug/slug.service";
-import { getActiveServicesByUserId } from "../appointments/calendar-services.repository";
+import { getActiveServicesPaginated } from "../appointments/calendar-services.repository";
 
 const router = express.Router();
 
@@ -14,8 +14,10 @@ router.get("/api/public/:publicSlug/booking-services", async (req, res) => {
     const publicSlug = String(req.params["publicSlug"] || "").trim();
     const profile = await getSlugByValueService(publicSlug);
     if (!profile) return res.status(404).json({ ok: false, message: "Negocio no encontrado." });
-    const services = await getActiveServicesByUserId(profile.user_id);
-    return res.json({ ok: true, services });
+    const limit = Math.min(Math.max(parseInt(String(req.query["limit"] || "50"), 10) || 50, 1), 100);
+    const offset = Math.max(parseInt(String(req.query["offset"] || "0"), 10) || 0, 0);
+    const result = await getActiveServicesPaginated(profile.user_id, limit, offset);
+    return res.json({ ok: true, services: result.rows, total: result.total });
   } catch (err) {
     console.error("[calendar] Error obteniendo servicios:", err);
     return res.status(500).json({ ok: false, message: "No se pudieron cargar los servicios." });
