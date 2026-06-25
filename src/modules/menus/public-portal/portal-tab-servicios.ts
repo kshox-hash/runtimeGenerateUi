@@ -8,7 +8,9 @@ export function serviciosTabHtml(): string {
           <div class="sec-sub">Seleccioná los productos y recibí tu presupuesto por email</div>
         </div>
       </div>
-      <div id="cotizarBody"></div>
+      <div style="background:var(--panel);border-radius:var(--r);overflow:hidden">
+        <div id="cotizarBody"></div>
+      </div>
     </div>
   </div>`;
 }

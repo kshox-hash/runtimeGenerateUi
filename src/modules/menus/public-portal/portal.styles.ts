@@ -593,7 +593,21 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 /* Calendar — home-style colored square cells */
 .rdash-body{display:grid;grid-template-columns:3fr 2fr;gap:12px;align-items:start;margin-bottom:22px}
 .rdash-info-col{display:flex;flex-direction:column;gap:10px}
-@media(max-width:640px){.rdash-body{grid-template-columns:1fr}}
+@media(max-width:640px){
+  .rdash-body{grid-template-columns:1fr}
+  .rdash-stats-col{
+    flex-direction:row;
+    background:var(--panel);
+    border-radius:16px;
+  }
+  .rds-item{
+    flex:1;border-bottom:none;
+    border-right:1px solid var(--border);
+    padding:14px 6px;
+  }
+  .rds-item:last-child{border-right:none}
+  .rds-val{font-size:15px}
+}
 .month-cal-grid{width:100%}
 .mc-hdr-row{
   display:grid;grid-template-columns:repeat(7,1fr);
