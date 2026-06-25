@@ -13,9 +13,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 
 /* ── TOKENS ──────────────────────────────────────────────────────────── */
 :root{
-  --bg:#EAEBEF;
-  --panel:#FFFFFF;
-  --rail:#F5F6F8;
+  --bg:#FFFFFF;
+  --panel:#F2F3F5;
+  --rail:#F2F3F5;
   --rail-icon:#9CA3AF;
   --rail-icon-act:var(--primary);
   --border:#E5E7EB;
@@ -51,7 +51,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 
 .mobile-hdr{
   position:fixed;top:0;left:0;right:0;height:var(--hdr);
-  background:var(--panel);
+  background:var(--bg);
   display:flex;align-items:center;gap:12px;padding:0 18px;z-index:200;
 }
 .mhdr-av{
@@ -108,7 +108,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 .mobile-drawer{
   position:fixed;top:0;left:0;bottom:0;
   width:min(80vw,300px);
-  background:var(--panel);z-index:700;
+  background:var(--bg);z-index:700;
   display:flex;flex-direction:column;
   transform:translateX(calc(-100% - 2px));
   transition:transform .3s cubic-bezier(.22,1,.36,1);
@@ -728,7 +728,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 .slide-panel{
   position:fixed;top:0;right:0;bottom:0;
   width:min(100vw,460px);
-  background:var(--panel);
+  background:var(--bg);
   z-index:600;transform:translateX(calc(100% + 2px));
   transition:transform .32s cubic-bezier(.22,1,.36,1);
   display:flex;flex-direction:column;overflow:hidden;
@@ -742,7 +742,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 .slide-overlay.open{opacity:1;pointer-events:auto}
 .sp-hdr{
   display:flex;align-items:center;gap:12px;
-  padding:16px 20px;flex-shrink:0;background:var(--panel)
+  padding:16px 20px;flex-shrink:0;background:var(--bg)
 }
 .sp-title{font-size:15px;font-weight:700;color:var(--text);flex:1;letter-spacing:-.03em}
 .sp-close{
@@ -1182,10 +1182,10 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 
 /* ── CARD TONES — blanco / gris neutro alternados, sin bordes ───────── */
 .hm-card-brand,
-.hm-card-avail{background:#ffffff}
+.hm-card-avail{background:var(--panel)}
 .hm-card-cal,
 .hm-card-svc,
-.hm-card-reviews{background:#F6F6F6}
+.hm-card-reviews{background:var(--panel)}
 .hm-card-cal .hm-card-hdr,
 .hm-card-svc .hm-card-hdr,
 .hm-card-reviews .hm-card-hdr,
