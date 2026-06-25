@@ -68,18 +68,23 @@ export function nosotrosTabHtml(products: Product[], total: number, galleryPhoto
     ${hasMore ? `<div id="prdLoadMoreWrap" style="padding:16px;text-align:center"><button class="btn-outline" id="prdLoadMoreBtn" onclick="loadMorePrd()">Cargar más</button></div>` : ""}
     ` : `<div class="prod-empty">Sin productos publicados aún.<br/><span style="font-size:12px">Agrega tus productos desde el panel de administración.</span></div>`}
 
-    ${hasGallery ? `
     <div class="sec-hdr" style="margin-top:28px">
       <div>
         <div class="sec-title">Galería</div>
-        <div class="sec-sub">${galleryPhotos.length} foto${galleryPhotos.length !== 1 ? "s" : ""}</div>
+        <div class="sec-sub">${hasGallery ? `${galleryPhotos.length} foto${galleryPhotos.length !== 1 ? "s" : ""}` : "Portafolio de trabajos"}</div>
       </div>
     </div>
+    ${hasGallery ? `
     <div class="gal-grid">
       ${galleryPhotos.map((p, i) => `<div class="gal-item" data-gal-idx="${i}" data-gal-url="${escapeHtml(p.url)}" data-gal-desc="${escapeHtml(p.description || "")}" onclick="openGalPanel(${i})">
         <img src="${escapeHtml(p.url)}" alt="" loading="lazy">
       </div>`).join("")}
-    </div>` : ""}
+    </div>` : `
+    <div class="gal-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      <div class="gal-empty-title">Próximamente</div>
+      <div class="gal-empty-sub">Las fotos de los trabajos se mostrarán aquí</div>
+    </div>`}
   </div>
 </div>`;
 }

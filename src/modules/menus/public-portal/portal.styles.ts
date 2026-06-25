@@ -471,9 +471,13 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 
 /* Gallery */
 .gal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;border-radius:12px;overflow:hidden}
-.gal-item{aspect-ratio:1;overflow:hidden;cursor:pointer;background:var(--bg);position:relative}
+.gal-item{aspect-ratio:1;overflow:hidden;cursor:pointer;background:var(--panel);position:relative}
 .gal-item img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .18s}
 .gal-item:active img{opacity:.75}
+.gal-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;background:var(--panel);border-radius:16px;gap:8px}
+.gal-empty svg{width:36px;height:36px;color:var(--dim);opacity:.5}
+.gal-empty-title{font-size:14px;font-weight:600;color:var(--soft);letter-spacing:-.02em}
+.gal-empty-sub{font-size:12px;color:var(--dim);text-align:center;line-height:1.5}
 
 /* Inbox panel */
 .inbox-card{background:var(--panel);border-radius:26px;overflow:hidden}
