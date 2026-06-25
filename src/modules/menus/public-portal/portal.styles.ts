@@ -23,11 +23,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
   --text:#111827;
   --soft:#374151;
   --dim:#6B7280;
-  --primary:#2563EB;
-  --primary-dim:rgba(37,99,235,.09);
-  --primary-glow:rgba(37,99,235,.18);
-  --nav-act:#2563EB;
-  --nav-act-bg:rgba(37,99,235,.08);
+  --primary:#EA580C;
+  --primary-dim:rgba(234,88,12,.09);
+  --primary-glow:rgba(234,88,12,.18);
+  --nav-act:#EA580C;
+  --nav-act-bg:rgba(234,88,12,.08);
   --green:#16A34A;
   --green-dim:rgba(22,163,74,.10);
   --red:#DC2626;
@@ -534,9 +534,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
   transition:opacity .15s,transform .12s;text-decoration:none;letter-spacing:-.01em;
   -webkit-tap-highlight-color:transparent
 }
-.btn-primary:hover{background:#1D4ED8}
-.btn-primary:focus-visible{outline:3px solid rgba(37,99,235,.4);outline-offset:2px}
-.btn-primary:active{transform:scale(.97);background:#1E40AF}
+.btn-primary:hover{background:#C2410C}
+.btn-primary:focus-visible{outline:3px solid rgba(234,88,12,.4);outline-offset:2px}
+.btn-primary:active{transform:scale(.97);background:#9A3412}
 .btn-primary svg{width:15px;height:15px;stroke-width:2.2}
 .btn-sm{font-size:12px;padding:8px 16px;border-radius:12px}
 
@@ -639,9 +639,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 .mc-avail:active{transform:scale(.88)}
 
 /* Hoy */
-.mc-today{background:#2563EB}
+.mc-today{background:#EA580C}
 .mc-today .mc-num{color:#fff;font-weight:700}
-.mc-today.mc-avail{background:#2563EB}
+.mc-today.mc-avail{background:#EA580C}
 
 /* Seleccionado */
 .mc-sel{cursor:pointer;background:var(--primary)}
@@ -857,7 +857,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
 }
 .cal-cell.cal-empty{pointer-events:none;background:transparent}
 .cal-cell.cal-past{color:#94A3B8;pointer-events:none;background:transparent}
-.cal-cell.cal-today{background:#2563EB;color:#fff;font-weight:700}
+.cal-cell.cal-today{background:#EA580C;color:#fff;font-weight:700}
 .cal-cell.cal-avail{
   cursor:pointer;font-weight:700;color:#fff;
   background:#16A34A;border:none
@@ -1389,7 +1389,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
   background:var(--primary);color:#fff;font-size:12.5px;font-weight:700;
   cursor:pointer;text-align:center;transition:background .15s
 }
-.cal-tip-btn:hover{background:#1D4ED8}
+.cal-tip-btn:hover{background:#C2410C}
 
 /* ── CTA AZUL ─────────────────────────────────────────────────────────── */
 .hm-cta-card{
@@ -1458,7 +1458,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);
   width:36px;height:36px;border-radius:50%;flex-shrink:0;
   background:var(--primary-dim);color:var(--primary);
   font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;
-  overflow:hidden;border:2px solid rgba(37,99,235,.12)
+  overflow:hidden;border:2px solid rgba(234,88,12,.12)
 }
 .ddp-avatar img{width:100%;height:100%;object-fit:cover}
 .ddp-person-name{font-size:14px;font-weight:600;color:var(--text)}
