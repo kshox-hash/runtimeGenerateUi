@@ -80,13 +80,15 @@ export const quoteSendController = {
         templateType === "eventos" ? "Propuesta" : "Cotización";
 
       const { fileName, filePath } = await generateQuotePdf({
-        token:        `custom-${userId}-${Date.now()}`,
-        brand:        brandName,
-        brandRut:     profile?.rut     || undefined,
+        token:              `custom-${userId}-${Date.now()}`,
+        brand:              brandName,
+        brandRut:           profile?.rut         || undefined,
         brandAddress,
-        brandPhone:   profile?.phone   || undefined,
-        title:        docTitle,
-        subtitle:     profile?.description || "",
+        brandPhone:         profile?.phone        || undefined,
+        brandCoverImageUrl: profile?.cover_image  || undefined,
+        brandAccentColor:   profile?.brand_color  || undefined,
+        title:              docTitle,
+        subtitle:           profile?.description  || "",
         templateType: templateType as any,
         customer: {
           name:  client.name,

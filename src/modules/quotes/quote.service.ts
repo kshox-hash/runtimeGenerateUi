@@ -1,5 +1,7 @@
 import PDFDocument from "pdfkit";
 import fs from "fs";
+import https from "https";
+import http from "http";
 import path from "path";
 
 import { formatCurrencyCLP } from "../../utils/format";
@@ -24,6 +26,8 @@ type QuotePdfInput = {
   brandRut?: string;
   brandAddress?: string;
   brandPhone?: string;
+  brandCoverImageUrl?: string;
+  brandAccentColor?: string;
   title?: string;
   subtitle?: string;
   templateType?: QuoteTemplateType;
@@ -61,192 +65,176 @@ const TEMPLATE_LABELS: Record<QuoteTemplateType, string> = {
   servicios:    "Servicios Profesionales",
   productos:    "Productos / Suministros",
   construccion: "Construcción",
-  eventos:      "Eventos / Paquetes",
+  eventos:      "Propuesta de Evento",
   rapida:       "Cotización",
 };
 
-const colors = {
-  black:      "#0D0D0D",
-  dark:       "#1C1C1C",
-  heading:    "#2C2C2C",
-  text:       "#333333",
-  muted:      "#666666",
-  light:      "#999999",
-  border:     "#D0D0D0",
-  borderLight:"#E8E8E8",
-  rowAlt:     "#F7F7F7",
-  white:      "#FFFFFF",
-  headerBg:   "#1C2B3A",
-  headerText: "#FFFFFF",
-};
+function downloadImageBuffer(url: string): Promise<Buffer> {
+  // Convert to JPEG for Cloudinary URLs (PDFKit supports JPEG and PNG natively)
+  const finalUrl =
+    url.includes("cloudinary.com") && url.includes("/upload/")
+      ? url.replace("/upload/", "/upload/f_jpg,q_80/")
+      : url;
 
-export function generateQuotePdf(input: QuotePdfInput) {
+  return new Promise((resolve, reject) => {
+    const client = finalUrl.startsWith("https") ? https : http;
+    const req = client.get(finalUrl, (res) => {
+      if ((res.statusCode ?? 0) >= 400) {
+        reject(new Error(`Image download failed: HTTP ${res.statusCode}`));
+        return;
+      }
+      const chunks: Buffer[] = [];
+      res.on("data", (c: Buffer) => chunks.push(c));
+      res.on("end", () => resolve(Buffer.concat(chunks)));
+      res.on("error", reject);
+    });
+    req.on("error", reject);
+    req.setTimeout(6000, () => {
+      req.destroy();
+      reject(new Error("Image download timeout"));
+    });
+  });
+}
+
+export async function generateQuotePdf(
+  input: QuotePdfInput
+): Promise<{ fileName: string; filePath: string }> {
+  let coverBuffer: Buffer | null = null;
+  if (input.brandCoverImageUrl?.trim()) {
+    coverBuffer = await downloadImageBuffer(input.brandCoverImageUrl).catch(() => null);
+  }
+
   return new Promise<{ fileName: string; filePath: string }>((resolve, reject) => {
     try {
-      const timestamp     = Date.now();
-      const safeToken     = sanitizeFileName(input.token);
-      const fileName      = `cotizacion_${safeToken}_${timestamp}.pdf`;
-      const filePath      = path.join(GENERATED_PDFS_DIR, fileName);
-      const templateType: QuoteTemplateType = input.templateType || "rapida";
+      const timestamp  = Date.now();
+      const safeToken  = sanitizeFileName(input.token);
+      const fileName   = `cotizacion_${safeToken}_${timestamp}.pdf`;
+      const filePath   = path.join(GENERATED_PDFS_DIR, fileName);
+      const tType: QuoteTemplateType = input.templateType || "rapida";
 
-      const doc    = new PDFDocument({ margin: 40, size: "A4" });
+      const doc    = new PDFDocument({ margin: 0, size: "A4" });
       const stream = fs.createWriteStream(filePath);
       doc.pipe(stream);
 
-      const pageWidth    = doc.page.width;
-      const pageHeight   = doc.page.height;
-      const margin       = 40;
-      const contentWidth = pageWidth - margin * 2;
+      const PW = doc.page.width;   // 595.28 pt
+      const PH = doc.page.height;  // 841.89 pt
+      const M  = 44;
+      const CW = PW - M * 2;
 
-      const brandName   = input.brand?.trim()    || "Mi negocio";
-      const docTitle    = input.title?.trim()    || TEMPLATE_LABELS[templateType];
-      const quoteNumber = `Q-${String(timestamp).slice(-6)}`;
-      const issueDate   = new Date().toLocaleDateString("es-CL");
-      const customer    = input.customer ?? { name: "", email: "", phone: "", notes: "" };
+      const brand     = input.brand?.trim()     || "Mi negocio";
+      const docTitle  = input.title?.trim()     || TEMPLATE_LABELS[tType];
+      const qNumber   = `Q-${String(timestamp).slice(-6)}`;
+      const issueDate = new Date().toLocaleDateString("es-CL");
+      const cust      = input.customer ?? { name: "", email: "", phone: "", notes: "" };
 
-      // ── Header ──────────────────────────────────────────────────────────────
-      function drawHeader() {
-        // Dark header band
-        doc.rect(0, 0, pageWidth, 100).fill(colors.headerBg);
+      const rawAccent = input.brandAccentColor?.trim() ?? "";
+      const accent    = /^#[0-9A-Fa-f]{6}$/.test(rawAccent) ? rawAccent : "#111827";
 
-        // Brand name
-        doc.fillColor(colors.headerText)
-           .font("Helvetica-Bold")
-           .fontSize(18)
-           .text(brandName, margin, 28, { width: contentWidth * 0.6 });
+      const HEADER_H = 116;
+
+      // ── Color palette ─────────────────────────────────────────────────────────
+      const ink      = "#111827";
+      const inkSub   = "#4B5563";
+      const inkDim   = "#9CA3AF";
+      const border   = "#E5E7EB";
+      const rowAlt   = "#F9FAFB";
+      const tHead    = "#1F2937";
+      const tHeadTxt = "#F3F4F6";
+      const white    = "#FFFFFF";
+      const hTxt     = "#FFFFFF";
+      const hSub     = "#9CA3AF";
+      const hBg      = "#111827";
+
+      // ── Table column layout ───────────────────────────────────────────────────
+      const pad = 14;
+      const dW  = CW * 0.44;
+      const qW  = CW * 0.10;
+      const pW  = CW * 0.21;
+      const sW  = CW - dW - qW - pW;
+      const c1  = M + pad;
+      const c2  = M + dW;
+      const c3  = c2 + qW;
+      const c4  = c3 + pW;
+      const TH  = 27;
+
+      // ── Draw table header row ─────────────────────────────────────────────────
+      function drawTHead(sy: number): number {
+        doc.rect(M, sy, CW, TH).fill(tHead);
+        doc.fillColor(tHeadTxt).font("Helvetica-Bold").fontSize(7.5)
+           .text("DESCRIPCIÓN",   c1, sy + 10, { width: dW - pad })
+           .text("CANT.",         c2, sy + 10, { width: qW, align: "center" })
+           .text("PRECIO UNIT.",  c3, sy + 10, { width: pW - 4, align: "right" })
+           .text("SUBTOTAL",      c4, sy + 10, { width: sW - pad, align: "right" });
+        return sy + TH;
+      }
+
+      // ── Page header band + accent strip ──────────────────────────────────────
+      function drawPageHeader() {
+        if (coverBuffer) {
+          try {
+            doc.save();
+            doc.rect(0, 0, PW, HEADER_H).clip();
+            doc.image(coverBuffer, 0, 0, { width: PW });
+            doc.restore();
+            // Dark gradient overlay for text readability
+            const grad = (doc as any).linearGradient(0, 0, 0, HEADER_H);
+            grad.stop(0, "#000000", 0.20);
+            grad.stop(1, "#000000", 0.70);
+            doc.rect(0, 0, PW, HEADER_H).fill(grad);
+          } catch {
+            doc.rect(0, 0, PW, HEADER_H).fill(hBg);
+          }
+        } else {
+          doc.rect(0, 0, PW, HEADER_H).fill(hBg);
+        }
+
+        // Brand name — left
+        doc.fillColor(hTxt).font("Helvetica-Bold").fontSize(20)
+           .text(brand, M, 30, { width: CW * 0.58 });
 
         if (input.subtitle?.trim()) {
-          doc.fillColor("#A0B4C8")
-             .font("Helvetica")
-             .fontSize(9)
-             .text(input.subtitle.trim(), margin, 52, { width: contentWidth * 0.6 });
+          doc.fillColor(hSub).font("Helvetica").fontSize(8.5)
+             .text(input.subtitle.trim(), M, 56, { width: CW * 0.58 });
         }
 
-        // Quote type + number (right side)
-        doc.fillColor("#A0B4C8")
-           .font("Helvetica")
-           .fontSize(8.5)
-           .text(TEMPLATE_LABELS[templateType].toUpperCase(), margin, 24, {
-             width: contentWidth, align: "right",
+        // Template category — right top
+        doc.fillColor(hSub).font("Helvetica").fontSize(7.5)
+           .text(TEMPLATE_LABELS[tType].toUpperCase(), M, 26, {
+             width: CW, align: "right",
            });
 
-        doc.fillColor(colors.headerText)
-           .font("Helvetica-Bold")
-           .fontSize(22)
-           .text(docTitle.toUpperCase(), margin, 38, {
-             width: contentWidth, align: "right",
+        // Document title — right middle
+        doc.fillColor(hTxt).font("Helvetica-Bold").fontSize(20)
+           .text(docTitle.toUpperCase(), M, 42, {
+             width: CW, align: "right",
            });
 
-        doc.fillColor("#A0B4C8")
-           .font("Helvetica")
-           .fontSize(8.5)
-           .text(`Nº ${quoteNumber}  ·  ${issueDate}`, margin, 66, {
-             width: contentWidth, align: "right",
+        // Quote number + date — right bottom
+        doc.fillColor(hSub).font("Helvetica").fontSize(8.5)
+           .text(`N° ${qNumber}  ·  ${issueDate}`, M, 72, {
+             width: CW, align: "right",
            });
+
+        // Accent strip below header
+        doc.rect(0, HEADER_H, PW, 4).fill(accent);
       }
 
-      // ── Issuer + Customer info ───────────────────────────────────────────────
-      function drawPartiesBox(startY: number): number {
-        const boxH = 90;
-        const halfW = (contentWidth - 20) / 2;
-
-        // Left: Issuer
-        doc.rect(margin, startY, halfW, boxH)
-           .fillAndStroke("#F9FAFB", colors.borderLight);
-
-        doc.fillColor(colors.muted)
-           .font("Helvetica-Bold")
-           .fontSize(7.5)
-           .text("EMISOR", margin + 14, startY + 12);
-
-        doc.fillColor(colors.dark)
-           .font("Helvetica-Bold")
-           .fontSize(11)
-           .text(brandName, margin + 14, startY + 25, { width: halfW - 28 });
-
-        let iy = startY + 42;
-        if (input.brandRut) {
-          doc.fillColor(colors.muted).font("Helvetica").fontSize(8.5)
-             .text(`RUT: ${input.brandRut}`, margin + 14, iy, { width: halfW - 28 });
-          iy += 13;
-        }
-        if (input.brandAddress) {
-          doc.fillColor(colors.muted).font("Helvetica").fontSize(8.5)
-             .text(input.brandAddress, margin + 14, iy, { width: halfW - 28 });
-          iy += 13;
-        }
-        if (input.brandPhone) {
-          doc.fillColor(colors.muted).font("Helvetica").fontSize(8.5)
-             .text(`Tel: ${input.brandPhone}`, margin + 14, iy, { width: halfW - 28 });
-        }
-
-        // Right: Customer
-        const rx = margin + halfW + 20;
-        doc.rect(rx, startY, halfW, boxH)
-           .fillAndStroke("#F9FAFB", colors.borderLight);
-
-        doc.fillColor(colors.muted)
-           .font("Helvetica-Bold")
-           .fontSize(7.5)
-           .text("CLIENTE", rx + 14, startY + 12);
-
-        doc.fillColor(colors.dark)
-           .font("Helvetica-Bold")
-           .fontSize(11)
-           .text(customer.name?.trim() || "—", rx + 14, startY + 25, { width: halfW - 28 });
-
-        doc.fillColor(colors.muted).font("Helvetica").fontSize(8.5)
-           .text(customer.email?.trim() || "—", rx + 14, startY + 42, { width: halfW - 28 });
-
-        if (customer.phone?.trim()) {
-          doc.fillColor(colors.muted).font("Helvetica").fontSize(8.5)
-             .text(`Tel: ${customer.phone.trim()}`, rx + 14, startY + 55, { width: halfW - 28 });
-        }
-
-        return startY + boxH + 22;
-      }
-
-      // ── Table ────────────────────────────────────────────────────────────────
-      function drawTableHeader(startY: number) {
-        doc.rect(margin, startY, contentWidth, 24).fill(colors.dark);
-
-        const pad = 12;
-        const dW  = contentWidth * 0.44;
-        const qW  = contentWidth * 0.10;
-        const pW  = contentWidth * 0.20;
-        const sW  = contentWidth * 0.22;
-        const c1  = margin + pad;
-        const c2  = c1 + dW;
-        const c3  = c2 + qW;
-        const c4  = c3 + pW;
-
-        doc.fillColor(colors.white).font("Helvetica-Bold").fontSize(8)
-           .text("DESCRIPCIÓN",  c1, startY + 8, { width: dW - 6 })
-           .text("CANT.",        c2, startY + 8, { width: qW, align: "center" })
-           .text("PRECIO UNIT.", c3, startY + 8, { width: pW - 4, align: "right" })
-           .text("SUBTOTAL",     c4, startY + 8, { width: sW - pad, align: "right" });
-
-        return { nextY: startY + 24, c1, c2, c3, c4, dW, qW, pW, sW, pad };
-      }
-
-      function ensureSpace(currentY: number, neededH: number, drawTableOnNewPage = false) {
-        if (currentY + neededH <= pageHeight - 60) return { y: currentY, newPage: false };
+      // ── Ensure content fits; add page if needed ───────────────────────────────
+      function ensureSpace(cy: number, needed: number, withTable = false): number {
+        if (cy + needed <= PH - 56) return cy;
         doc.addPage();
-        drawHeader();
-        let ny = 112;
-        if (drawTableOnNewPage) {
-          const t = drawTableHeader(ny);
-          return { y: t.nextY, newPage: true, table: t };
-        }
-        return { y: ny, newPage: true };
+        drawPageHeader();
+        let ny = HEADER_H + 4 + 18;
+        if (withTable) ny = drawTHead(ny);
+        return ny;
       }
 
-      // ── Extra fields ─────────────────────────────────────────────────────────
+      // ── Extra fields section ──────────────────────────────────────────────────
       function drawExtraFields(startY: number): number {
-        const ex = input.extraFields || {};
+        const ex   = input.extraFields || {};
         const rows: { label: string; value: string }[] = [];
 
-        switch (templateType) {
+        switch (tType) {
           case "servicios":
             if (ex.deliveryDate)      rows.push({ label: "Fecha estimada de entrega", value: ex.deliveryDate });
             if (ex.paymentConditions) rows.push({ label: "Condiciones de pago",        value: ex.paymentConditions });
@@ -272,134 +260,155 @@ export function generateQuotePdf(input: QuotePdfInput) {
         if (rows.length === 0) return startY;
 
         const rowH = 20;
-        const boxH = 28 + rows.length * rowH;
-        const { y } = ensureSpace(startY, boxH + 16);
-        let cy = y;
+        const boxH = 26 + rows.length * rowH;
+        let cy     = ensureSpace(startY, boxH + 16);
 
-        doc.rect(margin, cy, contentWidth, boxH)
-           .fillAndStroke("#F9FAFB", colors.borderLight);
-
-        cy += 12;
+        doc.roundedRect(M, cy, CW, boxH, 8).fillAndStroke(rowAlt, border);
+        cy += 13;
         rows.forEach(({ label, value }) => {
-          doc.fillColor(colors.muted).font("Helvetica-Bold").fontSize(8)
-             .text(label + ":", margin + 14, cy, { width: 160 });
-          doc.fillColor(colors.text).font("Helvetica").fontSize(8.5)
-             .text(value, margin + 180, cy, { width: contentWidth - 194 });
+          doc.fillColor(inkDim).font("Helvetica-Bold").fontSize(8)
+             .text(label + ":", M + 14, cy, { width: 172 });
+          doc.fillColor(inkSub).font("Helvetica").fontSize(8.5)
+             .text(value, M + 190, cy, { width: CW - 204 });
           cy += rowH;
         });
 
-        return y + boxH + 14;
+        return startY + boxH + 16;
       }
 
-      // ── Build PDF ─────────────────────────────────────────────────────────────
-      drawHeader();
-      let y = 112;
-      y = drawPartiesBox(y);
+      // ── BUILD PAGE ────────────────────────────────────────────────────────────
+      drawPageHeader();
+      let y = HEADER_H + 4 + 26;
 
-      // Thin divider before table
-      doc.strokeColor(colors.borderLight).lineWidth(0.5)
-         .moveTo(margin, y - 10).lineTo(margin + contentWidth, y - 10).stroke();
+      // Issuer / Client info boxes
+      const partH = 92;
+      const colW  = (CW - 14) / 2;
+      const col2x = M + colW + 14;
 
-      let table = drawTableHeader(y);
-      y = table.nextY;
+      // Issuer
+      doc.roundedRect(M, y, colW, partH, 8).fillAndStroke(rowAlt, border);
+      doc.fillColor(inkDim).font("Helvetica-Bold").fontSize(7)
+         .text("EMISOR", M + 14, y + 14);
+      doc.fillColor(ink).font("Helvetica-Bold").fontSize(11)
+         .text(brand, M + 14, y + 28, { width: colW - 28 });
+      let iy = y + 46;
+      if (input.brandRut) {
+        doc.fillColor(inkSub).font("Helvetica").fontSize(8.5)
+           .text(`RUT: ${input.brandRut}`, M + 14, iy, { width: colW - 28 });
+        iy += 14;
+      }
+      if (input.brandAddress) {
+        doc.fillColor(inkSub).font("Helvetica").fontSize(8.5)
+           .text(input.brandAddress, M + 14, iy, { width: colW - 28 });
+        iy += 14;
+      }
+      if (input.brandPhone) {
+        doc.fillColor(inkSub).font("Helvetica").fontSize(8.5)
+           .text(`Tel: ${input.brandPhone}`, M + 14, iy, { width: colW - 28 });
+      }
 
+      // Customer
+      doc.roundedRect(col2x, y, colW, partH, 8).fillAndStroke(rowAlt, border);
+      doc.fillColor(inkDim).font("Helvetica-Bold").fontSize(7)
+         .text("CLIENTE", col2x + 14, y + 14);
+      doc.fillColor(ink).font("Helvetica-Bold").fontSize(11)
+         .text(cust.name?.trim() || "—", col2x + 14, y + 28, { width: colW - 28 });
+      doc.fillColor(inkSub).font("Helvetica").fontSize(8.5)
+         .text(cust.email?.trim() || "—", col2x + 14, y + 45, { width: colW - 28 });
+      if (cust.phone?.trim()) {
+        doc.fillColor(inkSub).font("Helvetica").fontSize(8.5)
+           .text(`Tel: ${cust.phone.trim()}`, col2x + 14, y + 59, { width: colW - 28 });
+      }
+
+      y += partH + 22;
+
+      // Items table
+      y = drawTHead(y);
       const lines = Array.isArray(input.lines) ? input.lines : [];
 
       if (lines.length === 0) {
-        doc.rect(margin, y, contentWidth, 40).fill(colors.white);
-        doc.fillColor(colors.muted).font("Helvetica").fontSize(10)
-           .text("Sin ítems seleccionados.", margin + 14, y + 14);
-        y += 40;
+        doc.rect(M, y, CW, 42).fill(white);
+        doc.fillColor(inkDim).font("Helvetica").fontSize(10)
+           .text("Sin ítems seleccionados.", c1, y + 15);
+        y += 42;
       } else {
         lines.forEach((line, idx) => {
-          const rowH  = line.description?.trim() ? 46 : 30;
-          const fill  = idx % 2 === 0 ? colors.white : colors.rowAlt;
-          const space = ensureSpace(y, rowH + 120, true);
-          if (space.newPage && (space as any).table) {
-            y = space.y;
-            table = (space as any).table;
+          const hasDesc = !!line.description?.trim();
+          const rowH    = hasDesc ? 46 : 30;
+          const fill    = idx % 2 === 0 ? white : rowAlt;
+          y = ensureSpace(y, rowH + 120, true);
+
+          doc.rect(M, y, CW, rowH).fill(fill);
+          doc.strokeColor(border).lineWidth(0.4)
+             .moveTo(M, y + rowH).lineTo(M + CW, y + rowH).stroke();
+
+          const ty = hasDesc ? y + 8 : y + 10;
+
+          doc.fillColor(ink).font("Helvetica-Bold").fontSize(9)
+             .text(line.name, c1, ty, { width: dW - pad * 2 });
+          if (hasDesc) {
+            doc.fillColor(inkDim).font("Helvetica").fontSize(7.5)
+               .text(line.description, c1, ty + 17, { width: dW - pad * 2 });
           }
-
-          doc.rect(margin, y, contentWidth, rowH).fill(fill);
-
-          // Bottom row border
-          doc.strokeColor(colors.borderLight).lineWidth(0.4)
-             .moveTo(margin, y + rowH).lineTo(margin + contentWidth, y + rowH).stroke();
-
-          const textY = rowH > 36 ? y + 8 : y + 9;
-
-          doc.fillColor(colors.dark).font("Helvetica-Bold").fontSize(9)
-             .text(line.name, table.c1, textY, { width: table.dW - 10 });
-
-          if (line.description?.trim()) {
-            doc.fillColor(colors.muted).font("Helvetica").fontSize(7.5)
-               .text(line.description, table.c1, textY + 16, { width: table.dW - 10 });
-          }
-
-          doc.fillColor(colors.text).font("Helvetica").fontSize(9)
-             .text(String(line.quantity),             table.c2, textY, { width: table.qW, align: "center" })
-             .text(formatCurrencyCLP(line.unitPrice),  table.c3, textY, { width: table.pW - 4, align: "right" })
-             .text(formatCurrencyCLP(line.subtotal),   table.c4, textY, { width: table.sW - table.pad, align: "right" });
+          doc.fillColor(inkSub).font("Helvetica").fontSize(9)
+             .text(String(line.quantity),             c2, ty, { width: qW, align: "center" })
+             .text(formatCurrencyCLP(line.unitPrice),  c3, ty, { width: pW - 4, align: "right" })
+             .text(formatCurrencyCLP(line.subtotal),   c4, ty, { width: sW - pad, align: "right" });
 
           y += rowH;
         });
       }
 
-      y += 18;
+      y += 28;
 
       // ── Totals ────────────────────────────────────────────────────────────────
-      const { y: ty } = ensureSpace(y, 110);
-      y = ty;
+      y = ensureSpace(y, 96);
 
-      const totW = 220;
-      const tx   = margin + contentWidth - totW;
+      const totW = 230;
+      const tx   = M + CW - totW;
+      const lw   = totW - 80;
 
-      doc.fillColor(colors.muted).font("Helvetica").fontSize(9)
-         .text("Subtotal",  tx, y,      { width: totW - 60 })
-         .text(formatCurrencyCLP(input.total), tx + totW - 60, y, { width: 60, align: "right" });
+      doc.fillColor(inkSub).font("Helvetica").fontSize(9)
+         .text("Subtotal",  tx, y,      { width: lw })
+         .text(formatCurrencyCLP(input.total), tx + lw, y, { width: 80, align: "right" });
 
-      doc.fillColor(colors.muted).font("Helvetica").fontSize(9)
-         .text("Descuento", tx, y + 18, { width: totW - 60 })
-         .text("$0",        tx + totW - 60, y + 18, { width: 60, align: "right" });
+      doc.fillColor(inkSub).font("Helvetica").fontSize(9)
+         .text("Descuento", tx, y + 19, { width: lw })
+         .text("—",         tx + lw, y + 19, { width: 80, align: "right" });
 
-      // Divider
-      doc.strokeColor(colors.border).lineWidth(0.8)
-         .moveTo(tx, y + 36).lineTo(margin + contentWidth, y + 36).stroke();
+      doc.strokeColor(border).lineWidth(1)
+         .moveTo(tx, y + 38).lineTo(M + CW, y + 38).stroke();
 
-      doc.fillColor(colors.dark).font("Helvetica-Bold").fontSize(12)
-         .text("TOTAL",                  tx, y + 44, { width: totW - 60 })
-         .text(formatCurrencyCLP(input.total), tx + totW - 60, y + 42, { width: 60, align: "right" });
+      doc.fillColor(ink).font("Helvetica-Bold").fontSize(13)
+         .text("TOTAL", tx, y + 49, { width: lw });
+      doc.fillColor(ink).font("Helvetica-Bold").fontSize(13)
+         .text(formatCurrencyCLP(input.total), tx + lw, y + 47, { width: 80, align: "right" });
 
-      y += 80;
+      y += 88;
 
       // ── Extra fields ─────────────────────────────────────────────────────────
       y = drawExtraFields(y);
 
       // ── Customer notes ────────────────────────────────────────────────────────
-      const noteText = customer.notes?.trim();
+      const noteText = cust.notes?.trim();
       if (noteText) {
-        const { y: ny } = ensureSpace(y, 80);
-        y = ny;
-        doc.rect(margin, y, contentWidth, 70)
-           .fillAndStroke("#F9FAFB", colors.borderLight);
-        doc.fillColor(colors.muted).font("Helvetica-Bold").fontSize(7.5)
-           .text("OBSERVACIONES", margin + 14, y + 12);
-        doc.fillColor(colors.text).font("Helvetica").fontSize(9)
-           .text(noteText, margin + 14, y + 26, { width: contentWidth - 28, height: 34 });
-        y += 82;
+        y = ensureSpace(y, 80);
+        doc.roundedRect(M, y, CW, 72, 8).fillAndStroke(rowAlt, border);
+        doc.fillColor(inkDim).font("Helvetica-Bold").fontSize(7)
+           .text("OBSERVACIONES DEL CLIENTE", M + 14, y + 14);
+        doc.fillColor(inkSub).font("Helvetica").fontSize(9)
+           .text(noteText, M + 14, y + 28, { width: CW - 28, height: 34 });
+        y += 84;
       }
 
       // ── Footer ────────────────────────────────────────────────────────────────
-      const { y: fy } = ensureSpace(y, 40);
-      y = fy;
-
-      doc.strokeColor(colors.borderLight).lineWidth(0.8)
-         .moveTo(margin, y).lineTo(margin + contentWidth, y).stroke();
-
-      doc.fillColor(colors.light).font("Helvetica").fontSize(7.5)
+      y = ensureSpace(y, 44);
+      doc.strokeColor(border).lineWidth(0.8)
+         .moveTo(M, y).lineTo(M + CW, y).stroke();
+      doc.fillColor(inkDim).font("Helvetica").fontSize(7.5)
          .text(
-           `${brandName}  ·  ${docTitle} ${quoteNumber}  ·  Emitida el ${issueDate}  ·  Documento generado automáticamente`,
-           margin, y + 10, { width: contentWidth, align: "center" }
+           `${brand}  ·  ${docTitle} ${qNumber}  ·  Emitida el ${issueDate}  ·  Documento generado automáticamente`,
+           M, y + 14, { width: CW, align: "center" }
          );
 
       doc.end();
