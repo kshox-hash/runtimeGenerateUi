@@ -169,32 +169,35 @@ export async function generateQuotePdf(
       }
 
       // ── Page header band + accent strip ──────────────────────────────────────
+      const LOGO_SIZE = 52;
+      const LOGO_Y    = Math.round((HEADER_H - LOGO_SIZE) / 2); // centered vertically
+
       function drawPageHeader() {
+        doc.rect(0, 0, PW, HEADER_H).fill(hBg);
+
+        // Company logo — top-left corner (only if image available)
+        let nameX = M;
         if (coverBuffer) {
           try {
             doc.save();
-            doc.rect(0, 0, PW, HEADER_H).clip();
-            doc.image(coverBuffer, 0, 0, { width: PW });
+            doc.roundedRect(M, LOGO_Y, LOGO_SIZE, LOGO_SIZE, 8).clip();
+            doc.image(coverBuffer, M, LOGO_Y, { cover: [LOGO_SIZE, LOGO_SIZE] });
             doc.restore();
-            // Dark gradient overlay for text readability
-            const grad = (doc as any).linearGradient(0, 0, 0, HEADER_H);
-            grad.stop(0, "#000000", 0.20);
-            grad.stop(1, "#000000", 0.70);
-            doc.rect(0, 0, PW, HEADER_H).fill(grad);
+            nameX = M + LOGO_SIZE + 12;
           } catch {
-            doc.rect(0, 0, PW, HEADER_H).fill(hBg);
+            nameX = M;
           }
-        } else {
-          doc.rect(0, 0, PW, HEADER_H).fill(hBg);
         }
 
-        // Brand name — left
-        doc.fillColor(hTxt).font("Helvetica-Bold").fontSize(20)
-           .text(brand, M, 30, { width: CW * 0.58 });
+        const leftW = CW * 0.52;
+
+        // Brand name — left (offset when logo present)
+        doc.fillColor(hTxt).font("Helvetica-Bold").fontSize(18)
+           .text(brand, nameX, LOGO_Y + 4, { width: leftW - (nameX - M) });
 
         if (input.subtitle?.trim()) {
-          doc.fillColor(hSub).font("Helvetica").fontSize(8.5)
-             .text(input.subtitle.trim(), M, 56, { width: CW * 0.58 });
+          doc.fillColor(hSub).font("Helvetica").fontSize(8)
+             .text(input.subtitle.trim(), nameX, LOGO_Y + 26, { width: leftW - (nameX - M) });
         }
 
         // Template category — right top
