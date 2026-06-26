@@ -130,7 +130,9 @@ export async function generateQuotePdf(
       const rawAccent = input.brandAccentColor?.trim() ?? "";
       const accent    = /^#[0-9A-Fa-f]{6}$/.test(rawAccent) ? rawAccent : "#111827";
 
-      const HEADER_H = 116;
+      const LOGO_W   = 164;
+      const LOGO_H   = 50;
+      const HEADER_H = coverBuffer ? 134 : 116;
 
       // ── Color palette ─────────────────────────────────────────────────────────
       const ink      = "#111827";
@@ -169,35 +171,32 @@ export async function generateQuotePdf(
       }
 
       // ── Page header band + accent strip ──────────────────────────────────────
-      const LOGO_SIZE = 52;
-      const LOGO_Y    = Math.round((HEADER_H - LOGO_SIZE) / 2); // centered vertically
-
       function drawPageHeader() {
         doc.rect(0, 0, PW, HEADER_H).fill(hBg);
 
-        // Company logo — top-left corner (only if image available)
-        let nameX = M;
+        const leftW = CW * 0.52;
+        let nameY   = 32;
+
+        // Company logo — rectangular banner above brand name (only if image available)
         if (coverBuffer) {
           try {
             doc.save();
-            doc.roundedRect(M, LOGO_Y, LOGO_SIZE, LOGO_SIZE, 8).clip();
-            doc.image(coverBuffer, M, LOGO_Y, { cover: [LOGO_SIZE, LOGO_SIZE] });
+            doc.roundedRect(M, 14, LOGO_W, LOGO_H, 6).clip();
+            doc.image(coverBuffer, M, 14, { cover: [LOGO_W, LOGO_H] });
             doc.restore();
-            nameX = M + LOGO_SIZE + 12;
+            nameY = 14 + LOGO_H + 8;
           } catch {
-            nameX = M;
+            nameY = 32;
           }
         }
 
-        const leftW = CW * 0.52;
-
-        // Brand name — left (offset when logo present)
-        doc.fillColor(hTxt).font("Helvetica-Bold").fontSize(18)
-           .text(brand, nameX, LOGO_Y + 4, { width: leftW - (nameX - M) });
+        // Brand name — left, below logo (or at default position)
+        doc.fillColor(hTxt).font("Helvetica-Bold").fontSize(17)
+           .text(brand, M, nameY, { width: leftW });
 
         if (input.subtitle?.trim()) {
           doc.fillColor(hSub).font("Helvetica").fontSize(8)
-             .text(input.subtitle.trim(), nameX, LOGO_Y + 26, { width: leftW - (nameX - M) });
+             .text(input.subtitle.trim(), M, nameY + 20, { width: leftW });
         }
 
         // Template category — right top
@@ -208,13 +207,13 @@ export async function generateQuotePdf(
 
         // Document title — right middle
         doc.fillColor(hTxt).font("Helvetica-Bold").fontSize(20)
-           .text(docTitle.toUpperCase(), M, 42, {
+           .text(docTitle.toUpperCase(), M, 44, {
              width: CW, align: "right",
            });
 
         // Quote number + date — right bottom
         doc.fillColor(hSub).font("Helvetica").fontSize(8.5)
-           .text(`N° ${qNumber}  ·  ${issueDate}`, M, 72, {
+           .text(`N° ${qNumber}  ·  ${issueDate}`, M, 74, {
              width: CW, align: "right",
            });
 
@@ -266,64 +265,73 @@ export async function generateQuotePdf(
         const boxH = 26 + rows.length * rowH;
         let cy     = ensureSpace(startY, boxH + 16);
 
-        doc.roundedRect(M, cy, CW, boxH, 8).fillAndStroke(rowAlt, border);
-        cy += 13;
+        // Thin separator above extra fields block
+        doc.strokeColor(border).lineWidth(0.6)
+           .moveTo(M, cy).lineTo(M + CW, cy).stroke();
+        cy += 12;
         rows.forEach(({ label, value }) => {
           doc.fillColor(inkDim).font("Helvetica-Bold").fontSize(8)
-             .text(label + ":", M + 14, cy, { width: 172 });
+             .text(label + ":", M, cy, { width: 172 });
           doc.fillColor(inkSub).font("Helvetica").fontSize(8.5)
-             .text(value, M + 190, cy, { width: CW - 204 });
+             .text(value, M + 178, cy, { width: CW - 178 });
           cy += rowH;
         });
 
-        return startY + boxH + 16;
+        return startY + boxH + 12;
       }
 
       // ── BUILD PAGE ────────────────────────────────────────────────────────────
       drawPageHeader();
       let y = HEADER_H + 4 + 26;
 
-      // Issuer / Client info boxes
-      const partH = 92;
-      const colW  = (CW - 14) / 2;
-      const col2x = M + colW + 14;
+      // Issuer / Client — clean two-column text, no boxes
+      const colW  = (CW - 24) / 2;
+      const col2x = M + colW + 24;
 
-      // Issuer
-      doc.roundedRect(M, y, colW, partH, 8).fillAndStroke(rowAlt, border);
+      // Thin top separator
+      doc.strokeColor(border).lineWidth(0.8)
+         .moveTo(M, y).lineTo(M + CW, y).stroke();
+      y += 16;
+
+      // Issuer column
       doc.fillColor(inkDim).font("Helvetica-Bold").fontSize(7)
-         .text("EMISOR", M + 14, y + 14);
+         .text("EMISOR", M, y);
       doc.fillColor(ink).font("Helvetica-Bold").fontSize(11)
-         .text(brand, M + 14, y + 28, { width: colW - 28 });
-      let iy = y + 46;
+         .text(brand, M, y + 12, { width: colW });
+      let iy = y + 28;
       if (input.brandRut) {
         doc.fillColor(inkSub).font("Helvetica").fontSize(8.5)
-           .text(`RUT: ${input.brandRut}`, M + 14, iy, { width: colW - 28 });
-        iy += 14;
+           .text(`RUT: ${input.brandRut}`, M, iy, { width: colW });
+        iy += 13;
       }
       if (input.brandAddress) {
         doc.fillColor(inkSub).font("Helvetica").fontSize(8.5)
-           .text(input.brandAddress, M + 14, iy, { width: colW - 28 });
-        iy += 14;
+           .text(input.brandAddress, M, iy, { width: colW });
+        iy += 13;
       }
       if (input.brandPhone) {
         doc.fillColor(inkSub).font("Helvetica").fontSize(8.5)
-           .text(`Tel: ${input.brandPhone}`, M + 14, iy, { width: colW - 28 });
+           .text(`Tel: ${input.brandPhone}`, M, iy, { width: colW });
       }
 
-      // Customer
-      doc.roundedRect(col2x, y, colW, partH, 8).fillAndStroke(rowAlt, border);
+      // Client column
       doc.fillColor(inkDim).font("Helvetica-Bold").fontSize(7)
-         .text("CLIENTE", col2x + 14, y + 14);
+         .text("CLIENTE", col2x, y);
       doc.fillColor(ink).font("Helvetica-Bold").fontSize(11)
-         .text(cust.name?.trim() || "—", col2x + 14, y + 28, { width: colW - 28 });
+         .text(cust.name?.trim() || "—", col2x, y + 12, { width: colW });
       doc.fillColor(inkSub).font("Helvetica").fontSize(8.5)
-         .text(cust.email?.trim() || "—", col2x + 14, y + 45, { width: colW - 28 });
+         .text(cust.email?.trim() || "—", col2x, y + 28, { width: colW });
       if (cust.phone?.trim()) {
         doc.fillColor(inkSub).font("Helvetica").fontSize(8.5)
-           .text(`Tel: ${cust.phone.trim()}`, col2x + 14, y + 59, { width: colW - 28 });
+           .text(`Tel: ${cust.phone.trim()}`, col2x, y + 41, { width: colW });
       }
 
-      y += partH + 22;
+      y += 72;
+
+      // Thin bottom separator before table
+      doc.strokeColor(border).lineWidth(0.8)
+         .moveTo(M, y).lineTo(M + CW, y).stroke();
+      y += 16;
 
       // Items table
       y = drawTHead(y);
@@ -395,13 +403,15 @@ export async function generateQuotePdf(
       // ── Customer notes ────────────────────────────────────────────────────────
       const noteText = cust.notes?.trim();
       if (noteText) {
-        y = ensureSpace(y, 80);
-        doc.roundedRect(M, y, CW, 72, 8).fillAndStroke(rowAlt, border);
+        y = ensureSpace(y, 72);
+        doc.strokeColor(border).lineWidth(0.6)
+           .moveTo(M, y).lineTo(M + CW, y).stroke();
+        y += 12;
         doc.fillColor(inkDim).font("Helvetica-Bold").fontSize(7)
-           .text("OBSERVACIONES DEL CLIENTE", M + 14, y + 14);
+           .text("OBSERVACIONES DEL CLIENTE", M, y);
         doc.fillColor(inkSub).font("Helvetica").fontSize(9)
-           .text(noteText, M + 14, y + 28, { width: CW - 28, height: 34 });
-        y += 84;
+           .text(noteText, M, y + 14, { width: CW });
+        y += 44;
       }
 
       // ── Footer ────────────────────────────────────────────────────────────────
