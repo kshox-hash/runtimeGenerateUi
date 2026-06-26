@@ -45,7 +45,7 @@ export function generateStyle2(
       if (cover) {
         try {
           doc.save();
-          doc.roundedRect(M, yL, MONO_W, MONO_H, 6).clip();
+          doc.rect(M, yL, MONO_W, MONO_H).clip();
           doc.image(cover, M, yL, { cover: [MONO_W, MONO_H] });
           doc.restore();
         } catch { /* fallback to monogram */ }

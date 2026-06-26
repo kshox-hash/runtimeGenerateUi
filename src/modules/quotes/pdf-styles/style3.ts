@@ -48,7 +48,7 @@ export function generateStyle3(
           const lx = PW - M - LW;
           const ly = (HDR_H - LH) / 2;
           doc.save();
-          doc.roundedRect(lx, ly, LW, LH, 4).clip();
+          doc.rect(lx, ly, LW, LH).clip();
           doc.image(cover, lx, ly, { cover: [LW, LH] });
           doc.restore();
         } catch { /* skip */ }

@@ -58,7 +58,7 @@ export function generateStyle5(
         if (cover) {
           try {
             doc.save();
-            doc.roundedRect(lx, sy, LOGO_SZ, LOGO_SZ, 6).clip();
+            doc.rect(lx, sy, LOGO_SZ, LOGO_SZ).clip();
             doc.image(cover, lx, sy, { cover: [LOGO_SZ, LOGO_SZ] });
             doc.restore();
           } catch {

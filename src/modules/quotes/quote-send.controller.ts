@@ -24,6 +24,7 @@ type SendQuoteBody = {
   templateType?: string;
   extraFields?: Record<string, any>;
   quoteStyle?: string;
+  quoteAccentColor?: string;
 };
 
 export const quoteSendController = {
@@ -39,6 +40,7 @@ export const quoteSendController = {
         templateType = "rapida",
         extraFields = {},
         quoteStyle,
+        quoteAccentColor,
       } = req.body;
 
       if (!client?.name?.trim() || !client?.email?.trim()) {
@@ -88,7 +90,7 @@ export const quoteSendController = {
         brandAddress,
         brandPhone:         profile?.phone        || undefined,
         brandCoverImageUrl: profile?.cover_image  || undefined,
-        brandAccentColor:   profile?.brand_color  || undefined,
+        brandAccentColor:   quoteAccentColor      || profile?.brand_color || undefined,
         quoteStyle,
         title:              docTitle,
         subtitle:           profile?.description  || "",

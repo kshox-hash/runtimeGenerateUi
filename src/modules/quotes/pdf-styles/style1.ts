@@ -99,7 +99,7 @@ export function generateStyle1(
       if (cover) {
         try {
           doc.save();
-          doc.roundedRect(M, yL, LOGO_W, LOGO_H, 4).clip();
+          doc.rect(M, yL, LOGO_W, LOGO_H).clip();
           doc.image(cover, M, yL, { cover: [LOGO_W, LOGO_H] });
           doc.restore();
           yL += LOGO_H + 10;

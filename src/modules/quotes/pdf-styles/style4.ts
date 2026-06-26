@@ -47,7 +47,7 @@ export function generateStyle4(
         try {
           const LW = 56, LH = 44;
           doc.save();
-          doc.roundedRect(M, (HDR_H - LH) / 2, LW, LH, 5).clip();
+          doc.rect(M, (HDR_H - LH) / 2, LW, LH).clip();
           doc.image(cover, M, (HDR_H - LH) / 2, { cover: [LW, LH] });
           doc.restore();
           logoRight = M + LW + 14;
