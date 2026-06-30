@@ -153,9 +153,9 @@ export function chatTabHtml(d: ChatData): string {
           </div>
           <div class="hm-gallery-strip">
             ${d.galleryFolders.slice(0, 4).map(f => `
-            <button class="hm-gal-card" type="button" data-folder-id="${f.id}">
-              ${f.coverUrl ? `<img src="${f.coverUrl}" alt="" loading="lazy">` : `<div class="hm-gal-card-empty"></div>`}
-              <div class="hm-gal-card-name">${f.name}</div>
+            <button class="hm-gal-card" type="button" onclick="openGalleryFolder('${escapeHtml(f.id)}')">
+              ${f.coverUrl ? `<img src="${escapeHtml(f.coverUrl)}" alt="" loading="lazy">` : `<div class="hm-gal-card-empty"></div>`}
+              <div class="hm-gal-card-name">${escapeHtml(f.name)}</div>
             </button>`).join("")}
           </div>
         </div>` : ""}

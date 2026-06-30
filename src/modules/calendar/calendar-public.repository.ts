@@ -47,7 +47,7 @@ export async function getPendingPayment(
     `SELECT id, status, checkout_url, preference_id, amount, provider, created_at
      FROM payments
      WHERE booking_id = $1 AND user_id = $2
-       AND status = 'pending' AND checkout_url IS NOT NULL
+       AND status = 'pending'
      ORDER BY created_at DESC
      LIMIT 1`,
     [bookingId, userId]
@@ -55,15 +55,47 @@ export async function getPendingPayment(
   return result.rows[0] ?? null;
 }
 
+export async function deletePaymentRecord(paymentId: string): Promise<void> {
+  const pool = DB.getPool();
+  await pool.query(`DELETE FROM payments WHERE id = $1`, [paymentId]);
+}
+
 export async function getMpAccessToken(userId: string): Promise<string | null> {
   const pool = DB.getPool();
   const result = await pool.query(
-    `SELECT access_token FROM payment_provider_connections
+    `SELECT access_token, refresh_token, mp_user_id, public_key, expires_at
+     FROM payment_provider_connections
      WHERE user_id = $1 AND provider = 'mercadopago'
      LIMIT 1`,
     [userId]
   );
-  return result.rows[0]?.access_token ?? null;
+  const conn = result.rows[0];
+  if (!conn) return null;
+
+  const expiresAt: Date | null = conn.expires_at ? new Date(conn.expires_at) : null;
+  const expiringSoon = expiresAt ? expiresAt.getTime() - Date.now() < 10 * 60 * 1000 : false;
+
+  if (!expiringSoon || !conn.refresh_token) {
+    return conn.access_token ?? null;
+  }
+
+  try {
+    const { refreshMpToken } = await import("../mp-connect/mp-connect.service");
+    const { saveMpConnection } = await import("../mp-connect/mp-connect.repository");
+    const tokens = await refreshMpToken(conn.refresh_token);
+    await saveMpConnection({
+      userId,
+      accessToken: tokens.access_token,
+      refreshToken: tokens.refresh_token ?? conn.refresh_token,
+      mpUserId: conn.mp_user_id ?? null,
+      publicKey: tokens.public_key ?? conn.public_key ?? null,
+      expiresAt: new Date(Date.now() + tokens.expires_in * 1000),
+    });
+    return tokens.access_token;
+  } catch (err) {
+    console.error(`[mp-connect] No se pudo refrescar el token de user ${userId}, usando el actual:`, err);
+    return conn.access_token ?? null;
+  }
 }
 
 export async function createPaymentRecord(

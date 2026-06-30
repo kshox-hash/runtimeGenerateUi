@@ -28,17 +28,14 @@ export function reservasTabHtml(): string {
         <div class="rdash-info-col">
           <div class="rdash-stats-col">
             <div class="rds-item">
-              <span class="rds-icon">📅</span>
               <span class="rds-val" id="rstatDays">—</span>
               <span class="rds-lbl">Días disp.</span>
             </div>
             <div class="rds-item">
-              <span class="rds-icon">🕐</span>
               <span class="rds-val" id="rstatSlots">—</span>
               <span class="rds-lbl">Turnos</span>
             </div>
             <div class="rds-item">
-              <span class="rds-icon">⚡</span>
               <span class="rds-val rds-next" id="rstatNext">—</span>
               <span class="rds-lbl">Próximo</span>
             </div>

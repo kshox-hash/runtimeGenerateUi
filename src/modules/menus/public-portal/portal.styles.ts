@@ -615,7 +615,13 @@ body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(-
 /* Calendar — home-style colored square cells */
 .rdash-body{display:grid;grid-template-columns:3fr 2fr;gap:12px;align-items:start;margin-bottom:22px}
 .rdash-info-col{display:flex;flex-direction:column;gap:10px}
-@media(max-width:640px){.rdash-body{grid-template-columns:1fr}}
+@media(max-width:640px){
+  .rdash-body{grid-template-columns:1fr}
+  .mc-body{gap:4px}
+  .mc-hdr-cell{font-size:11px;padding-bottom:8px}
+  .mc-num{font-size:clamp(13px,4vw,16px)}
+  .mc-cell{border-radius:9px}
+}
 .month-cal-grid{width:100%}
 .mc-hdr-row{
   display:grid;grid-template-columns:repeat(7,1fr);

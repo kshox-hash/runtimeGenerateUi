@@ -203,6 +203,9 @@ export async function createCalendarBooking(input: {
     return result.rows[0];
   } catch (err) {
     await client.query("ROLLBACK");
+    if ((err as { code?: string }).code === "23505") {
+      throw new Error("Este horario ya fue reservado.");
+    }
     throw err;
   } finally {
     client.release();

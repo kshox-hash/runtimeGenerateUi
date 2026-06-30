@@ -13,27 +13,44 @@ export type ConfirmedBooking = {
 
 export async function confirmPaymentAndBooking(
   bookingId: string,
-  providerPaymentId: string
-): Promise<{ payment: { id: string; amount: number }; booking: ConfirmedBooking | null } | null> {
+  providerPaymentId: string,
+  transactionAmount: number
+): Promise<
+  | { payment: { id: string; amount: number }; booking: ConfirmedBooking | null }
+  | null
+  | "amount_mismatch"
+> {
   const pool = DB.getPool();
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
 
-    const paymentResult = await client.query(
-      `UPDATE payments
-       SET status = 'paid', provider_payment_id = $1, paid_at = NOW()
-       WHERE booking_id = $2
-         AND provider = 'mercadopago'
-         AND status <> 'paid'
-       RETURNING id, amount`,
-      [providerPaymentId, bookingId]
+    const pendingResult = await client.query(
+      `SELECT id, amount FROM payments
+       WHERE booking_id = $1 AND provider = 'mercadopago' AND status <> 'paid'
+       FOR UPDATE
+       LIMIT 1`,
+      [bookingId]
     );
 
-    if ((paymentResult.rowCount ?? 0) === 0) {
+    if ((pendingResult.rowCount ?? 0) === 0) {
       await client.query("ROLLBACK");
       return null;
     }
+
+    const expectedAmount = Math.round(Number(pendingResult.rows[0].amount));
+    if (expectedAmount !== Math.round(transactionAmount)) {
+      await client.query("ROLLBACK");
+      return "amount_mismatch";
+    }
+
+    const paymentResult = await client.query(
+      `UPDATE payments
+       SET status = 'paid', provider_payment_id = $1, paid_at = NOW()
+       WHERE id = $2
+       RETURNING id, amount`,
+      [providerPaymentId, pendingResult.rows[0].id]
+    );
 
     const bookingResult = await client.query(
       `UPDATE calendar_bookings

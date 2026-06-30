@@ -18,6 +18,16 @@ const bookingRateLimit = rateLimit({
   legacyHeaders: false,
 });
 
+// Limita intentos de fuerza bruta sobre tokens de un solo uso (cancelar/confirmar por email)
+const tokenRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  keyGenerator: (req) => `${req.ip}`,
+  message: { ok: false, message: "Demasiadas solicitudes. Intenta más tarde." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Servicios de reserva públicos (para el selector en el portal)
 router.get("/api/public/:publicSlug/booking-services", async (req, res) => {
   try {
@@ -59,10 +69,10 @@ router.delete(
 );
 
 // Cancelar reserva por token (desde el link del email)
-router.get("/api/bookings/cancel/:token", calendarPublicController.cancelBookingByToken);
+router.get("/api/bookings/cancel/:token", tokenRateLimit, calendarPublicController.cancelBookingByToken);
 
 // Confirmación de reserva por token (email)
-router.get("/api/bookings/confirm/:token", async (req, res) => {
+router.get("/api/bookings/confirm/:token", tokenRateLimit, async (req, res) => {
   try {
     const token = String(req.params["token"] || "");
     const result = await confirmBookingByToken(token);

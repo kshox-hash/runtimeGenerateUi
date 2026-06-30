@@ -18,6 +18,7 @@ import {
   getMpAccessToken,
   createPaymentRecord,
   updatePaymentWithPreference,
+  deletePaymentRecord,
   getPlatformFeePct,
   getBusinessNameByUserId,
   hasPendingPaymentForCustomer,
@@ -178,55 +179,75 @@ export const calendarPublicController = {
       const confirmationToken     = createBookingConfirmationToken();
       const confirmationExpiresAt = createBookingConfirmationExpiresAt();
 
-      const booking = await reserveCalendarSlot({
-        userId: profile.user_id,
-        customerName,
-        customerPhone,
-        customerEmail,
-        notes,
-        bookingDate,
-        startTime,
-        confirmationToken,
-        confirmationExpiresAt,
-        providerId,
-        serviceId,
-        serviceName,
-        serviceColor,
-        servicePrice,
-      });
+      let booking;
+      try {
+        booking = await reserveCalendarSlot({
+          userId: profile.user_id,
+          customerName,
+          customerPhone,
+          customerEmail,
+          notes,
+          bookingDate,
+          startTime,
+          confirmationToken,
+          confirmationExpiresAt,
+          providerId,
+          serviceId,
+          serviceName,
+          serviceColor,
+          servicePrice,
+        });
+      } catch (err) {
+        return res.status(409).json({
+          ok: false,
+          message: err instanceof Error ? err.message : "No se pudo reservar el horario seleccionado.",
+        });
+      }
 
-      // Crear preferencia de pago en MercadoPago
-      const businessName = await getBusinessNameByUserId(profile.user_id);
-      const bookingDateLabel = new Date(bookingDate).toLocaleDateString("es-CL", {
-        weekday: "long", day: "numeric", month: "long",
-      });
-      const feePct = await getPlatformFeePct(profile.user_id);
-      const marketplaceFee = Math.round(paymentAmount * feePct / 100);
-      const payment = await createPaymentRecord(profile.user_id, booking.id, paymentAmount);
-      const bookingDateStr = new Date(bookingDate).toLocaleDateString("es-CL");
-      const preference = await createPreference({
-        accessToken,
-        bookingId: booking.id,
-        title: `Reserva ${businessName}`,
-        description: `${bookingDateStr} a las ${startTime} - ${customerName}`,
-        amount: paymentAmount,
-        customerEmail,
-        customerName,
-        businessName,
-        marketplaceFee,
-      });
-      await updatePaymentWithPreference(payment.id, preference.checkoutUrl!, preference.preferenceId ?? "");
-      const checkoutUrl = preference.checkoutUrl!;
-      const cancelUrl = `${process.env.PUBLIC_BASE_URL}/api/bookings/cancel/${booking.confirmation_token}`;
-      withRetry(() => sendBookingPaymentLinkEmail({
-        to: customerEmail,
-        customerName,
-        businessName,
-        bookingDate: bookingDateLabel,
-        bookingTime: startTime,
-        checkoutUrl,
-        cancelUrl,
-      })).catch((err) => console.error("[calendar] Error email de pago tras reintentos:", err));
+      // Crear preferencia de pago en MercadoPago — si falla, liberar la reserva
+      // recién creada para no dejar el horario bloqueado con un pago huérfano.
+      let checkoutUrl: string;
+      try {
+        const businessName = await getBusinessNameByUserId(profile.user_id);
+        const bookingDateLabel = new Date(bookingDate).toLocaleDateString("es-CL", {
+          weekday: "long", day: "numeric", month: "long",
+        });
+        const feePct = await getPlatformFeePct(profile.user_id);
+        const marketplaceFee = Math.round(paymentAmount * feePct / 100);
+        const payment = await createPaymentRecord(profile.user_id, booking.id, paymentAmount);
+        const bookingDateStr = new Date(bookingDate).toLocaleDateString("es-CL");
+        const preference = await createPreference({
+          accessToken,
+          bookingId: booking.id,
+          title: `Reserva ${businessName}`,
+          description: `${bookingDateStr} a las ${startTime} - ${customerName}`,
+          amount: paymentAmount,
+          customerEmail,
+          customerName,
+          businessName,
+          marketplaceFee,
+        });
+        await updatePaymentWithPreference(payment.id, preference.checkoutUrl!, preference.preferenceId ?? "");
+        checkoutUrl = preference.checkoutUrl!;
+
+        const cancelUrl = `${process.env.PUBLIC_BASE_URL}/api/bookings/cancel/${booking.confirmation_token}`;
+        withRetry(() => sendBookingPaymentLinkEmail({
+          to: customerEmail,
+          customerName,
+          businessName,
+          bookingDate: bookingDateLabel,
+          bookingTime: startTime,
+          checkoutUrl,
+          cancelUrl,
+        })).catch((err) => console.error("[calendar] Error email de pago tras reintentos:", err));
+      } catch (err) {
+        console.error("[calendar] Error creando preferencia de pago, liberando reserva:", err);
+        await cancelPendingBookingById(booking.id, profile.user_id).catch(() => {});
+        return res.status(500).json({
+          ok: false,
+          message: "No se pudo iniciar el pago. Intenta reservar nuevamente.",
+        });
+      }
 
       statsService.increment(profile.user_id, "booking_created").catch(() => {});
 
@@ -301,21 +322,30 @@ export const calendarPublicController = {
       const feePct = await getPlatformFeePct(profile.user_id);
       const marketplaceFee = Math.round(amount * feePct / 100);
 
-      const payment = await createPaymentRecord(profile.user_id, bookingId, amount);
+      // Si hay un registro de pago pendiente sin checkout_url (huérfano de un
+      // intento previo fallido), lo reutilizamos en vez de crear uno nuevo.
+      const payment = existingPayment ?? await createPaymentRecord(profile.user_id, bookingId, amount);
 
       const bookingDateStr = new Date(booking.booking_date).toLocaleDateString("es-CL");
 
-      const preference = await createPreference({
-        accessToken,
-        bookingId,
-        title: `Reserva ${businessName}`,
-        description: `Hora agendada el ${bookingDateStr} a las ${booking.start_time.slice(0, 5)} - ${booking.client_name}`,
-        amount,
-        customerEmail: booking.client_email,
-        customerName: booking.client_name,
-        businessName,
-        marketplaceFee,
-      });
+      let preference;
+      try {
+        preference = await createPreference({
+          accessToken,
+          bookingId,
+          title: `Reserva ${businessName}`,
+          description: `Hora agendada el ${bookingDateStr} a las ${booking.start_time.slice(0, 5)} - ${booking.client_name}`,
+          amount,
+          customerEmail: booking.client_email,
+          customerName: booking.client_name,
+          businessName,
+          marketplaceFee,
+        });
+      } catch (err) {
+        console.error("[calendar] Error creando preferencia de pago:", err);
+        if (!existingPayment) await deletePaymentRecord(payment.id).catch(() => {});
+        return res.status(500).json({ ok: false, message: "No se pudo crear el pago. Intenta nuevamente." });
+      }
 
       const updatedPayment = await updatePaymentWithPreference(
         payment.id,

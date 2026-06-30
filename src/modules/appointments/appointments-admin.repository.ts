@@ -43,6 +43,37 @@ export async function migrateCalendarAvailabilityConstraint(): Promise<void> {
   `);
 }
 
+// Evita doble-booking del mismo horario bajo concurrencia: el check de
+// disponibilidad y el insert no son atómicos a nivel de aplicación, así
+// que el constraint a nivel DB es la única red de seguridad real.
+export async function migrateCalendarBookingsUniqueConstraint(): Promise<void> {
+  await pool.query(`
+    DO $$
+    BEGIN
+      IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes
+        WHERE tablename = 'calendar_bookings'
+          AND indexname = 'cal_booking_global_unique'
+      ) THEN
+        CREATE UNIQUE INDEX cal_booking_global_unique
+          ON calendar_bookings (user_id, booking_date, start_time)
+          WHERE provider_id IS NULL AND status IN ('confirmed', 'pending_payment');
+      END IF;
+
+      IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes
+        WHERE tablename = 'calendar_bookings'
+          AND indexname = 'cal_booking_provider_unique'
+      ) THEN
+        CREATE UNIQUE INDEX cal_booking_provider_unique
+          ON calendar_bookings (user_id, provider_id, booking_date, start_time)
+          WHERE provider_id IS NOT NULL AND status IN ('confirmed', 'pending_payment');
+      END IF;
+    END
+    $$;
+  `);
+}
+
 export async function initCalendarBookingPriceColumn(): Promise<void> {
   await pool.query(`
     ALTER TABLE calendar_settings

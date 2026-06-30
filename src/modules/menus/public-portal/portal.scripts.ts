@@ -73,6 +73,14 @@ function showTab(t){
   if(t==='cotizar'){var b=document.getElementById('cotizarBody');if(b&&!b.innerHTML.trim())renderQPStep1();}
 }
 
+function openGalleryFolder(fid){
+  showTab('nosotros');
+  var body=document.getElementById('folder-body-'+fid);
+  if(body&&body.style.display==='none') toggleFolder(fid);
+  var card=document.getElementById('folder-card-'+fid);
+  if(card) setTimeout(function(){card.scrollIntoView({behavior:'smooth',block:'start'});},100);
+}
+
 // ── slide panels ──────────────────────────────────────────────────────────────
 function openPanel(id){
   var el=document.getElementById(id);
@@ -391,16 +399,25 @@ function renderBkSuccess(checkoutUrl,bookingId){
   setBkHeader('¡Confirmado!',false);
   var body=document.getElementById('bkBody'); if(!body) return;
   var subMsg=checkoutUrl
-    ?'Te enviamos el link de pago a tu correo.<br>Revisa tu bandeja de entrada para completar el pago.'
+    ?'Falta un paso: completa el pago para confirmar tu hora.<br>También te enviamos el link a tu correo.'
     :'Tu cita quedó confirmada.<br>Recibirás la confirmación en tu correo.';
+  var payBtn=checkoutUrl
+    ?'<button class="btn-primary" type="button" id="bkPayNow" style="width:100%;margin-top:28px">Pagar ahora</button>'
+    :'';
+  var doneBtnClass=checkoutUrl?'btn-outline':'btn-primary';
   body.innerHTML='<div class="bk-success">'
     +'<div class="bk-success-icon">'
     +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
     +'</div>'
     +'<div class="bk-success-title">¡Reserva confirmada!</div>'
     +'<div class="bk-success-sub">'+subMsg+'</div>'
-    +'<button class="btn-primary" type="button" id="bkDone" style="width:100%;margin-top:28px">Listo</button>'
+    +payBtn
+    +'<button class="'+doneBtnClass+'" type="button" id="bkDone" style="width:100%;margin-top:10px">Listo</button>'
     +'</div>';
+  var payNow=document.getElementById('bkPayNow');
+  if(payNow) payNow.addEventListener('click',function(){
+    window.open(checkoutUrl,'_blank','noopener');
+  });
   var done=document.getElementById('bkDone');
   if(done) done.addEventListener('click',function(){
     closePanel('bookingPanel');
@@ -430,20 +447,6 @@ document.addEventListener('click',function(e){
     if(tabBtn.classList.contains('mdr-item')) closeMobileDrawer();
     var tabName=tabBtn.getAttribute('data-tab');
     showTab(tabName);
-    return;
-  }
-
-  // gallery home cards → switch tab + open that folder
-  var galCard=t.closest('.hm-gal-card[data-folder-id]');
-  if(galCard){
-    var fid=galCard.getAttribute('data-folder-id');
-    showTab('nosotros');
-    if(fid){
-      var fbody=document.getElementById('folder-body-'+fid);
-      if(fbody&&fbody.style.display==='none') toggleFolder(fid);
-      var fcard=document.getElementById('folder-card-'+fid);
-      if(fcard) setTimeout(function(){fcard.scrollIntoView({behavior:'smooth',block:'start'});},80);
-    }
     return;
   }
 

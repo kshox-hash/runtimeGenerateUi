@@ -34,7 +34,7 @@ import productsRouter from "./modules/quotes/quotes.router";
 import statisticsRouter from "./modules/stadistics/stadistics.router";
 import quotesExtendedRouter from "./modules/quotes/quotes-extended.routes";
 import { initQuoteHistoryTable } from "./modules/quotes/quote-history/quote-history.repository";
-import { initCalendarBookingPriceColumn, migrateCalendarAvailabilityConstraint } from "./modules/appointments/appointments-admin.repository";
+import { initCalendarBookingPriceColumn, migrateCalendarAvailabilityConstraint, migrateCalendarBookingsUniqueConstraint } from "./modules/appointments/appointments-admin.repository";
 import { initCalendarServicesTable } from "./modules/appointments/calendar-services.repository";
 import { initReviewsGoogleColumns } from "./modules/stadistics/reviews.repository";
 import calendarServicesRoutes from "./modules/appointments/calendar-services.routes";
@@ -166,6 +166,7 @@ const server = app.listen(PORT, async () => {
     initQuoteHistoryTable().catch((e) => console.error("[init] quote_history:", e)),
     initCalendarBookingPriceColumn().catch((e) => console.error("[init] calendar_booking_price:", e)),
     migrateCalendarAvailabilityConstraint().catch((e) => console.error("[init] calendar_availability_constraint:", e)),
+    migrateCalendarBookingsUniqueConstraint().catch((e) => console.error("[init] calendar_bookings_unique_constraint:", e)),
     initCalendarServicesTable().catch((e) => console.error("[init] calendar_services:", e)),
     initReviewsGoogleColumns().catch((e) => console.error("[init] reviews_google:", e)),
     initGalleryTable().catch((e) => console.error("[init] gallery:", e)),

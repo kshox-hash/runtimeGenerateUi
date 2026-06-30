@@ -26,6 +26,9 @@ export const mpConnectController = {
   async getStatus(req: Request, res: Response): Promise<Response> {
     try {
       const userId = String(req.params["userId"] ?? "").trim();
+      const authUserId = String(req.user?.userId ?? "").trim();
+      if (userId !== authUserId) return res.status(403).json({ ok: false, message: "Prohibido" });
+
       const conn = await getMpConnection(userId);
       if (!conn) return res.json({ ok: true, connected: false });
       return res.json({

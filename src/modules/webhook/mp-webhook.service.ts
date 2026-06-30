@@ -51,6 +51,11 @@ export function verifyMpSignature(
     throw new Error("Header x-signature malformado");
   }
 
+  const tsMs = Number(ts) * 1000;
+  if (!Number.isFinite(tsMs) || Math.abs(Date.now() - tsMs) > 5 * 60 * 1000) {
+    throw new Error("Timestamp de la firma fuera de ventana permitida");
+  }
+
   const segments: string[] = [];
   if (paymentId) segments.push(`id:${paymentId}`);
   if (xRequestId) segments.push(`request-id:${xRequestId}`);
@@ -81,12 +86,27 @@ export async function processApprovedPayment(
 ): Promise<WebhookResult> {
   // Buscar el token del vendedor por su MP user ID; si no existe, usar el global como fallback
   let accessToken = mpUserId ? await getAccessTokenByMpUserId(String(mpUserId)) : null;
+  const usedFallbackToken = !accessToken;
   if (!accessToken) {
     if (!ACCESS_TOKEN_MP) throw new Error("No se encontró token de MercadoPago para procesar el pago");
     accessToken = ACCESS_TOKEN_MP;
   }
 
-  const paymentInfo = await getPaymentById(accessToken, paymentId);
+  let paymentInfo;
+  try {
+    paymentInfo = await getPaymentById(accessToken, paymentId);
+  } catch (err) {
+    if (usedFallbackToken) {
+      // Caso a monitorear: no se pudo resolver el vendedor (mpUserId ausente o
+      // sin conexión guardada) y el token global tampoco pudo leer el pago.
+      // El pago de MercadoPago quedó aprobado pero no se pudo confirmar acá.
+      console.error(
+        `[webhook] FALLO CRÍTICO: no se pudo consultar el pago ${paymentId} (mpUserId=${mpUserId ?? "ausente"}) ni con el token del vendedor ni con el global. Pago posiblemente perdido, requiere revisión manual.`,
+        err
+      );
+    }
+    throw err;
+  }
 
   if (paymentInfo.status !== "approved") {
     return { skipped: true, reason: `status=${paymentInfo.status}` };
@@ -98,7 +118,18 @@ export async function processApprovedPayment(
     return { skipped: true, reason: "pago aprobado sin external_reference" };
   }
 
-  const result = await confirmPaymentAndBooking(bookingId, paymentId);
+  const result = await confirmPaymentAndBooking(
+    bookingId,
+    paymentId,
+    Number(paymentInfo.transaction_amount)
+  );
+
+  if (result === "amount_mismatch") {
+    console.error(
+      `[webhook] FALLO CRÍTICO: el monto recibido de MercadoPago para el pago ${paymentId} (booking ${bookingId}) no coincide con el monto esperado. Requiere revisión manual.`
+    );
+    return { skipped: true, reason: "monto no coincide con lo esperado", bookingId };
+  }
 
   if (!result) {
     return { skipped: true, reason: "pago ya procesado anteriormente", bookingId };

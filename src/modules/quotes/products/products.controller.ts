@@ -26,7 +26,7 @@ export const productsController = {
   async getById(req: Request, res: Response): Promise<Response | void> {
     try {
       const userId = req.user?.userId!;
-      const product = await productsService.getById(userId, req.params.productId as string);
+      const product = await productsService.getById(userId, String(req.params["productId"]));
       return res.json({ ok: true, product });
     } catch (err: any) {
       return res.status(err.status || 500).json({ ok: false, message: err.message || "Error obteniendo producto." });
@@ -36,7 +36,7 @@ export const productsController = {
   async update(req: Request, res: Response): Promise<Response | void> {
     try {
       const userId = req.user?.userId!;
-      const product = await productsService.update(userId, req.params.productId as string, req.body);
+      const product = await productsService.update(userId, String(req.params["productId"]), req.body);
       return res.json({ ok: true, product });
     } catch (err: any) {
       return res.status(err.status || 500).json({ ok: false, message: err.message || "Error actualizando producto." });
@@ -46,7 +46,7 @@ export const productsController = {
   async delete(req: Request, res: Response): Promise<Response | void> {
     try {
       const userId = req.user?.userId!;
-      await productsService.delete(userId, req.params.productId as string);
+      await productsService.delete(userId, String(req.params["productId"]));
       return res.json({ ok: true, message: "Producto eliminado." });
     } catch (err: any) {
       return res.status(err.status || 500).json({ ok: false, message: err.message || "Error eliminando producto." });
@@ -56,8 +56,8 @@ export const productsController = {
   // Ruta pública — para el cotizador
   async getActivePublic(req: Request, res: Response): Promise<Response | void> {
     try {
-      const { userId } = req.params;
-      const products = await productsService.getActiveProducts(userId as string);
+      const userId = String(req.params["userId"]);
+      const products = await productsService.getActiveProducts(userId);
       return res.json({ ok: true, products });
     } catch (err: any) {
       return res.status(err.status || 500).json({ ok: false, message: err.message || "Error obteniendo productos." });
