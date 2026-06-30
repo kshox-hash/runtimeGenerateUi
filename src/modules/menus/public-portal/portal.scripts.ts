@@ -433,12 +433,27 @@ document.addEventListener('click',function(e){
     return;
   }
 
+  // gallery home cards → switch tab + open that folder
+  var galCard=t.closest('.hm-gal-card[data-folder-id]');
+  if(galCard){
+    var fid=galCard.getAttribute('data-folder-id');
+    showTab('nosotros');
+    if(fid){
+      var fbody=document.getElementById('folder-body-'+fid);
+      if(fbody&&fbody.style.display==='none') toggleFolder(fid);
+      var fcard=document.getElementById('folder-card-'+fid);
+      if(fcard) setTimeout(function(){fcard.scrollIntoView({behavior:'smooth',block:'start'});},80);
+    }
+    return;
+  }
+
   // action buttons (data-action)
   var actBtn=t.closest('[data-action]');
   if(actBtn){
     var a=actBtn.getAttribute('data-action');
     if(a==='reservas')      showTab('reservas');
     else if(a==='cotizar')  showTab('cotizar');
+    else if(a==='nosotros') showTab('nosotros');
     else if(a==='productos')showTab('nosotros');
     else if(a==='resenas')  showTab('resenas');
     return;
@@ -538,7 +553,16 @@ document.addEventListener('click',function(e){
   var galItem=t.closest('[data-gal-idx]');
   if(galItem){
     var gidx=parseInt(galItem.getAttribute('data-gal-idx')||'0',10);
-    openGalPanel(gidx);
+    var folderBody=galItem.closest('.gal-folder-body');
+    if(folderBody){
+      // foto dentro de una carpeta: usar las fotos de esa carpeta como contexto
+      galItems=Array.from(folderBody.querySelectorAll('[data-gal-idx]'));
+      galCurrentIdx=gidx;
+      renderGalPanel();
+      openPanel('galPanel');
+    } else {
+      openGalPanel(gidx);
+    }
     return;
   }
 });
