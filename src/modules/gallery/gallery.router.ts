@@ -4,7 +4,17 @@ import { authMiddleware } from "../../middlewares/auth_middleware";
 import { galleryController } from "./gallery.controller";
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (/^image\/(jpeg|png|webp|gif)$/.test(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Solo se aceptan imágenes (JPEG, PNG, WEBP, GIF)."));
+    }
+  },
+});
 
 // Photos
 router.post  ("/api/gallery",                           authMiddleware, upload.single("photo"), galleryController.upload);

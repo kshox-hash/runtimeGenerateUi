@@ -4,7 +4,17 @@ import { authMiddleware } from "../../middlewares/auth_middleware";
 import { companyProfileController } from "./company_profile.controller";
 
 const router = Router();
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (/^image\/(jpeg|png|webp|gif)$/.test(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Solo se aceptan imágenes (JPEG, PNG, WEBP, GIF)."));
+    }
+  },
+});
 
 // Pública — no requiere auth
 router.get("/public/business/:slug", companyProfileController.getByPublicSlug);

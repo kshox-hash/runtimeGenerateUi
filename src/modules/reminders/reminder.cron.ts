@@ -1,11 +1,11 @@
 import cron from "node-cron";
-import { getBookingsDueTomorrow, markReminderSent } from "./reminder.repository";
+import { claimBookingsDueTomorrow } from "./reminder.repository";
 import { sendBookingReminderEmail } from "../calendar/booking/services/bookingReminderEmailService";
 
 async function runReminderJob(): Promise<void> {
   let bookings;
   try {
-    bookings = await getBookingsDueTomorrow();
+    bookings = await claimBookingsDueTomorrow();
   } catch (err) {
     console.error("[reminders] Error consultando reservas:", err);
     return;
@@ -32,7 +32,6 @@ async function runReminderJob(): Promise<void> {
         bookingTime,
       });
 
-      await markReminderSent(booking.id);
       console.log(`[reminders] Recordatorio enviado → ${booking.client_email} (booking ${booking.id})`);
     } catch (err) {
       console.error(`[reminders] Error enviando a ${booking.client_email}:`, err);

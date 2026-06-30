@@ -717,9 +717,9 @@ function openSvcDetailPanel(svc,color){
       var initials=((p.name||'?').trim().split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2)).toUpperCase();
       html+='<div class="ddp-person">'
         +'<div class="ddp-avatar">'
-        +(p.picture||p.avatar?'<img src="'+(p.picture||p.avatar)+'" alt="">':initials)
+        +(p.picture||p.avatar?'<img src="'+escH(p.picture||p.avatar)+'" alt="">':initials)
         +'</div>'
-        +'<span class="ddp-person-name">'+(p.name||'Profesional')+'</span>'
+        +'<span class="ddp-person-name">'+escH(p.name||'Profesional')+'</span>'
         +'</div>';
     });
     html+='</div></div>';
@@ -1314,9 +1314,9 @@ function showCalTip(cell,date){
       var initials=((p.name||'?').trim().split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2)).toUpperCase();
       html+='<div class="cal-tip-person">'
         +'<div class="cal-tip-avatar">'
-        +(p.picture||p.avatar?'<img src="'+(p.picture||p.avatar)+'" alt="">':initials)
+        +(p.picture||p.avatar?'<img src="'+escH(p.picture||p.avatar)+'" alt="">':initials)
         +'</div>'
-        +(p.name||'Profesional')
+        +escH(p.name||'Profesional')
         +'</div>';
     });
     html+='</div><div class="cal-tip-divider"></div>';
@@ -1457,9 +1457,9 @@ function openDayDetailPanel(date){
       var initials=((p.name||'?').trim().split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2)).toUpperCase();
       html+='<div class="ddp-person">'
         +'<div class="ddp-avatar">'
-        +(p.picture||p.avatar?'<img src="'+(p.picture||p.avatar)+'" alt="">':initials)
+        +(p.picture||p.avatar?'<img src="'+escH(p.picture||p.avatar)+'" alt="">':initials)
         +'</div>'
-        +'<span class="ddp-person-name">'+(p.name||'Profesional')+'</span>'
+        +'<span class="ddp-person-name">'+escH(p.name||'Profesional')+'</span>'
         +'</div>';
     });
     html+='</div></div>';

@@ -4,7 +4,8 @@ import { sendWhatsAppTextMessage } from "./whatsapp.service";
 
 export const sendWhatsAppController = async (req: Request, res: Response) => {
   try {
-    const { userId, recipientPhone, messageText } = req.body;
+    const userId = String(req.user?.userId ?? "").trim();
+    const { recipientPhone, messageText } = req.body;
 
     if (!userId || !recipientPhone || !messageText) {
       return res.status(400).json({

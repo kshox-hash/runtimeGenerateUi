@@ -1,6 +1,5 @@
 import fs from "fs";
 import https from "https";
-import http from "http";
 import path from "path";
 
 import { sanitizeFileName } from "../../utils/token";
@@ -19,15 +18,30 @@ if (!fs.existsSync(GENERATED_PDFS_DIR)) {
   fs.mkdirSync(GENERATED_PDFS_DIR, { recursive: true });
 }
 
+const ALLOWED_IMAGE_HOSTS = ["res.cloudinary.com"];
+
 export function downloadImageBuffer(url: string): Promise<Buffer> {
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(url);
+  } catch {
+    return Promise.reject(new Error("URL de imagen inválida"));
+  }
+
+  if (
+    parsedUrl.protocol !== "https:" ||
+    !ALLOWED_IMAGE_HOSTS.includes(parsedUrl.hostname)
+  ) {
+    return Promise.reject(new Error("Host de imagen no permitido"));
+  }
+
   const finalUrl =
     url.includes("cloudinary.com") && url.includes("/upload/")
       ? url.replace("/upload/", "/upload/f_jpg,q_80/")
       : url;
 
   return new Promise((resolve, reject) => {
-    const client = finalUrl.startsWith("https") ? https : http;
-    const req = client.get(finalUrl, (res) => {
+    const req = https.get(finalUrl, (res) => {
       if ((res.statusCode ?? 0) >= 400) {
         reject(new Error(`HTTP ${res.statusCode}`));
         return;

@@ -9,7 +9,7 @@ const router = Router();
 router.get("/shop/:publicSlug",           publicPortalController.open);
 router.get("/shop/:publicSlug/cotizador", publicPortalController.openQuotes);
 router.post("/shop/:publicSlug/quotes/submit", portalSessionMiddleware, quotesSubmitController.submit);
-router.post("/api/public/:publicSlug/reviews", publicPortalController.submitReview);
+router.post("/api/public/:publicSlug/reviews", portalSessionMiddleware, publicPortalController.submitReview);
 router.get("/api/public/reviews/:userId", statisticsController.getPublicReviews);
 
 export default router;

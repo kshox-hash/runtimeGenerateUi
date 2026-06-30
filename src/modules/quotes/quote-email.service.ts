@@ -1,5 +1,6 @@
 import fs from "fs";
 import { createTransporter } from "../../core/mailer";
+import { escapeHtml } from "../../utils/html";
 
 type SendQuoteEmailInput = {
   to: string;
@@ -24,7 +25,7 @@ function buildQuoteEmailHtml(input: SendQuoteEmailInput): string {
     .map(
       (item) => `
       <tr>
-        <td style="padding:10px 12px;border-bottom:1px solid #f0f0f0;font-size:14px;color:#111827;">${item.name}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #f0f0f0;font-size:14px;color:#111827;">${escapeHtml(item.name)}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #f0f0f0;font-size:14px;color:#6b7280;text-align:center;">${item.quantity}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #f0f0f0;font-size:14px;color:#6b7280;text-align:right;">${formatCLP(item.unitPrice)}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #f0f0f0;font-size:14px;font-weight:600;color:#111827;text-align:right;">${formatCLP(item.subtotal)}</td>
@@ -44,7 +45,7 @@ function buildQuoteEmailHtml(input: SendQuoteEmailInput): string {
         <!-- Header -->
         <tr>
           <td style="background:#1e3a5f;padding:28px 32px;">
-            <p style="margin:0;font-size:22px;font-weight:700;color:#ffffff;">${input.brandName}</p>
+            <p style="margin:0;font-size:22px;font-weight:700;color:#ffffff;">${escapeHtml(input.brandName)}</p>
             <p style="margin:6px 0 0;font-size:13px;color:#93c5fd;">Tu cotización está lista</p>
           </td>
         </tr>
@@ -53,7 +54,7 @@ function buildQuoteEmailHtml(input: SendQuoteEmailInput): string {
         <tr>
           <td style="padding:28px 32px;">
             <p style="margin:0 0 20px;font-size:15px;color:#374151;">
-              Hola <strong>${input.customerName}</strong>, aquí está el resumen de tu cotización. 
+              Hola <strong>${escapeHtml(input.customerName)}</strong>, aquí está el resumen de tu cotización.
               Encontrarás el detalle completo en el PDF adjunto.
             </p>
 
@@ -89,7 +90,7 @@ function buildQuoteEmailHtml(input: SendQuoteEmailInput): string {
         <tr>
           <td style="padding:20px 32px;border-top:1px solid #f0f0f0;background:#f9fafb;">
             <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center;">
-              ${input.brandName} · Documento generado automáticamente
+              ${escapeHtml(input.brandName)} · Documento generado automáticamente
             </p>
           </td>
         </tr>

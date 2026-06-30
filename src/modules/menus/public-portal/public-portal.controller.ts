@@ -111,6 +111,10 @@ export const publicPortalController = {
         }
         try {
           const payload = jwt.verify(token, process.env.JWT_SECRET!, { issuer: "portal" }) as any;
+          if (payload.slug && payload.slug !== publicSlug) {
+            res.clearCookie("portal_session");
+            return res.status(200).send(renderLoginPage(publicSlug));
+          }
           portalUser = { name: payload.name, email: payload.email, picture: payload.picture };
         } catch {
           res.clearCookie("portal_session");

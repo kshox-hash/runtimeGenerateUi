@@ -4,7 +4,7 @@ import { getAllUsersWithFee, updateUserFeePct } from "./admin.repository";
 const ADMIN_USER_ID = process.env.ADMIN_USER_ID ?? "";
 
 function getRequestUserId(req: Request): string {
-  return String((req as unknown as Record<string, unknown>)["userId"] ?? "").trim();
+  return String(req.user?.userId ?? "").trim();
 }
 
 function isAdmin(req: Request): boolean {

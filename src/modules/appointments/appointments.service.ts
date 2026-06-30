@@ -175,6 +175,54 @@ export async function reserveCalendarSlot(input: {
     throw new Error("No hay disponibilidad para este día.");
   }
 
+  const todayStr = toDateString(new Date());
+  if (input.bookingDate < todayStr) {
+    throw new Error("No se puede reservar en una fecha pasada.");
+  }
+
+  const maxAdvanceDays = Number(settings.max_advance_days || 30);
+  const maxDate = new Date();
+  maxDate.setDate(maxDate.getDate() + maxAdvanceDays);
+  if (input.bookingDate > toDateString(maxDate)) {
+    throw new Error("La fecha seleccionada está fuera del rango permitido.");
+  }
+
+  const duration = Number(
+    dayAvailability.slot_minutes || settings.default_slot_minutes || 30
+  );
+
+  const slotStart = timeToMinutes(input.startTime);
+  const slotEnd = slotStart + duration;
+  const dayStart = timeToMinutes(dayAvailability.start_time);
+  const dayClose = timeToMinutes(dayAvailability.end_time);
+
+  if (
+    slotStart < dayStart ||
+    slotEnd > dayClose ||
+    (slotStart - dayStart) % duration !== 0
+  ) {
+    throw new Error("El horario seleccionado no es válido.");
+  }
+
+  const blockedDates = await getCalendarBlockedDates(
+    input.userId,
+    input.bookingDate,
+    input.bookingDate
+  );
+
+  const isBlocked = blockedDates.some((block) => {
+    if (normalizeDbDate(block.blocked_date) !== input.bookingDate) return false;
+    if (block.is_full_day) return true;
+    if (!block.start_time || !block.end_time) return true;
+    const blockStart = timeToMinutes(block.start_time);
+    const blockEnd = timeToMinutes(block.end_time);
+    return slotStart < blockEnd && slotEnd > blockStart;
+  });
+
+  if (isBlocked) {
+    throw new Error("Esta fecha u horario no está disponible.");
+  }
+
   const exists = await bookingExists({
     userId: input.userId,
     bookingDate: input.bookingDate,
@@ -185,10 +233,6 @@ export async function reserveCalendarSlot(input: {
   if (exists) {
     throw new Error("Este horario ya fue reservado.");
   }
-
-  const duration = Number(
-    dayAvailability.slot_minutes || settings.default_slot_minutes || 30
-  );
 
   const endTime = addMinutes(input.startTime, duration);
 

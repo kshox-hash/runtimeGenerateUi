@@ -23,7 +23,7 @@ export async function googleCallbackController(req: Request, res: Response) {
   // flujo portal
   if (authUser?.__type === "portal") {
     const token = jwt.sign(
-      { email: authUser.email, name: authUser.name ?? "", picture: authUser.picture ?? "" },
+      { email: authUser.email, name: authUser.name ?? "", picture: authUser.picture ?? "", slug: authUser.slug },
       process.env.JWT_SECRET!,
       { expiresIn: "7d", issuer: "portal" },
     );

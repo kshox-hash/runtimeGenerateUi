@@ -35,6 +35,7 @@ import statisticsRouter from "./modules/stadistics/stadistics.router";
 import quotesExtendedRouter from "./modules/quotes/quotes-extended.routes";
 import { initQuoteHistoryTable } from "./modules/quotes/quote-history/quote-history.repository";
 import { initCalendarBookingPriceColumn, migrateCalendarAvailabilityConstraint, migrateCalendarBookingsUniqueConstraint } from "./modules/appointments/appointments-admin.repository";
+import { migrateSlugUniqueConstraint } from "./modules/slug/slug.repository";
 import { initCalendarServicesTable } from "./modules/appointments/calendar-services.repository";
 import { initReviewsGoogleColumns } from "./modules/stadistics/reviews.repository";
 import calendarServicesRoutes from "./modules/appointments/calendar-services.routes";
@@ -129,7 +130,17 @@ app.get("/health", async (_req, res) => {
 });
 
 // ─── Rutas ────────────────────────────────────────────────────────────────────
-app.use("/generated-pdfs", express.static(GENERATED_PDFS_DIR));
+const pdfDownloadLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: "Demasiadas descargas. Intenta en 15 minutos.",
+});
+app.use("/generated-pdfs", pdfDownloadLimiter, (_req, res, next) => {
+  res.setHeader("Content-Disposition", "attachment");
+  next();
+}, express.static(GENERATED_PDFS_DIR));
 app.use("/assets", express.static("assets"));
 app.use(passport.initialize());
 app.use(mpWebhookRouter);
@@ -167,6 +178,7 @@ const server = app.listen(PORT, async () => {
     initCalendarBookingPriceColumn().catch((e) => console.error("[init] calendar_booking_price:", e)),
     migrateCalendarAvailabilityConstraint().catch((e) => console.error("[init] calendar_availability_constraint:", e)),
     migrateCalendarBookingsUniqueConstraint().catch((e) => console.error("[init] calendar_bookings_unique_constraint:", e)),
+    migrateSlugUniqueConstraint().catch((e) => console.error("[init] slug_unique_constraint:", e)),
     initCalendarServicesTable().catch((e) => console.error("[init] calendar_services:", e)),
     initReviewsGoogleColumns().catch((e) => console.error("[init] reviews_google:", e)),
     initGalleryTable().catch((e) => console.error("[init] gallery:", e)),
