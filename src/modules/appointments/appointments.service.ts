@@ -228,6 +228,14 @@ export async function reserveCalendarSlot(input: {
     throw new Error("Esta fecha u horario no está disponible.");
   }
 
+  const breakTimes = settings.break_times || [];
+  const isBreak = breakTimes.some((bt) => {
+    const breakStart = timeToMinutes(bt.start_time);
+    const breakEnd   = timeToMinutes(bt.end_time);
+    return slotStart < breakEnd && slotEnd > breakStart;
+  });
+  if (isBreak) throw new Error("Esta fecha u horario no está disponible.");
+
   const exists = await bookingExists({
     userId: input.userId,
     bookingDate: input.bookingDate,
