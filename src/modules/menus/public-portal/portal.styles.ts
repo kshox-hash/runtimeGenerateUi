@@ -887,8 +887,8 @@ body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(-
   content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
   width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.7)
 }
-.cal-cell.cal-avail-few{cursor:pointer;font-weight:700;color:#fff;background:#EA580C;border:none}
-.cal-cell.cal-avail-few:hover{background:#C2410C}
+.cal-cell.cal-avail-few{cursor:pointer;font-weight:700;color:#fff;background:#3B82F6;border:none}
+.cal-cell.cal-avail-few:hover{background:#2563EB}
 .cal-cell.cal-today.cal-avail-few,.cal-cell.cal-today.cal-avail-good{background:#3B82F6;border:none}
 .cal-cell.cal-avail-few::after{
   content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);

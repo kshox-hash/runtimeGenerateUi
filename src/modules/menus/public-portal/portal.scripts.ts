@@ -233,7 +233,7 @@ function renderBkDateStep(){
     +'<div class="cal-grid" style="margin-bottom:14px">'+dayNames+cells+'</div>'
     +'<div class="cal-legend">'
     +'<span class="cal-leg-item"><span class="cal-leg-dot" style="background:#16A34A"></span>Disponible</span>'
-    +'<span class="cal-leg-item"><span class="cal-leg-dot" style="background:#EA580C"></span>Pocas horas</span>'
+    +'<span class="cal-leg-item"><span class="cal-leg-dot" style="background:#3B82F6"></span>Pocas horas</span>'
     +'<span class="cal-leg-item"><span class="cal-leg-dot" style="background:var(--border)"></span>Sin horarios</span>'
     +'</div>'
     +'</div>';
@@ -607,7 +607,7 @@ var CARD_GRADIENTS=[
   'linear-gradient(135deg,#EC4899,#F472B6)',
   'linear-gradient(135deg,#0EA5E9,#38BDF8)',
   'linear-gradient(135deg,#10B981,#34D399)',
-  'linear-gradient(135deg,#F59E0B,#FCD34D)',
+  'linear-gradient(135deg,#8B5CF6,#A78BFA)',
   'linear-gradient(135deg,#EF4444,#F87171)'
 ];
 
@@ -1307,11 +1307,11 @@ function showCalTip(cell,date){
   var isToday=dDay.getTime()===today.getTime();
   var slots=calSlots[date]||[];
   var hasSlots=slots.length>0;
-  var svcDotColors=['#F97316','#FB923C','#059669','#D97706','#EC4899','#14B8A6'];
+  var svcDotColors=['#0EA5E9','#6366F1','#059669','#0891B2','#EC4899','#14B8A6'];
 
   var html='<div class="cal-tip-date">'
     +DAY[d.getDay()]+' '+d.getDate()+' '+MON[d.getMonth()]
-    +(isToday?'<span class="cal-tip-date-badge">Hoy</span>':hasSlots?'<span class="cal-tip-date-badge" style="background:#ECFDF5;color:#059669">Disponible</span>':'<span class="cal-tip-date-badge" style="background:#FEF3C7;color:#D97706">Sin horarios</span>')
+    +(isToday?'<span class="cal-tip-date-badge">Hoy</span>':hasSlots?'<span class="cal-tip-date-badge" style="background:#ECFDF5;color:#059669">Disponible</span>':'<span class="cal-tip-date-badge" style="background:#F1F5F9;color:#64748B">Sin horarios</span>')
     +'</div>'
     +'<div class="cal-tip-divider"></div>';
 
@@ -1438,7 +1438,7 @@ function openDayDetailPanel(date){
   var isToday=new Date(date+'T00:00').getTime()===today.getTime();
   var slots=calSlots[date]||[];
   var hasSlots=slots.length>0;
-  var svcDotColors=['#F97316','#FB923C','#059669','#D97706','#EC4899','#14B8A6'];
+  var svcDotColors=['#0EA5E9','#6366F1','#059669','#0891B2','#EC4899','#14B8A6'];
   var dateLabel=(isToday?'Hoy — ':'')+DAY[d.getDay()]+' '+d.getDate()+' de '+MON[d.getMonth()];
 
   var titleEl=document.getElementById('ddpTitle');
@@ -1760,7 +1760,7 @@ function ensureReviews(){
     });
 }
 
-var INBOX_COLORS=['#5A67F2','#F97316','#22C55E','#EC4899','#14B8A6','#8B5CF6','#F59E0B','#EF4444'];
+var INBOX_COLORS=['#5A67F2','#0EA5E9','#22C55E','#EC4899','#14B8A6','#8B5CF6','#06B6D4','#EF4444'];
 
 function renderHomeInbox(data){
   renderInboxCard('homeInbox',data,2);
