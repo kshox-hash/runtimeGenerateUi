@@ -23,10 +23,10 @@ body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(-
   --text:#111116;
   --soft:#38383F;
   --dim:#78788C;
-  --primary:#0EA5E9;
-  --primary-dim:rgba(14,165,233,.07);
-  --primary-glow:rgba(14,165,233,.18);
-  --nav-act:#0EA5E9;
+  --primary:#F97316;
+  --primary-dim:rgba(249,115,22,.07);
+  --primary-glow:rgba(249,115,22,.18);
+  --nav-act:#F97316;
   --nav-act-bg:rgba(14,165,233,.08);
   --green:#16A34A;
   --green-dim:rgba(22,163,74,.08);
@@ -944,12 +944,12 @@ body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(-
 .bk-times-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
 .bk-time-chip{
   padding:10px 4px;border-radius:11px;
-  background:#EEF4FF;color:var(--primary);
-  border:1.5px solid rgba(14,165,233,.25);
+  background:#fff;color:var(--text);
+  border:none;
   font-size:13px;font-weight:600;cursor:pointer;text-align:center;
-  transition:background .15s,color .15s,border-color .15s;-webkit-tap-highlight-color:transparent
+  transition:background .15s,color .15s;-webkit-tap-highlight-color:transparent
 }
-.bk-time-chip:hover,.bk-time-chip.sel{background:var(--primary);color:#fff;border-color:var(--primary)}
+.bk-time-chip:hover,.bk-time-chip.sel{background:var(--primary);color:#fff}
 .bk-summary-card{
   background:var(--primary-dim);border-radius:13px;padding:14px;margin-bottom:20px;
 }
@@ -1414,7 +1414,7 @@ body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(-
   background:var(--primary);color:#fff;font-size:12.5px;font-weight:700;
   cursor:pointer;text-align:center;transition:background .15s
 }
-.cal-tip-btn:hover{background:#0284C7}
+.cal-tip-btn:hover{background:#EA580C}
 
 /* ── CTA AZUL ─────────────────────────────────────────────────────────── */
 .hm-cta-card{
@@ -1484,7 +1484,7 @@ body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(-
   width:36px;height:36px;border-radius:50%;flex-shrink:0;
   background:var(--primary-dim);color:var(--primary);
   font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;
-  overflow:hidden;border:2px solid rgba(14,165,233,.15)
+  overflow:hidden;border:2px solid rgba(249,115,22,.15)
 }
 .ddp-avatar img{width:100%;height:100%;object-fit:cover}
 .ddp-person-name{font-size:14px;font-weight:600;color:var(--text)}
