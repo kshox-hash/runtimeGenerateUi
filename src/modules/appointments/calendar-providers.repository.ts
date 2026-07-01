@@ -111,10 +111,16 @@ export async function isProviderActiveForUser(providerId: string, userId: string
 
 export async function getActiveProvidersByUserId(userId: string) {
   const result = await pool.query(
-    `SELECT id::text, name, color, avatar_initials
-     FROM calendar_providers
-     WHERE user_id = $1 AND is_active = true
-     ORDER BY created_at ASC`,
+    `SELECT cp.id::text, cp.name, cp.color, cp.avatar_initials,
+            COALESCE(
+              (SELECT ARRAY_AGG(DISTINCT ca.weekday ORDER BY ca.weekday)
+               FROM calendar_availability ca
+               WHERE ca.user_id = cp.user_id AND ca.provider_id = cp.id AND ca.is_active = true),
+              ARRAY[]::int[]
+            ) AS custom_weekdays
+     FROM calendar_providers cp
+     WHERE cp.user_id = $1 AND cp.is_active = true
+     ORDER BY cp.created_at ASC`,
     [userId]
   );
   return result.rows;

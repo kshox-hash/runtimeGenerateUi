@@ -115,6 +115,18 @@ var bkProvSlots={}; // slots filtrados por el profesional elegido en la sesión 
 var providersCache=[];
 var providersLoaded=false;
 
+// Returns providers that have availability on bk.date's weekday.
+// Providers without a custom schedule (custom_weekdays=[]) use the global calendar → always included.
+function getAvailableProviders(){
+  if(!bk.date||!providersCache.length) return providersCache;
+  var jsDay=new Date(bk.date+'T00:00:00').getDay();
+  var weekday=jsDay===0?7:jsDay; // 1=Mon … 7=Sun, matches calendar_availability.weekday
+  return providersCache.filter(function(p){
+    if(!p.custom_weekdays||!p.custom_weekdays.length) return true;
+    return p.custom_weekdays.indexOf(weekday)!==-1;
+  });
+}
+
 function loadProviders(){
   if(providersLoaded) return;
   fetch('/api/public/'+SLUG+'/providers')
@@ -232,7 +244,7 @@ function renderBkDateStep(){
       var dateStr=cell.getAttribute('data-bk-date');
       if(!dateStr||!(calSlots[dateStr]&&calSlots[dateStr].length)) return;
       bk.date=dateStr; bk.time=null;
-      if(providersCache.length>0) renderBkProviderStep();
+      if(getAvailableProviders().length>0) renderBkProviderStep();
       else renderBkTimeStep();
     });
   });
@@ -257,10 +269,11 @@ function renderBkProviderStep(){
   var calIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
   var dateBadge='<div class="bk-date-badge">'+calIco+escH(label)+'</div>';
   var svcBadge=bk.svc?'<div class="bk-date-badge" style="background:var(--bg);border:1px solid var(--border);color:var(--soft)">'+escH(bk.svc.name)+'</div>':'';
-  var rows=providersCache.map(function(p,i){
+  var availProviders=getAvailableProviders();
+  var rows=availProviders.map(function(p,i){
     var initials=p.avatar_initials||(p.name.trim().charAt(0)||'?').toUpperCase();
     var color=p.color&&/^#[0-9a-fA-F]{6}$/.test(p.color)?p.color:CARD_PALETTES[i%CARD_PALETTES.length];
-    return '<div class="bk-svc-item" data-bk-prov-i="'+i+'">'
+    return '<div class="bk-svc-item" data-bk-prov-id="'+escH(p.id)+'">'
       +'<div style="width:36px;height:36px;border-radius:50%;background:'+color+';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0">'+escH(initials)+'</div>'
       +'<div class="bk-svc-info"><div class="bk-svc-name">'+escH(p.name)+'</div></div>'
       +'<div class="bk-svc-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>'
@@ -488,7 +501,7 @@ document.addEventListener('click',function(e){
       if(bk.entry==='service') renderBkDateStep(); else renderBkSvcStep();
     }
     else if(bk.step==='time'){
-      if(providersCache.length>0) renderBkProviderStep();
+      if(getAvailableProviders().length>0) renderBkProviderStep();
       else if(bk.entry==='service') renderBkDateStep();
       else renderBkSvcStep();
     }
@@ -513,15 +526,15 @@ document.addEventListener('click',function(e){
     if(!bk.date){
       bk.entry='service'; bkCalYear=calYear; bkCalMonth=calMonth;
       renderBkDateStep();
-    } else if(providersCache.length>0) renderBkProviderStep();
+    } else if(getAvailableProviders().length>0) renderBkProviderStep();
     else if(bk.time) renderBkFormStep();
     else renderBkTimeStep();
     return;
   }
-  var provItem=t.closest('[data-bk-prov-i]');
+  var provItem=t.closest('[data-bk-prov-id]');
   if(provItem){
-    var pidx=parseInt(provItem.getAttribute('data-bk-prov-i')||'0',10);
-    bk.provider=providersCache[pidx]||null;
+    var pid=provItem.getAttribute('data-bk-prov-id')||'';
+    bk.provider=providersCache.find(function(p){return p.id===pid;})||null;
     if(bk.provider) loadBkProvSlots(bk.provider.id, function(){
       // Si había un tiempo pre-seleccionado pero no está en los slots de este doctor, limpiarlo
       if(bk.time && bk.date && (!bkProvSlots[bk.date] || bkProvSlots[bk.date].indexOf(bk.time)===-1)){
