@@ -654,8 +654,6 @@ function applyServices(svcs,total){
 function openProdDetailPanel(prod){
   var titleEl=document.getElementById('pdpTitle');
   if(titleEl) titleEl.textContent=prod.name||'Producto';
-  var hdr=document.getElementById('pdpHdr');
-  if(hdr) hdr.style.borderBottom='3px solid '+(prod.color||'var(--primary)');
   var body=document.getElementById('pdpBody'); if(!body) return;
 
   var photos=Array.isArray(prod.photos)&&prod.photos.length>0?prod.photos:[];
@@ -678,7 +676,7 @@ function openProdDetailPanel(prod){
   }
 
   var html=photosHtml
-    +'<div class="sdp-hero" style="border-left:4px solid '+(prod.color||'var(--primary)')+';">'
+    +'<div class="sdp-hero">'
     +'<div class="sdp-hero-name">'+escH(prod.name||'Producto')+'</div>'
     +'<div class="sdp-hero-price">'+price+'</div>'
     +'</div>';
@@ -707,8 +705,6 @@ function openProdDetailPanel(prod){
 function openSvcDetailPanel(svc,color){
   var titleEl=document.getElementById('sdpTitle');
   if(titleEl) titleEl.textContent=svc.name||'Servicio';
-  var hdr=document.getElementById('sdpHdr');
-  if(hdr) hdr.style.borderBottom='3px solid '+(color||'var(--primary)');
   var body=document.getElementById('sdpBody');if(!body)return;
 
   var price=svc.price!=null&&Number(svc.price)>0?fmtPrice(Number(svc.price)):'Consultar';
@@ -730,7 +726,7 @@ function openSvcDetailPanel(svc,color){
   }
 
   var html=photosHtml
-    +'<div class="sdp-hero" style="border-left:4px solid '+(color||'var(--primary)')+';">'
+    +'<div class="sdp-hero">'
     +'<div class="sdp-hero-name">'+escH(svc.name||'Servicio')+'</div>'
     +'<div class="sdp-hero-badges">'
     +(cat?'<span class="sdp-badge sdp-badge-cat">'+cat+'</span>':'')
