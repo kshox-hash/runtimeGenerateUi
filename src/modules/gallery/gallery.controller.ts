@@ -36,8 +36,8 @@ export const galleryController = {
           {
             folder: `gallery/${userId}`,
             transformation: [
-              { width: 1800, height: 1350, crop: "fill", gravity: "auto" },
-              { quality: 85, fetch_format: "auto" },
+              { width: 2400, height: 1800, crop: "fill", gravity: "auto" },
+              { quality: 88, fetch_format: "auto" },
             ],
           },
           (err, result) => {
