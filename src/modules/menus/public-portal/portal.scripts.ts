@@ -79,7 +79,7 @@ function openGalleryFolder(fid){
   if(!fbody) return;
   var fitems=Array.from(fbody.querySelectorAll('[data-gal-idx]'));
   if(!fitems.length){
-    var card=document.querySelector('[data-folder-id="'+fid+'"]');
+    var card=document.querySelector('.gal-proj-card[data-folder-id="'+fid+'"]');
     if(card) setTimeout(function(){ card.scrollIntoView({behavior:'smooth',block:'center'}); },120);
     return;
   }
@@ -575,10 +575,15 @@ document.addEventListener('click',function(e){
   var folderBtn=t.closest('[data-folder-id]');
   if(folderBtn){
     var fid=folderBtn.getAttribute('data-folder-id')||'';
+    showTab('nosotros');
     var fbody=document.getElementById('folder-body-'+fid);
     if(!fbody) return;
     var fitems=Array.from(fbody.querySelectorAll('[data-gal-idx]'));
-    if(!fitems.length) return;
+    if(!fitems.length){
+      var card=document.querySelector('.gal-proj-card[data-folder-id="'+fid+'"]');
+      if(card) setTimeout(function(){ card.scrollIntoView({behavior:'smooth',block:'center'}); },120);
+      return;
+    }
     galPanelTitle=fbody.getAttribute('data-folder-name')||'';
     galItems=fitems;
     galCurrentIdx=0;
